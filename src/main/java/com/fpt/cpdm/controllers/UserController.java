@@ -1,7 +1,7 @@
 package com.fpt.cpdm.controllers;
 
-import com.fpt.cpdm.exceptions.user.UserNotFoundException;
-import com.fpt.cpdm.exceptions.user.UserNotValidException;
+import com.fpt.cpdm.exceptions.users.UserNotFoundException;
+import com.fpt.cpdm.exceptions.users.UserNotValidException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,9 +3,9 @@ package com.fpt.cpdm.services.impl;
 import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.NotAllowException;
-import com.fpt.cpdm.exceptions.user.RoleNotFoundException;
-import com.fpt.cpdm.exceptions.user.UserNotFoundException;
-import com.fpt.cpdm.exceptions.user.UserEmailDuplicateException;
+import com.fpt.cpdm.exceptions.users.RoleNotFoundException;
+import com.fpt.cpdm.exceptions.users.UserNotFoundException;
+import com.fpt.cpdm.exceptions.users.UserEmailDuplicateException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.repositories.RoleRepository;
 import com.fpt.cpdm.repositories.UserRepository;
@@ -70,7 +70,9 @@ public class UserServiceImpl implements UserService {
 
         // set role
         String roleName = ROLE_PREFIX + user.getRole();
-        RoleEntity roleEntity = roleRepository.findByName(roleName);
+        RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
+                () -> new RoleNotFoundException("This role: '" + roleName + "' is not found!")
+        );
         userEntity.setRole(roleEntity);
 
         UserEntity savedUserEntity = userRepository.save(userEntity);
@@ -110,7 +112,9 @@ public class UserServiceImpl implements UserService {
         for (User user : users) {
             UserEntity userEntity = ModelConverter.UserModelToEntity(user);
             String roleName = ROLE_PREFIX + user.getRole();
-            RoleEntity roleEntity = roleRepository.findByName(roleName);
+            RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
+                    () -> new RoleNotFoundException("This role: '" + roleName + "' is not found!")
+            );
             userEntity.setRole(roleEntity);
             userEntities.add(userEntity);
         }
