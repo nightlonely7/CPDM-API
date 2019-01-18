@@ -21,9 +21,11 @@ public class User {
     @Size(min = 4, max = 30)
     private String displayName;
 
+    @NotNull
     @Size(min = 8, max = 20)
     private String password;
 
+    @NotNull
     @Email
     private String email;
 

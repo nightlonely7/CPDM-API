@@ -27,7 +27,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String displayName;
 
     @Basic
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Basic
