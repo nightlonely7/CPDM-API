@@ -9,7 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Entity
+@Entity(name = "Role")
 @Table(name = "role")
 @Data
 @EqualsAndHashCode(callSuper = true)

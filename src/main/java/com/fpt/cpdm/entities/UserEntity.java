@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 
-@Entity
+@Entity(name = "User")
 @Table(name = "user")
 @Data
 @EqualsAndHashCode(callSuper = true)
