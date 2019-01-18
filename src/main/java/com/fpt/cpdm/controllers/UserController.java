@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> readById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<User> readById(@PathVariable(name = "id") Integer id) {
 
         User user = userService.findById(id);
 
@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable(name = "id") Long id,
+    public ResponseEntity<User> update(@PathVariable(name = "id") Integer id,
                                        @Valid @RequestBody User user,
                                        BindingResult result) {
 
@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable(name = "id") Long id) {
+    public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
 
         if (userService.existsById(id) == false) {
             throw new UserNotFoundException("User with id " + id + " is not found!");
@@ -70,7 +70,7 @@ public class UserController {
     }
 
     @SuppressWarnings("Duplicates")
-    private ResponseEntity<User> save(Long id, User user, BindingResult result) {
+    private ResponseEntity<User> save(Integer id, User user, BindingResult result) {
 
         if (result.hasErrors()) {
             List<FieldError> fieldsErrors = result.getFieldErrors();

@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
+    public User findById(Integer id) {
 
         Optional<UserEntity> optional = userRepository.findById(id);
         UserEntity userEntity = optional.orElseThrow(
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsById(Long id) {
+    public boolean existsById(Integer id) {
 
         return userRepository.existsById(id);
     }
@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllById(List<Long> ids) {
+    public List<User> findAllById(List<Integer> ids) {
 
         List<UserEntity> userEntities = userRepository.findAllById(ids);
 
@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Integer id) {
 
         userRepository.deleteById(id);
     }

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Data
 public class User {
 
-    private Long id;
+    private Integer id;
 
     @NotNull
     @Size(min = 4, max = 30)
