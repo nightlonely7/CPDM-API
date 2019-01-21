@@ -3,6 +3,7 @@ package com.fpt.cpdm.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fpt.cpdm.validators.users.RoleMustMatch;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
@@ -12,8 +13,10 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
+    @EqualsAndHashCode.Include
     private Integer id;
 
     @NotNull

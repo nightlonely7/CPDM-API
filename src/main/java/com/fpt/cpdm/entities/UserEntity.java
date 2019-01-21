@@ -18,12 +18,12 @@ import java.util.List;
 @Entity(name = "User")
 @Table(name = "user")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true)
 public class UserEntity extends BaseEntity implements UserDetails {
 
     @Basic
-    @Column(name = "display_name")
+    @Column(name = "display_name", nullable = false, length = 30)
     private String displayName;
 
     @Basic
@@ -31,15 +31,15 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String email;
 
     @Basic
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Basic
-    @Column(name = "phone")
+    @Column(name = "phone", length = 10)
     private String phone;
 
     @Basic
-    @Column(name = "address")
+    @Column(name = "address", length = 50)
     private String address;
 
     @Basic

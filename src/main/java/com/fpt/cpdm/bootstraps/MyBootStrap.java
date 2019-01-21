@@ -1,5 +1,6 @@
 package com.fpt.cpdm.bootstraps;
 
+import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.users.UserNotValidException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.services.UserService;
@@ -65,5 +66,16 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
 
         UserDetails currentUser = userService.loadUserByUsername("quanghvse61073@fpt.edu.vn");
         System.out.println(currentUser);
+
+        UserEntity user1 = new UserEntity();
+        UserEntity user2 = new UserEntity();
+        user1.setId(5);
+        user1.setDisplayName("a");
+        user1.setAddress("asdad");
+        user2.setId(5);
+        user2.setDisplayName("b");
+        user2.setAddress("sadsa");
+
+        System.out.println(user1.equals(user2));
     }
 }
