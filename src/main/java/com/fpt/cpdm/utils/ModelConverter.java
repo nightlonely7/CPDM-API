@@ -1,7 +1,9 @@
 package com.fpt.cpdm.utils;
 
 
+import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.models.Document;
 import com.fpt.cpdm.models.User;
 import org.modelmapper.ModelMapper;
 
@@ -22,5 +24,12 @@ public class ModelConverter {
         return userEntity;
     }
 
+    public static Document documentEntityToModel(DocumentEntity documentEntity) {
+        ModelMapper modelMapper = new ModelMapper();
+        Document document = modelMapper.map(documentEntity, Document.class);
+        document.setSummary(documentEntity.getSummary());
+        document.setTitle(documentEntity.getTitle());
+        return document;
+    }
 
 }
