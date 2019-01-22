@@ -1,5 +1,9 @@
 INSERT INTO role (name) VALUES ('ROLE_STAFF');
-insert into document (title, summary) values ('abc', '123');
-insert into document (title, summary) values ('123', 'qwe');
-insert into document (title, summary) values ('qwe', 'asd');
-insert into document (title, summary) values ('asd', 'zxc');
+INSERT INTO document (title, summary) VALUES ('abc', '123');
+INSERT INTO document (title, summary) VALUES ('123', 'qwe');
+INSERT INTO document (title, summary) VALUES ('qwe', 'asd');
+INSERT INTO document (title, summary) VALUES ('asd', 'zxc');
+INSERT INTO task (title, summary) VALUES ('abc', '123');
+INSERT INTO task (title, summary) VALUES ('qwe', '4sa');
+INSERT INTO task (title, summary) VALUES ('zxc', '1az');
+INSERT INTO task (title, summary) VALUES ('asd', '2sx');
