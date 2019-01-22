@@ -34,7 +34,6 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
     @SuppressWarnings("Duplicates")
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
-
         log.info("ApplicationReadyEvent");
         User user = new User();
         user.setId(null);
@@ -73,11 +72,13 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
         UserEntity user2 = new UserEntity();
         user1.setId(5);
         user1.setDisplayName("a");
-        user1.setAddress("asdad");
+        user1.setAddress("asdadddddddd");
         user2.setId(5);
         user2.setDisplayName("b");
-        user2.setAddress("sadsa");
+        user2.setAddress("sadsasss");
 
         System.out.println(user1.equals(user2));
+
+
     }
 }

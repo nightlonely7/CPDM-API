@@ -8,7 +8,7 @@ import org.modelmapper.ModelMapper;
 
 public class ModelConverter {
 
-    public static User UserEntityToModel(UserEntity userEntity) {
+    public static User userEntityToModel(UserEntity userEntity) {
         ModelMapper modelMapper = new ModelMapper();
         User user = modelMapper.map(userEntity, User.class);
         user.setRole(userEntity.getRole().getName().substring(5));
@@ -16,10 +16,11 @@ public class ModelConverter {
         return user;
     }
 
-    public static UserEntity UserModelToEntity(User user) {
+    public static UserEntity userModelToEntity(User user) {
         ModelMapper modelMapper = new ModelMapper();
         UserEntity userEntity = modelMapper.map(user, UserEntity.class);
         return userEntity;
     }
+
 
 }

@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
-        UserEntity userEntity = ModelConverter.UserModelToEntity(user);
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
 
         // set role
         String roleName = ROLE_PREFIX + user.getRole();
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setRole(roleEntity);
 
         UserEntity savedUserEntity = userRepository.save(userEntity);
-        User savedUser = ModelConverter.UserEntityToModel(savedUserEntity);
+        User savedUser = ModelConverter.userEntityToModel(savedUserEntity);
 
         return savedUser;
     }
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
         // convert user models to entities and set roles
         List<UserEntity> userEntities = new ArrayList<>();
         for (User user : users) {
-            UserEntity userEntity = ModelConverter.UserModelToEntity(user);
+            UserEntity userEntity = ModelConverter.userModelToEntity(user);
             String roleName = ROLE_PREFIX + user.getRole();
             RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
                     () -> new RoleNotFoundException("This role: '" + roleName + "' is not found!")
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = optional.orElseThrow(
                 () -> new UserNotFoundException("User with id " + id + " is not found!", null, true, false)
         );
-        User user = ModelConverter.UserEntityToModel(userEntity);
+        User user = ModelConverter.userEntityToModel(userEntity);
 
         return user;
     }
@@ -182,7 +182,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(User user) {
 
-        UserEntity userEntity = ModelConverter.UserModelToEntity(user);
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
 
         userRepository.delete(userEntity);
     }
@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService {
 
         List<User> users = new ArrayList<>();
         for (UserEntity userEntity : userEntities) {
-            User user = ModelConverter.UserEntityToModel(userEntity);
+            User user = ModelConverter.userEntityToModel(userEntity);
             users.add(user);
         }
 
@@ -217,7 +217,7 @@ public class UserServiceImpl implements UserService {
 
         List<UserEntity> userEntities = new ArrayList<>();
         for (User user : users) {
-            UserEntity userEntity = ModelConverter.UserModelToEntity(user);
+            UserEntity userEntity = ModelConverter.userModelToEntity(user);
             userEntities.add(userEntity);
         }
 
