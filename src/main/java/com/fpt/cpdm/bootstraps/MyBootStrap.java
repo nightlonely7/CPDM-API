@@ -4,6 +4,7 @@ import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.users.UserNotValidException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.services.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
+@Slf4j
 @Component
 public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
 
@@ -32,8 +34,8 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
     @SuppressWarnings("Duplicates")
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
-        System.out.println("ApplicationReadyEvent");
 
+        log.info("ApplicationReadyEvent");
         User user = new User();
         user.setId(null);
         user.setDisplayName("Hoàng Vinh Quang");
