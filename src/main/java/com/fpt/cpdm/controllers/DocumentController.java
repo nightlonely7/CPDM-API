@@ -23,7 +23,12 @@ public class DocumentController {
 
     @GetMapping
     public ResponseEntity<List<Document>> readAll() {
+
         List<Document> documents = documentService.findAll();
+        if (documents.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
         return ResponseEntity.ok(documents);
     }
 

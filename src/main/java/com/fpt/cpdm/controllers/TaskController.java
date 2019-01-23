@@ -22,10 +22,12 @@ public class TaskController  {
 
     @GetMapping
     public ResponseEntity<List<Task>> readAll(){
+
         List<Task> tasks = taskService.findAll();
         if(tasks.isEmpty()){
             return ResponseEntity.noContent().build();
         }
+
         return ResponseEntity.ok(tasks);
     }
 }
