@@ -1,9 +1,10 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
-import com.fpt.cpdm.exceptions.users.UserNotValidException;
+import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.services.UserService;
+import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -69,20 +70,11 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @SuppressWarnings("Duplicates")
     private ResponseEntity<User> save(Integer id, User user, BindingResult result) {
 
         if (result.hasErrors()) {
-            List<FieldError> fieldsErrors = result.getFieldErrors();
-            StringBuilder stringBuilder = new StringBuilder();
-            for (FieldError fieldError : fieldsErrors) {
-                stringBuilder
-                        .append(fieldError.getField())
-                        .append(": ")
-                        .append(fieldError.getDefaultMessage())
-                        .append(" \n ");
-            }
-            throw new UserNotValidException(stringBuilder.toString(), null, true, false);
+            String message = ModelErrorMessage.build(result);
+            throw new ModelNotValidException(message);
         }
         user.setId(id);
         User savedUser = userService.save(user);

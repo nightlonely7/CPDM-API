@@ -1,9 +1,10 @@
 package com.fpt.cpdm.bootstraps;
 
 import com.fpt.cpdm.entities.UserEntity;
-import com.fpt.cpdm.exceptions.users.UserNotValidException;
+import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.services.UserService;
+import com.fpt.cpdm.utils.ModelErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,16 +51,8 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
         validator.validate(user, result);
 
         if (result.hasErrors()) {
-            List<FieldError> fieldsErrors = result.getFieldErrors();
-            StringBuilder stringBuilder = new StringBuilder();
-            for (FieldError fieldError : fieldsErrors) {
-                stringBuilder
-                        .append(fieldError.getField())
-                        .append(": ")
-                        .append(fieldError.getDefaultMessage())
-                        .append(" \n ");
-            }
-            throw new UserNotValidException(stringBuilder.toString(), null, true, false);
+            String message = ModelErrorMessage.build(result);
+            throw new ModelNotValidException(message);
         }
 
         User savedUser = userService.save(user);

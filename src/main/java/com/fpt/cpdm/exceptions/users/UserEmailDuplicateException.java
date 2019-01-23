@@ -10,7 +10,8 @@ public class UserEmailDuplicateException extends RuntimeException {
     }
 
     public UserEmailDuplicateException(String message) {
-        super(message);
+
+        super(message, null, true, false);
     }
 
     public UserEmailDuplicateException(String message, Throwable cause) {

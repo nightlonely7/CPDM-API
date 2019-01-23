@@ -10,7 +10,8 @@ public class RoleNotFoundException extends RuntimeException {
     }
 
     public RoleNotFoundException(String message) {
-        super(message);
+
+        super(message, null, true, false);
     }
 
     public RoleNotFoundException(String message, Throwable cause) {

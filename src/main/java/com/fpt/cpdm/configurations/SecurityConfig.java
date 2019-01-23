@@ -25,15 +25,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-//        http.authorizeRequests()
-//                .anyRequest()
-//                .hasRole("STAFF")
-//                .and()
-//                .formLogin()
-//                .usernameParameter("username")
-//                .passwordParameter("password")
-//                .and()
-//                .httpBasic();
+        http.authorizeRequests()
+                .anyRequest()
+                .hasRole("STAFF")
+                .and()
+                .formLogin()
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .and()
+                .httpBasic();
 
         // used for H2 Database
         http.csrf().disable();
