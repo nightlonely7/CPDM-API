@@ -21,26 +21,31 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document save(Document entity) {
+        // TODO
         return null;
     }
 
     @Override
     public List<Document> saveAll(List<Document> entities) {
+        // TODO
         return null;
     }
 
     @Override
     public Document findById(Integer id) {
+        // TODO
         return null;
     }
 
     @Override
     public boolean existsById(Integer id) {
+        // TODO
         return false;
     }
 
     @Override
     public List<Document> findAll() {
+
         List<DocumentEntity> documentEntities = documentRepository.findAll();
         List<Document> documents = new ArrayList<>();
         for (DocumentEntity documentEntity : documentEntities) {
@@ -53,31 +58,33 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public List<Document> findAllById(List<Integer> ids) {
+        // TODO
         return null;
     }
 
     @Override
     public long count() {
+        // TODO
         return 0;
     }
 
     @Override
     public void deleteById(Integer id) {
-
+        // TODO
     }
 
     @Override
     public void delete(Document entity) {
-
+        // TODO
     }
 
     @Override
     public void deleteAll(List<Document> entities) {
-
+        // TODO
     }
 
     @Override
     public void deleteAll() {
-
+        // TODO
     }
 }

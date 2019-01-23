@@ -23,21 +23,25 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task save(Task entity) {
+        // TODO
         return null;
     }
 
     @Override
     public List<Task> saveAll(List<Task> entities) {
+        // TODO
         return null;
     }
 
     @Override
     public Task findById(Integer id) {
+        // TODO
         return null;
     }
 
     @Override
     public boolean existsById(Integer id) {
+        // TODO
         return false;
     }
 
@@ -51,32 +55,34 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> findAllById(List<Integer> ids) {
+        // TODO
         return null;
     }
 
     @Override
     public long count() {
+        // TODO
         return 0;
     }
 
     @Override
     public void deleteById(Integer id) {
-
+        // TODO
     }
 
     @Override
     public void delete(Task entity) {
-
+        // TODO
     }
 
     @Override
     public void deleteAll(List<Task> entities) {
-
+        // TODO
     }
 
     @Override
     public void deleteAll() {
-
+        // TODO
     }
 
     private List<Task> getTasksConverted(List<TaskEntity> taskEntities) {
