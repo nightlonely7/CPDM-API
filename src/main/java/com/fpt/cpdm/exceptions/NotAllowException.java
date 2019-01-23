@@ -10,7 +10,7 @@ public class NotAllowException extends RuntimeException {
     }
 
     public NotAllowException(String message) {
-        super(message);
+        super(message, null, true, false);
     }
 
     public NotAllowException(String message, Throwable cause) {

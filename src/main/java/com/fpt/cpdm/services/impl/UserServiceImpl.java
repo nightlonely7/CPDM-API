@@ -199,7 +199,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAll() {
 
-        throw new NotAllowException("This method is not allowed", null, true, false);
+        throw new NotAllowException("This method is not allowed");
     }
 
     private List<User> getUsersConverted(List<UserEntity> userEntities) {
