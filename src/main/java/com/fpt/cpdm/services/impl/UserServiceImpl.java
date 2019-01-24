@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserService {
         // encode password
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        System.out.println("password");
 
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
 

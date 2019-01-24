@@ -1,6 +1,7 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.TaskEntity;
+import com.fpt.cpdm.exceptions.tasks.TaskIdNotFoundException;
 import com.fpt.cpdm.models.Task;
 import com.fpt.cpdm.repositories.TaskRepository;
 import com.fpt.cpdm.services.TaskService;
@@ -22,13 +23,22 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task save(Task entity) {
-        // TODO
-        return null;
+    public Task save(Task task) {
+
+        // check id exist
+        if (task.getId() != null && taskRepository.existsById(task.getId()) == false) {
+            throw new TaskIdNotFoundException(task.getId());
+        }
+
+        TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
+        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+        Task savedTask = ModelConverter.taskEntityToModel(savedTaskEntity);
+
+        return savedTask;
     }
 
     @Override
-    public List<Task> saveAll(List<Task> entities) {
+    public List<Task> saveAll(List<Task> tasks) {
         // TODO
         return null;
     }
@@ -71,12 +81,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void delete(Task entity) {
+    public void delete(Task task) {
         // TODO
     }
 
     @Override
-    public void deleteAll(List<Task> entities) {
+    public void deleteAll(List<Task> tasks) {
         // TODO
     }
 
@@ -94,7 +104,7 @@ public class TaskServiceImpl implements TaskService {
         return tasks;
     }
 
-    private List<TaskEntity> getTaskEntityConverted(List<Task> tasks){
+    private List<TaskEntity> getTaskEntityConverted(List<Task> tasks) {
         List<TaskEntity> taskEntities = new ArrayList<>();
         for (Task task : tasks) {
             TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
