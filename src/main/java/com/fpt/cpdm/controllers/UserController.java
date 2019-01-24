@@ -1,7 +1,7 @@
 package com.fpt.cpdm.controllers;
 
-import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
+import com.fpt.cpdm.exceptions.users.UserIdNotFoundException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -58,17 +58,6 @@ public class UserController {
         return save(id, user, result);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
-
-        if (userService.existsById(id) == false) {
-            throw new UserNotFoundException("User with id " + id + " is not found!");
-        }
-        userService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
-    }
-
     private ResponseEntity<User> save(Integer id, User user, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -80,5 +69,17 @@ public class UserController {
 
         return ResponseEntity.ok(savedUser);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
+
+        if (userService.existsById(id) == false) {
+            throw new UserIdNotFoundException(id);
+        }
+        userService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

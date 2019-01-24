@@ -5,9 +5,9 @@ import java.util.Optional;
 
 public interface CRUDService<T> {
 
-    T save(T entity);
+    T save(T model);
 
-    List<T> saveAll(List<T> entities);
+    List<T> saveAll(List<T> models);
 
     T findById(Integer id);
 
@@ -21,9 +21,9 @@ public interface CRUDService<T> {
 
     void deleteById(Integer id);
 
-    void delete(T entity);
+    void delete(T model);
 
-    void deleteAll(List<T> entities);
+    void deleteAll(List<T> models);
 
     void deleteAll();
 }

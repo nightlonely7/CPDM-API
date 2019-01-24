@@ -3,15 +3,14 @@ package com.fpt.cpdm.services.impl;
 import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.NotAllowException;
-import com.fpt.cpdm.exceptions.users.RoleNotFoundException;
-import com.fpt.cpdm.exceptions.users.UserNotFoundException;
+import com.fpt.cpdm.exceptions.users.RoleNameNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserEmailDuplicateException;
+import com.fpt.cpdm.exceptions.users.UserIdNotFoundException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.repositories.RoleRepository;
 import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelConverter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -48,30 +47,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
     public User save(User user) {
 
         // check id exist
         if (user.getId() != null && userRepository.existsById(user.getId()) == false) {
-            throw new UserNotFoundException("User with id " + user.getId() + " is not found!", null, true, false);
+            throw new UserIdNotFoundException(user.getId());
         }
 
         // check email duplicate
         if (user.getId() == null && userRepository.existsByEmail(user.getEmail())) {
-            throw new UserEmailDuplicateException(
-                    "User with email " + user.getEmail() + " is already existed!", null, true, false);
+            throw new UserEmailDuplicateException(user.getEmail());
         }
 
         // encode password
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
+        System.out.println("password");
 
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
 
         // set role
         String roleName = ROLE_PREFIX + user.getRole();
         RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
-                () -> new RoleNotFoundException("This role: '" + roleName + "' is not found!")
+                () -> new RoleNameNotFoundException(roleName)
         );
         userEntity.setRole(roleEntity);
 
@@ -83,21 +81,19 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @SuppressWarnings("Duplicates")
     public List<User> saveAll(List<User> users) {
 
         // check id exist
         for (User user : users) {
             if (user.getId() != null && userRepository.existsById(user.getId())) {
-                throw new UserNotFoundException("User with id " + user.getId() + " is not found!", null, true, false);
+                throw new UserIdNotFoundException(user.getId());
             }
         }
 
         // check email duplicate
         for (User user : users) {
             if (user.getId() == null && userRepository.existsByEmail(user.getEmail())) {
-                throw new UserEmailDuplicateException(
-                        "User with email " + user.getEmail() + " is already existed!", null, true, false);
+                throw new UserEmailDuplicateException(user.getEmail());
             }
         }
 
@@ -113,7 +109,7 @@ public class UserServiceImpl implements UserService {
             UserEntity userEntity = ModelConverter.userModelToEntity(user);
             String roleName = ROLE_PREFIX + user.getRole();
             RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
-                    () -> new RoleNotFoundException("This role: '" + roleName + "' is not found!")
+                    () -> new RoleNameNotFoundException(roleName)
             );
             userEntity.setRole(roleEntity);
             userEntities.add(userEntity);
@@ -132,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<UserEntity> optional = userRepository.findById(id);
         UserEntity userEntity = optional.orElseThrow(
-                () -> new UserNotFoundException("User with id " + id + " is not found!", null, true, false)
+                () -> new UserIdNotFoundException(id)
         );
         User user = ModelConverter.userEntityToModel(userEntity);
 

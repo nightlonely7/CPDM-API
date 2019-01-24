@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RoleMustMatch {
 
-    String message() default "This role '${validatedValue}' is not found!";
+    String message() default "this role '${validatedValue}' is not found!";
 
     Class<?>[] groups() default {};
 

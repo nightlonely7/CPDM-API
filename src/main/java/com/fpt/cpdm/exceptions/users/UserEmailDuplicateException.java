@@ -6,23 +6,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class UserEmailDuplicateException extends RuntimeException {
 
-    public UserEmailDuplicateException() {
+    private String email;
+
+    public UserEmailDuplicateException(String email) {
+        super(null, null, true, false);
+        this.email = email;
     }
 
-    public UserEmailDuplicateException(String message) {
-
-        super(message, null, true, false);
-    }
-
-    public UserEmailDuplicateException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public UserEmailDuplicateException(Throwable cause) {
-        super(cause);
-    }
-
-    public UserEmailDuplicateException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    @Override
+    public String getMessage() {
+        return "User with email '" + email + "' is already existed!";
     }
 }

@@ -1,10 +1,12 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.DocumentEntity;
+import com.fpt.cpdm.exceptions.documents.DocumentIdNotFoundException;
 import com.fpt.cpdm.models.Document;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.utils.ModelConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,14 +17,24 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
 
+    @Autowired
     public DocumentServiceImpl(DocumentRepository documentRepository) {
         this.documentRepository = documentRepository;
     }
 
     @Override
-    public Document save(Document entity) {
-        // TODO
-        return null;
+    public Document save(Document document) {
+
+        // check id exist
+        if (document.getId() != null && documentRepository.existsById(document.getId()) == false) {
+            throw new DocumentIdNotFoundException(document.getId());
+        }
+
+        DocumentEntity documentEntity = ModelConverter.documentModelToEntity(document);
+        DocumentEntity savedDocumentEntity = documentRepository.save(documentEntity);
+        Document savedDocument = ModelConverter.documentEntityToModel(savedDocumentEntity);
+
+        return savedDocument;
     }
 
     @Override
