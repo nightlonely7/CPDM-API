@@ -1,6 +1,7 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
+import com.fpt.cpdm.exceptions.tasks.TaskIdNotFoundException;
 import com.fpt.cpdm.models.Task;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -33,6 +34,14 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> readById(@PathVariable(name = "id") Integer id) {
+
+        Task task = taskService.findById(id);
+
+        return ResponseEntity.ok(task);
+    }
+
     @PostMapping
     public ResponseEntity<Task> create(@Valid @RequestBody Task task,
                                        BindingResult result) {
@@ -58,5 +67,17 @@ public class TaskController {
         Task savedDocument = taskService.save(task);
 
         return ResponseEntity.ok(savedDocument);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
+
+        if (taskService.existsById(id) == false) {
+            throw new TaskIdNotFoundException(id);
+        }
+        taskService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
