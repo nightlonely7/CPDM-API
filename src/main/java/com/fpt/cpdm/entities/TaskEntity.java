@@ -4,10 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity(name = "Task")
 @Table(name = "task")
@@ -21,6 +19,39 @@ public class TaskEntity extends BaseEntity {
     private String title;
 
     @Basic
-    @Column(name = "summary")
-    private String summary;
+    @Column(name = "description")
+    private String description;
+
+    @Basic
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
+
+    @Basic
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
+
+    @Basic
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
+
+    @Basic
+    @Column(name = "priority")
+    private Integer priority;
+
+    @Basic
+    @Column(name = "status")
+    private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_task_id")
+    private TaskEntity parentTask;
+
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private UserEntity creator;
+
+    @ManyToOne
+    @JoinColumn(name = "executor_id")
+    private UserEntity executor;
+
 }

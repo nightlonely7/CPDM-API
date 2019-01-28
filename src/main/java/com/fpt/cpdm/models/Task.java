@@ -16,5 +16,5 @@ public class Task {
     private String title;
 
     @NotNull
-    private String summary;
+    private String description;
 }
