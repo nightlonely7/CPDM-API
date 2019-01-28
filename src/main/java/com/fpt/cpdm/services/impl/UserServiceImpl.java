@@ -65,8 +65,8 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
 
-        // set role
-        String roleName = ROLE_PREFIX + user.getRole();
+        // check role
+        String roleName = ROLE_PREFIX + user.getRole().getName();
         RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
                 () -> new RoleNameNotFoundException(roleName)
         );
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
         List<UserEntity> userEntities = new ArrayList<>();
         for (User user : users) {
             UserEntity userEntity = ModelConverter.userModelToEntity(user);
-            String roleName = ROLE_PREFIX + user.getRole();
+            String roleName = ROLE_PREFIX + user.getRole().getName();
             RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
                     () -> new RoleNameNotFoundException(roleName)
             );

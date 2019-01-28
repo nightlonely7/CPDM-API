@@ -44,11 +44,11 @@ public class TaskEntity extends BaseEntity {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "parent_task_id")
+    @JoinColumn(name = "parent_task_id", referencedColumnName = "id")
     private TaskEntity parentTask;
 
     @ManyToOne
-    @JoinColumn(name = "creator_id")
+    @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private UserEntity creator;
 
     @ManyToOne

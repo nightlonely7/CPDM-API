@@ -39,9 +39,8 @@ public class User {
 
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     @JsonFormat(pattern = "dd-MM-yyyy")
-    private LocalDate birthDay;
+    private LocalDate birthday;
 
     @NotNull
-    @RoleMustMatch
-    private String role;
+    private Role role;
 }

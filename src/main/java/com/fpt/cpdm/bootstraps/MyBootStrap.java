@@ -1,7 +1,7 @@
 package com.fpt.cpdm.bootstraps;
 
-import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
+import com.fpt.cpdm.models.Role;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -16,7 +16,6 @@ import org.springframework.validation.*;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -41,10 +40,12 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
         user.setDisplayName("Hoàng Vinh Quang");
         user.setEmail("quanghvse61073@fpt.edu.vn");
         user.setPassword("12345678");
-        user.setRole("STAFF");
+        Role role = new Role();
+        role.setName("STAFF");
+        user.setRole(role);
         user.setPhone("0707518178");
         user.setAddress("HCMC");
-        user.setBirthDay(LocalDate.of(1993, Month.SEPTEMBER, 30));
+        user.setBirthday(LocalDate.of(1993, Month.SEPTEMBER, 30));
         System.out.println(user);
 
         BindingResult result = new BeanPropertyBindingResult(user, "user");
@@ -60,18 +61,6 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
 
         UserDetails currentUser = userService.loadUserByUsername("quanghvse61073@fpt.edu.vn");
         System.out.println(currentUser);
-
-        UserEntity user1 = new UserEntity();
-        UserEntity user2 = new UserEntity();
-        user1.setId(5);
-        user1.setDisplayName("a");
-        user1.setAddress("asdadddddddd");
-        user2.setId(5);
-        user2.setDisplayName("b");
-        user2.setAddress("sadsasss");
-
-        System.out.println(user1.equals(user2));
-
 
     }
 }

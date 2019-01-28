@@ -16,7 +16,7 @@ public class ModelConverter {
 
     public static User userEntityToModel(UserEntity userEntity) {
         User user = MODEL_MAPPER.map(userEntity, User.class);
-        user.setRole(userEntity.getRole().getName().substring(5));
+        user.getRole().setName(user.getRole().getName().substring(5));
         user.setPassword(null);
         return user;
     }
