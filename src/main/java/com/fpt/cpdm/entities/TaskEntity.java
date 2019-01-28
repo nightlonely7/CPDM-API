@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "Task")
 @Table(name = "task")
@@ -51,7 +52,7 @@ public class TaskEntity extends BaseEntity {
     private UserEntity creator;
 
     @ManyToOne
-    @JoinColumn(name = "executor_id")
+    @JoinColumn(name = "executor_id", referencedColumnName = "id")
     private UserEntity executor;
 
 }
