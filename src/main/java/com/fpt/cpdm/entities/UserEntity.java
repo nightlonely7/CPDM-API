@@ -43,9 +43,9 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String address;
 
     @Basic
-    @Column(name = "birth_day")
+    @Column(name = "birthday")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private LocalDate birthDay;
+    private LocalDate birthday;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
