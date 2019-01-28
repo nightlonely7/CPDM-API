@@ -15,6 +15,10 @@ public class ModelErrorMessage {
                     .append(fieldError.getField())
                     .append(": ")
                     .append(fieldError.getDefaultMessage())
+                    .append(" as ")
+                    .append("'")
+                    .append(fieldError.getRejectedValue())
+                    .append("'")
                     .append(" \n ");
         }
         String message = messageBuilder.toString();
