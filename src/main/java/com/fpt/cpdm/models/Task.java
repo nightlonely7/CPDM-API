@@ -17,7 +17,6 @@ public class Task {
     @NotNull
     private String title;
 
-
     private String description;
 
     @NotNull

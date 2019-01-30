@@ -1,4 +1,4 @@
-package com.fpt.cpdm.exceptions.users;
+package com.fpt.cpdm.exceptions.roles;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

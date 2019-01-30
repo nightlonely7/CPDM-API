@@ -60,4 +60,9 @@ public class TaskEntity extends BaseEntity {
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "document_id", referencedColumnName = "id"))
     private List<DocumentEntity> documents;
+
+    @PrePersist
+    public void onCreated() {
+        this.setCreatedTime(LocalDateTime.now());
+    }
 }

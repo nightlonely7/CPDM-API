@@ -5,10 +5,10 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = RoleMustMatchValidator.class)
+@Constraint(validatedBy = RoleMustExistValidator.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RoleMustMatch {
+public @interface RoleMustExist {
 
     String message() default "this role '${validatedValue}' is not found!";
 

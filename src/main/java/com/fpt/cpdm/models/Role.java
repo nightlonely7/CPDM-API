@@ -1,6 +1,6 @@
 package com.fpt.cpdm.models;
 
-import com.fpt.cpdm.validators.users.RoleMustMatch;
+import com.fpt.cpdm.validators.users.RoleMustExist;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,6 +11,6 @@ public class Role {
     @EqualsAndHashCode.Include
     private Integer id;
 
-    @RoleMustMatch
+    @RoleMustExist
     private String name;
 }

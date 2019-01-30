@@ -1,7 +1,7 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.DocumentEntity;
-import com.fpt.cpdm.exceptions.documents.DocumentIdNotFoundException;
+import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.models.Document;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.services.DocumentService;
@@ -27,7 +27,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         // check id exist
         if (document.getId() != null && documentRepository.existsById(document.getId()) == false) {
-            throw new DocumentIdNotFoundException(document.getId());
+            throw new DocumentNotFoundException(document.getId());
         }
 
         DocumentEntity documentEntity = ModelConverter.documentModelToEntity(document);

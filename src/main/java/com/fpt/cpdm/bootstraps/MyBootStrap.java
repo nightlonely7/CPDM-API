@@ -31,7 +31,6 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
         log.info("ApplicationReadyEvent");
@@ -41,7 +40,7 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
         user.setEmail("quanghvse61073@fpt.edu.vn");
         user.setPassword("12345678");
         Role role = new Role();
-        role.setName("STAFF");
+        role.setId(1);
         user.setRole(role);
         user.setPhone("0707518178");
         user.setAddress("HCMC");

@@ -1,7 +1,7 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
-import com.fpt.cpdm.exceptions.tasks.TaskIdNotFoundException;
+import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.models.Task;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -74,7 +74,7 @@ public class TaskController {
     public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
 
         if (taskService.existsById(id) == false) {
-            throw new TaskIdNotFoundException(id);
+            throw new TaskNotFoundException(id);
         }
         taskService.deleteById(id);
 

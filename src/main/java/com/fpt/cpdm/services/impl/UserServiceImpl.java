@@ -3,9 +3,9 @@ package com.fpt.cpdm.services.impl;
 import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.NotAllowException;
-import com.fpt.cpdm.exceptions.users.RoleNameNotFoundException;
+import com.fpt.cpdm.exceptions.roles.RoleNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserEmailDuplicateException;
-import com.fpt.cpdm.exceptions.users.UserIdNotFoundException;
+import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.repositories.RoleRepository;
 import com.fpt.cpdm.repositories.UserRepository;
@@ -51,12 +51,17 @@ public class UserServiceImpl implements UserService {
 
         // check id exist
         if (user.getId() != null && userRepository.existsById(user.getId()) == false) {
-            throw new UserIdNotFoundException(user.getId());
+            throw new UserNotFoundException(user.getId());
         }
 
         // check email duplicate
         if (user.getId() == null && userRepository.existsByEmail(user.getEmail())) {
             throw new UserEmailDuplicateException(user.getEmail());
+        }
+
+        // check role
+        if (user.getRole() == null || roleRepository.existsById(user.getRole().getId()) == false) {
+
         }
 
         // encode password
@@ -65,10 +70,9 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
 
-        // check role
-        String roleName = ROLE_PREFIX + user.getRole().getName();
-        RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
-                () -> new RoleNameNotFoundException(roleName)
+        // set role
+        RoleEntity roleEntity = roleRepository.findById(userEntity.getRole().getId()).orElseThrow(
+                () -> new RoleNotFoundException(userEntity.getRole().getId())
         );
         userEntity.setRole(roleEntity);
 
@@ -85,7 +89,7 @@ public class UserServiceImpl implements UserService {
         // check id exist
         for (User user : users) {
             if (user.getId() != null && userRepository.existsById(user.getId())) {
-                throw new UserIdNotFoundException(user.getId());
+                throw new UserNotFoundException(user.getId());
             }
         }
 
@@ -106,9 +110,8 @@ public class UserServiceImpl implements UserService {
         List<UserEntity> userEntities = new ArrayList<>();
         for (User user : users) {
             UserEntity userEntity = ModelConverter.userModelToEntity(user);
-            String roleName = ROLE_PREFIX + user.getRole().getName();
-            RoleEntity roleEntity = roleRepository.findByName(roleName).orElseThrow(
-                    () -> new RoleNameNotFoundException(roleName)
+            RoleEntity roleEntity = roleRepository.findById(userEntity.getRole().getId()).orElseThrow(
+                    () -> new RoleNotFoundException(userEntity.getRole().getId())
             );
             userEntity.setRole(roleEntity);
             userEntities.add(userEntity);
@@ -127,7 +130,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<UserEntity> optional = userRepository.findById(id);
         UserEntity userEntity = optional.orElseThrow(
-                () -> new UserIdNotFoundException(id)
+                () -> new UserNotFoundException(id)
         );
         User user = ModelConverter.userEntityToModel(userEntity);
 

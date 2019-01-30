@@ -1,7 +1,7 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
-import com.fpt.cpdm.exceptions.users.UserIdNotFoundException;
+import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.User;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -74,7 +74,7 @@ public class UserController {
     public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
 
         if (userService.existsById(id) == false) {
-            throw new UserIdNotFoundException(id);
+            throw new UserNotFoundException(id);
         }
         userService.deleteById(id);
 
