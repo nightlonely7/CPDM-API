@@ -1,4 +1,4 @@
-package com.fpt.cpdm.models;
+package com.fpt.cpdm.models.documents;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -25,7 +25,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<List> readAll(
-            @RequestParam(name = "summary", required = false) Boolean isSummary) {
+            @RequestParam(name = "summary", defaultValue = "false") boolean isSummary) {
 
         List tasks;
         if (isSummary) {

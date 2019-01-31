@@ -2,7 +2,7 @@ package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
-import com.fpt.cpdm.models.Document;
+import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.utils.ModelConverter;

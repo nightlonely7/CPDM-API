@@ -4,7 +4,7 @@ package com.fpt.cpdm.utils;
 import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
-import com.fpt.cpdm.models.Document;
+import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.users.User;
 import org.modelmapper.ModelMapper;

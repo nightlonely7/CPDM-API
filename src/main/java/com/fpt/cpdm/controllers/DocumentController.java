@@ -1,7 +1,7 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
-import com.fpt.cpdm.models.Document;
+import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;

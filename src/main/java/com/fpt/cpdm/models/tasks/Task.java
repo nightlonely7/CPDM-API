@@ -1,7 +1,7 @@
 package com.fpt.cpdm.models.tasks;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fpt.cpdm.models.Document;
+import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.users.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
