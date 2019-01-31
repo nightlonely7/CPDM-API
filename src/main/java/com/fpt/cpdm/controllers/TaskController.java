@@ -2,7 +2,7 @@ package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
-import com.fpt.cpdm.models.Task;
+import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,15 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> readAll() {
+    public ResponseEntity<List> readAll(
+            @RequestParam(name = "summary", required = false) Boolean isSummary) {
 
-        List<Task> tasks = taskService.findAll();
+        List tasks;
+        if (isSummary) {
+            tasks = taskService.findAllSummary();
+        } else {
+            tasks = taskService.findAll();
+        }
         if (tasks.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

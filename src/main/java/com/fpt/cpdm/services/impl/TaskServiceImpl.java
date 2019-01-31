@@ -8,7 +8,8 @@ import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.Document;
-import com.fpt.cpdm.models.Task;
+import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.repositories.TaskRepository;
 import com.fpt.cpdm.repositories.UserRepository;
@@ -114,6 +115,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskSummary> findAllSummary() {
+        List<TaskSummary> taskSummaries = taskRepository.findAllSummaryBy();
+        return taskSummaries;
+    }
+
+    @Override
     public List<Task> findAllById(List<Integer> ids) {
         // TODO
         return null;
@@ -162,4 +169,6 @@ public class TaskServiceImpl implements TaskService {
         }
         return taskEntities;
     }
+
+
 }

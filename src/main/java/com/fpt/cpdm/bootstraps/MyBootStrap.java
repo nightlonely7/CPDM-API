@@ -2,7 +2,7 @@ package com.fpt.cpdm.bootstraps;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.Role;
-import com.fpt.cpdm.models.User;
+import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import lombok.extern.slf4j.Slf4j;

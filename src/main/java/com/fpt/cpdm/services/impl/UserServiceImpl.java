@@ -6,7 +6,7 @@ import com.fpt.cpdm.exceptions.NotAllowException;
 import com.fpt.cpdm.exceptions.roles.RoleNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserEmailDuplicateException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
-import com.fpt.cpdm.models.User;
+import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.RoleRepository;
 import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.UserService;

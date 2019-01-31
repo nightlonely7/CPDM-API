@@ -1,6 +1,8 @@
-package com.fpt.cpdm.models;
+package com.fpt.cpdm.models.tasks;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fpt.cpdm.models.Document;
+import com.fpt.cpdm.models.users.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
