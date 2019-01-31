@@ -19,7 +19,7 @@ public class TaskEntity extends BaseEntity {
     @Column(name = "title")
     private String title;
 
-    @Basic
+    @Lob
     @Column(name = "description")
     private String description;
 

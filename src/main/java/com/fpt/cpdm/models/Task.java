@@ -1,9 +1,13 @@
 package com.fpt.cpdm.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,17 +19,25 @@ public class Task {
     private Integer id;
 
     @NotNull
+    @Size(min = 4, max = 50)
     private String title;
 
     private String description;
 
-    @NotNull
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdTime;
 
     @NotNull
+    @FutureOrPresent
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime startTime;
 
     @NotNull
+    @FutureOrPresent
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime endTime;
 
     @NotNull

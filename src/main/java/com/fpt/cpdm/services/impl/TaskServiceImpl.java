@@ -1,11 +1,15 @@
 package com.fpt.cpdm.services.impl;
 
+import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
-import com.fpt.cpdm.exceptions.ModelNotValidException;
+import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
+import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
+import com.fpt.cpdm.models.Document;
 import com.fpt.cpdm.models.Task;
+import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.repositories.TaskRepository;
 import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.TaskService;
@@ -21,11 +25,15 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final DocumentRepository documentRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository,
+                           UserRepository userRepository,
+                           DocumentRepository documentRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+        this.documentRepository = documentRepository;
     }
 
     @Override
@@ -36,9 +44,9 @@ public class TaskServiceImpl implements TaskService {
             throw new TaskNotFoundException(task.getId());
         }
 
-        // check creator
-        if (task.getCreator() == null || userRepository.existsById(task.getCreator().getId()) == false) {
-            throw new ModelNotValidException("Creator not found on task");
+        // check end time after start time
+        if (task.getEndTime().isBefore(task.getStartTime())) {
+            throw new TaskTimeException("End time is before start time!");
         }
 
         TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
@@ -49,13 +57,29 @@ public class TaskServiceImpl implements TaskService {
         );
         taskEntity.setCreator(creatorEntity);
 
-        // set parent task
+        // set executor
+        UserEntity executorEntity = userRepository.findById(task.getExecutor().getId()).orElseThrow(
+                () -> new UserNotFoundException(task.getExecutor().getId())
+        );
+        taskEntity.setExecutor(executorEntity);
+
+        // set parent task (can be null)
         if (task.getParentTask() != null) {
             TaskEntity parentTaskEntity = taskRepository.findById(task.getParentTask().getId()).orElseThrow(
                     () -> new TaskNotFoundException(task.getParentTask().getId())
             );
             taskEntity.setParentTask(parentTaskEntity);
         }
+
+        // set documents
+        List<DocumentEntity> documentEntities = new ArrayList<>();
+        for (Document document : task.getDocuments()) {
+            DocumentEntity documentEntity = documentRepository.findById(document.getId()).orElseThrow(
+                    () -> new DocumentNotFoundException(document.getId())
+            );
+            documentEntities.add(documentEntity);
+        }
+        taskEntity.setDocuments(documentEntities);
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
         Task savedTask = ModelConverter.taskEntityToModel(savedTaskEntity);
