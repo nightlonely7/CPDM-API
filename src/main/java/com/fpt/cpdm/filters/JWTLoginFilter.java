@@ -1,5 +1,7 @@
 package com.fpt.cpdm.filters;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.services.TokenAuthenticationService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,10 +26,11 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+        UserEntity userEntity = new ObjectMapper().readValue(request.getInputStream(), UserEntity.class);
         Authentication authentication = getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getParameter("username"),
-                        request.getParameter("password"),
+                        userEntity.getEmail(),
+                        userEntity.getPassword(),
                         Collections.emptyList()
                 )
         );
