@@ -5,14 +5,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import java.util.Date;
 
-@Component
+@Service
 public class TokenAuthenticationService {
 
     private static final Long EXPIRATION_TIME = 864_000_000L; // 10 days
@@ -31,29 +30,35 @@ public class TokenAuthenticationService {
         TokenAuthenticationService.userService = userService;
     }
 
-    public static void addAuthentication(HttpServletResponse res, String username) {
-        String JWT = Jwts.builder()
+    public static String getToken(String username) {
+        return Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
-        res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);
     }
 
     public static Authentication getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
+        System.out.println(token);
         if (token != null) {
             // parse the token.
-            String user = Jwts.parser()
-                    .setSigningKey(SECRET)
-                    .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
-                    .getBody()
-                    .getSubject();
+            String user;
+            try {
+                user = Jwts.parser()
+                        .setSigningKey(SECRET)
+                        .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+                        .getBody()
+                        .getSubject();
+            } catch (Exception e) {
+                return null;
+            }
 
-            Collection authorities = getUserService().loadUserByUsername(user).getAuthorities();
-            return user != null ?
-                    new UsernamePasswordAuthenticationToken(user, null, authorities) :
-                    null;
+            if (user != null) {
+
+                Collection authorities = getUserService().loadUserByUsername(user).getAuthorities();
+                return new UsernamePasswordAuthenticationToken(user, null, authorities);
+            }
         }
         return null;
     }

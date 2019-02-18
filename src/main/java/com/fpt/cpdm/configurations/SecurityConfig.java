@@ -1,7 +1,6 @@
 package com.fpt.cpdm.configurations;
 
 import com.fpt.cpdm.filters.JWTAuthenticationFilter;
-import com.fpt.cpdm.filters.JWTLoginFilter;
 import com.fpt.cpdm.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,22 +30,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-//        http.authorizeRequests()
-////                .anyRequest()
-////                .hasRole("STAFF")
-////                .and()
-////                .formLogin()
-////                .usernameParameter("username")
-////                .passwordParameter("password")
-////                .and()
-////                .httpBasic();
-//                .antMatchers("/login").permitAll()
-//                .antMatchers("/users").hasRole("MANAGER")
-//                .anyRequest().authenticated()
-//                .and()
-//                //.addFilterBefore(new JWTLoginFilter("/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-//                .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-//        ;
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers("/users").hasRole("MANAGER")
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+        ;
 
         // used for H2 Database
         http.csrf().disable();
