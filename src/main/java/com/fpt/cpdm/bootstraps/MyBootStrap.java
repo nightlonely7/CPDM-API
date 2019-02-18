@@ -40,7 +40,7 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
         user.setEmail("quanghvse61073@fpt.edu.vn");
         user.setPassword("12345678");
         Role role = new Role();
-        role.setId(1);
+        role.setId(2);
         user.setRole(role);
         user.setPhone("0707518178");
         user.setAddress("HCMC");
