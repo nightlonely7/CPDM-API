@@ -27,6 +27,7 @@ public class CpdmApplication {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
+                        .allowedHeaders("Authorization")
                         .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
                         .allowedOrigins("http://localhost:3000");
             }
