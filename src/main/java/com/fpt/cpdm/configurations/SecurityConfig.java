@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -25,11 +24,13 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
-    public SecurityConfig(UserService userService, JWTAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(UserService userService, PasswordEncoder passwordEncoder, JWTAuthenticationFilter jwtAuthenticationFilter) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -55,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
 
     @Bean
@@ -64,10 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(11);
-    }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
