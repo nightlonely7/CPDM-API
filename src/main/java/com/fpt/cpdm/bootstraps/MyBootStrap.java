@@ -47,6 +47,19 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
         user.setBirthday(LocalDate.of(1993, Month.SEPTEMBER, 30));
         System.out.println(user);
 
+        User user2 = new User();
+        user2.setId(null);
+        user2.setDisplayName("Nguyễn Huỳnh Bách Nhân");
+        user2.setEmail("nhannhbse62643@fpt.edu.vn");
+        user2.setPassword("nhan1992");
+        Role role2 = new Role();
+        role2.setId(2);
+        user2.setRole(role);
+        user2.setPhone("0912345678");
+        user2.setAddress("HCMC");
+        user2.setBirthday(LocalDate.of(1992, Month.OCTOBER, 9));
+        System.out.println(user2);
+
         BindingResult result = new BeanPropertyBindingResult(user, "user");
         validator.validate(user, result);
 
@@ -57,6 +70,9 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
 
         User savedUser = userService.save(user);
         System.out.println(savedUser);
+
+        User savedUser2 = userService.save(user2);
+        System.out.println(savedUser2);
 
         UserDetails currentUser = userService.loadUserByUsername("quanghvse61073@fpt.edu.vn");
         System.out.println(currentUser);
