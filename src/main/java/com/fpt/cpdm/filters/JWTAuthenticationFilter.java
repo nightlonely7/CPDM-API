@@ -1,7 +1,6 @@
 package com.fpt.cpdm.filters;
 
 import com.fpt.cpdm.services.TokenAuthenticationService;
-import com.fpt.cpdm.services.impl.TokenAuthenticationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

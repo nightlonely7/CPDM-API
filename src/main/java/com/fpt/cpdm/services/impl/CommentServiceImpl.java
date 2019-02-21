@@ -1,11 +1,13 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.CommentEntity;
+import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.exceptions.comments.CommentNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.comments.Comment;
 import com.fpt.cpdm.models.comments.CommentSummary;
+import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.repositories.CommentRepository;
 import com.fpt.cpdm.repositories.TaskRepository;
 import com.fpt.cpdm.repositories.UserRepository;
@@ -106,8 +108,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentSummary> findAllByTask_Id(Integer taskId) {
-        List<CommentSummary> commentSumaries = commentRepository.findAllByTask_Id(taskId);
-        return commentSumaries;
+    public List<CommentSummary> findAllSummaryByTask(Task task) {
+
+        TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
+        List<CommentSummary> commentSummaries = commentRepository.findAllSummaryByTask(taskEntity);
+
+        return commentSummaries;
     }
 }

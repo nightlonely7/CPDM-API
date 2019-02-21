@@ -1,9 +1,11 @@
 INSERT INTO role (name) VALUES ('ROLE_STAFF');
 INSERT INTO role (name) VALUES ('ROLE_MANAGER');
 INSERT INTO user (display_name, password, email, phone, address, role_id)
-            values ('khanhnp', '123456', 'khanhnp@gmail.com', '0123456789', 'abcxyz tphcm', 1);
+            values ('khanhnp', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u',
+             'khanhnp@gmail.com', '0123456789', 'abcxyz tphcm', 1);
 INSERT INTO user (display_name, password, email, phone, address, role_id)
-            values ('quang', '123456', 'quang@gmail.com', '0987654321', 'xyzabc tphcm', 2);
+            values ('quang', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u',
+             'quang@gmail.com', '0987654321', 'xyzabc tphcm', 2);
 INSERT INTO document (title, summary) VALUES ('abc', '123');
 INSERT INTO document (title, summary) VALUES ('123', 'qwe');
 INSERT INTO document (title, summary) VALUES ('qwe', 'asd');

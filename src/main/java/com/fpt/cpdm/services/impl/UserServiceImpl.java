@@ -220,4 +220,15 @@ public class UserServiceImpl implements UserService {
         return userEntities;
     }
 
+    @Override
+    public User findByEmail(String email) {
+
+        Optional<UserEntity> optional = userRepository.findByEmail(email);
+        UserEntity userEntity = optional.orElseThrow(
+                () -> new UsernameNotFoundException("User with email " + email + " not found!")
+        );
+        User user = ModelConverter.userEntityToModel(userEntity);
+
+        return user;
+    }
 }

@@ -1,6 +1,7 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.TaskEntity;
+import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
@@ -8,6 +9,7 @@ import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskSummary;
+import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.repositories.TaskRepository;
 import com.fpt.cpdm.repositories.UserRepository;
@@ -106,6 +108,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskSummary> findAllSummary() {
         List<TaskSummary> taskSummaries = taskRepository.findAllSummaryBy();
+        return taskSummaries;
+    }
+
+    @Override
+    public List<TaskSummary> findAllSummaryByExecutor(User user) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        List<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutor(userEntity);
         return taskSummaries;
     }
 

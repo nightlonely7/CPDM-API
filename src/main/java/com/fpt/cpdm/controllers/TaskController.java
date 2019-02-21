@@ -3,7 +3,10 @@ package com.fpt.cpdm.controllers;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.tasks.TaskSummary;
+import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.services.TaskService;
+import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +14,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
+
     private final TaskService taskService;
+    private final UserService userService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, UserService userService) {
         this.taskService = taskService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -46,6 +53,35 @@ public class TaskController {
         Task task = taskService.findById(id);
 
         return ResponseEntity.ok(task);
+    }
+
+    @GetMapping("/findByExecutor")
+    public ResponseEntity<List<TaskSummary>> findByExecutor(@RequestParam("id") Integer id) {
+
+        // create id only user for finding
+        User user = new User();
+        user.setId(id);
+
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(user);
+        if (taskSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/findByCurrentLoggedUser")
+    public ResponseEntity<List<TaskSummary>> findByCurrentLoggedUser(Principal principal) {
+
+        // get current logged user
+        User user = userService.findByEmail(principal.getName());
+
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(user);
+        if (taskSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
     }
 
     @PostMapping
