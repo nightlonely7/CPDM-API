@@ -20,7 +20,7 @@ public class Comment {
 
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime createdTime;
+    private LocalDateTime createdDate;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")

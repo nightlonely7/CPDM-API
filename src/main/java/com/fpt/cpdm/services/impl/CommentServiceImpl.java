@@ -1,18 +1,15 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.CommentEntity;
-import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.exceptions.comments.CommentNotFoundException;
 import com.fpt.cpdm.models.comments.Comment;
-import com.fpt.cpdm.models.comments.CommentSumary;
-import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.comments.CommentSummary;
 import com.fpt.cpdm.repositories.CommentRepository;
 import com.fpt.cpdm.services.CommentService;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -90,9 +87,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentSumary> findAllByTask(Task task) {
-        TaskEntity entity = ModelConverter.taskModelToEntity(task);
-        List<CommentSumary> commentSumaries = commentRepository.findAllByTask(entity);
+    public List<CommentSummary> findAllByTask_Id(Integer taskId) {
+        List<CommentSummary> commentSumaries = commentRepository.findAllByTask_Id(taskId);
         return commentSumaries;
     }
 }

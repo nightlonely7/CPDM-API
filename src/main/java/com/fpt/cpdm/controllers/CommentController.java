@@ -3,6 +3,7 @@ package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.comments.Comment;
+import com.fpt.cpdm.models.comments.CommentSummary;
 import com.fpt.cpdm.services.CommentService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,18 @@ public class CommentController {
         }
 
         return ResponseEntity.ok(comments);
+    }
+
+    @GetMapping("/findAllByTaskId")
+    public ResponseEntity<List<CommentSummary>> readByTaskId(@RequestParam("taskId") Integer taskId) {
+
+
+        List<CommentSummary> commentSummaries = commentService.findAllByTask_Id(taskId);
+        if (commentSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(commentSummaries);
     }
 
     @PostMapping

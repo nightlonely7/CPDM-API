@@ -1,11 +1,10 @@
 package com.fpt.cpdm.services;
 
 import com.fpt.cpdm.models.comments.Comment;
-import com.fpt.cpdm.models.comments.CommentSumary;
-import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.comments.CommentSummary;
 
 import java.util.List;
 
 public interface CommentService extends CRUDService<Comment>{
-    List<CommentSumary> findAllByTask(Task task);
+    List<CommentSummary> findAllByTask_Id(Integer taskId);
 }
