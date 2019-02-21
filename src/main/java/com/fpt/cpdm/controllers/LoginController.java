@@ -22,7 +22,8 @@ public class LoginController {
     private final TokenAuthenticationService tokenAuthenticationService;
 
     @Autowired
-    public LoginController(AuthenticationManager authenticationManager, TokenAuthenticationService tokenAuthenticationService) {
+    public LoginController(AuthenticationManager authenticationManager,
+                           TokenAuthenticationService tokenAuthenticationService) {
         this.authenticationManager = authenticationManager;
         this.tokenAuthenticationService = tokenAuthenticationService;
     }
