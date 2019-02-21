@@ -1,5 +1,6 @@
 package com.fpt.cpdm.services.impl;
 
+import com.fpt.cpdm.models.Token;
 import com.fpt.cpdm.services.TokenAuthenticationService;
 import com.fpt.cpdm.services.UserService;
 import io.jsonwebtoken.Jwts;
@@ -29,12 +30,15 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
     }
 
     @Override
-    public String getToken(String username) {
-        return Jwts.builder()
+    public Token getToken(String username) {
+        String tokenStr = Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
+        Token token = new Token();
+        token.setToken(tokenStr);
+        return token;
     }
 
     @Override
