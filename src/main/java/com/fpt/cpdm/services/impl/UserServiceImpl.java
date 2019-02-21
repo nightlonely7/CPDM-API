@@ -1,12 +1,17 @@
 package com.fpt.cpdm.services.impl;
 
+import com.fpt.cpdm.entities.DepartmentEntity;
 import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.NotAllowException;
+import com.fpt.cpdm.exceptions.roles.RoleNameNotFoundException;
 import com.fpt.cpdm.exceptions.roles.RoleNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserEmailDuplicateException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
+import com.fpt.cpdm.models.Role;
+import com.fpt.cpdm.models.departments.Department;
 import com.fpt.cpdm.models.users.User;
+import com.fpt.cpdm.models.users.UserDisplayName;
 import com.fpt.cpdm.repositories.RoleRepository;
 import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.UserService;
@@ -225,10 +230,21 @@ public class UserServiceImpl implements UserService {
 
         Optional<UserEntity> optional = userRepository.findByEmail(email);
         UserEntity userEntity = optional.orElseThrow(
-                () -> new UsernameNotFoundException("User with email " + email + " not found!")
-        );
+                () -> new UsernameNotFoundException("User with email " + email + " not found!"));
         User user = ModelConverter.userEntityToModel(userEntity);
 
         return user;
     }
+
+    @Override
+    public List<UserDisplayName> findDisplayNameByDepartmentAndRole(Department department, Role role) {
+
+        DepartmentEntity departmentEntity = ModelConverter.departmentModelToEntity(department);
+        RoleEntity roleEntity = ModelConverter.roleModelToEntity(role);
+        List<UserDisplayName> userDisplayNames = userRepository.findUserDisplayNameByDepartmentAndRole(
+                departmentEntity, roleEntity);
+
+        return userDisplayNames;
+    }
+
 }
