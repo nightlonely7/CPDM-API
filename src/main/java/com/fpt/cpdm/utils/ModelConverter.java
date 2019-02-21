@@ -1,12 +1,16 @@
 package com.fpt.cpdm.utils;
 
+
+import com.fpt.cpdm.entities.CommentEntity;
 import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.models.comments.Comment;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.users.User;
 import org.modelmapper.ModelMapper;
+
 
 public class ModelConverter {
 
@@ -42,5 +46,15 @@ public class ModelConverter {
     public static DocumentEntity documentModelToEntity(Document document) {
         DocumentEntity documentEntity = MODEL_MAPPER.map(document, DocumentEntity.class);
         return documentEntity;
+    }
+
+    public static Comment commentEntityToModel(CommentEntity commentEntity) {
+        Comment comment = MODEL_MAPPER.map(commentEntity, Comment.class);
+        return comment;
+    }
+
+    public static CommentEntity commentModelToEntity(Comment comment) {
+        CommentEntity commentEntity = MODEL_MAPPER.map(comment, CommentEntity.class);
+        return commentEntity;
     }
 }
