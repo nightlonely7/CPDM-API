@@ -73,13 +73,12 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
 
-        if (userService.existsById(id) == false) {
+        if (!userService.existsById(id)) {
             throw new UserNotFoundException(id);
         }
         userService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
-
 
 }
