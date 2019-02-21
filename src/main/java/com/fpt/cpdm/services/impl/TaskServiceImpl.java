@@ -107,14 +107,27 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskSummary> findAllSummary() {
+
         List<TaskSummary> taskSummaries = taskRepository.findAllSummaryBy();
+
         return taskSummaries;
     }
 
     @Override
     public List<TaskSummary> findAllSummaryByExecutor(User user) {
+
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
         List<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutor(userEntity);
+
+        return taskSummaries;
+    }
+
+    @Override
+    public List<TaskSummary> findAllSummaryByCreator(User user) {
+
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        List<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreator(userEntity);
+
         return taskSummaries;
     }
 

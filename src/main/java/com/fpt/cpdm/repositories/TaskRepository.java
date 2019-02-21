@@ -12,4 +12,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
     List<TaskSummary> findAllSummaryBy();
 
     List<TaskSummary> findAllSummaryByExecutor(UserEntity userEntity);
+
+    List<TaskSummary> findAllSummaryByCreator(UserEntity userEntity);
 }

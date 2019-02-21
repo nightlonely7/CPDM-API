@@ -7,6 +7,10 @@ import com.fpt.cpdm.models.users.User;
 import java.util.List;
 
 public interface TaskService extends CRUDService<Task> {
+
     List<TaskSummary> findAllSummary();
+
     List<TaskSummary> findAllSummaryByExecutor(User user);
+
+    List<TaskSummary> findAllSummaryByCreator(User user);
 }

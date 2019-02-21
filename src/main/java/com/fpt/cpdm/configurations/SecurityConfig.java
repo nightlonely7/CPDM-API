@@ -44,6 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers("/users").hasRole("MANAGER")
+                .antMatchers(HttpMethod.POST,"/tasks").hasRole("MANAGER")
+                .antMatchers("/tasks/findByCurrentLoggedCreator").hasRole("MANAGER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

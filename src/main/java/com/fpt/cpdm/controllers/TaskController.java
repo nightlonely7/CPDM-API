@@ -70,13 +70,27 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
-    @GetMapping("/findByCurrentLoggedUser")
-    public ResponseEntity<List<TaskSummary>> findByCurrentLoggedUser(Principal principal) {
+    @GetMapping("/findByCurrentLoggedExecutor")
+    public ResponseEntity<List<TaskSummary>> findByCurrentLoggedExecutor(Principal principal) {
 
-        // get current logged user
+        // get current logged executor
         User user = userService.findByEmail(principal.getName());
 
         List<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(user);
+        if (taskSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/findByCurrentLoggedCreator")
+    public ResponseEntity<List<TaskSummary>> findByCurrentLoggedCreator(Principal principal) {
+
+        // get current logged creator
+        User user = userService.findByEmail(principal.getName());
+
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(user);
         if (taskSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
