@@ -2,9 +2,13 @@ package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.CommentEntity;
 import com.fpt.cpdm.exceptions.comments.CommentNotFoundException;
+import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
+import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.comments.Comment;
 import com.fpt.cpdm.models.comments.CommentSummary;
 import com.fpt.cpdm.repositories.CommentRepository;
+import com.fpt.cpdm.repositories.TaskRepository;
+import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.CommentService;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +20,39 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, UserRepository userRepository, TaskRepository taskRepository) {
         this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+        this.taskRepository = taskRepository;
     }
 
     @Override
     public Comment save(Comment comment) {
-        // check id exist
+
+        // check comment exists (can be null)
         if (comment.getId() != null && commentRepository.existsById(comment.getId()) == false) {
             throw new CommentNotFoundException(comment.getId());
         }
 
-        CommentEntity commentEntity = ModelConverter.commentModelToEntity(comment);
-        CommentEntity savedcommentEntity = commentRepository.save(commentEntity);
-        Comment savedcomment = ModelConverter.commentEntityToModel(savedcommentEntity);
+        // check user exists
+        if (userRepository.existsById(comment.getUser().getId()) == false) {
+            throw new UserNotFoundException(comment.getUser().getId());
+        }
 
-        return savedcomment;
+        // check task exists
+        if (taskRepository.existsById(comment.getTask().getId()) == false) {
+            throw new TaskNotFoundException(comment.getTask().getId());
+        }
+
+        CommentEntity commentEntity = ModelConverter.commentModelToEntity(comment);
+        CommentEntity savedCommentEntity = commentRepository.save(commentEntity);
+        Comment savedComment = ModelConverter.commentEntityToModel(savedCommentEntity);
+
+        return savedComment;
     }
 
     @Override
