@@ -139,8 +139,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public long count() {
-        // TODO
-        return 0;
+        return taskRepository.count();
     }
 
     @Override
@@ -155,12 +154,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteAll(List<Task> tasks) {
-        // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void deleteAll() {
-        // TODO
+        throw new UnsupportedOperationException();
     }
 
     private List<Task> getTasksConverted(List<TaskEntity> taskEntities) {
