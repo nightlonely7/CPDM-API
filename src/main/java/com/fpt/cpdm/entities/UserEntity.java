@@ -48,6 +48,10 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private LocalDate birthday;
 
     @ManyToOne
+    @JoinColumn(name = "department_id")
+    private DepartmentEntity department;
+
+    @ManyToOne
     @JoinColumn(name = "role_id")
     private RoleEntity role;
 

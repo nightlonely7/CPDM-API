@@ -4,6 +4,7 @@ package com.fpt.cpdm.controllers;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.comments.Comment;
 import com.fpt.cpdm.models.comments.CommentSummary;
+import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.services.CommentService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +37,14 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
-    @GetMapping("/findAllByTaskId")
-    public ResponseEntity<List<CommentSummary>> readByTaskId(@RequestParam("taskId") Integer taskId) {
+    @GetMapping("/findByTask")
+    public ResponseEntity<List<CommentSummary>> findByTask(@RequestParam("id") Integer id) {
 
+        // create id only task for finding
+        Task task = new Task();
+        task.setId(id);
 
-        List<CommentSummary> commentSummaries = commentService.findAllByTask_Id(taskId);
+        List<CommentSummary> commentSummaries = commentService.findAllSummaryByTask(task);
         if (commentSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

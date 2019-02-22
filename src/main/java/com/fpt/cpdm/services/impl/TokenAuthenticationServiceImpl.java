@@ -59,7 +59,6 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
 
             if (username != null) {
                 UserDetails user = userService.loadUserByUsername(username);
-                System.out.println(user.getPassword());
                 return new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
                         user.getPassword(),

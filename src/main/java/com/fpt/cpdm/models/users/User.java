@@ -2,6 +2,7 @@ package com.fpt.cpdm.models.users;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fpt.cpdm.models.Role;
+import com.fpt.cpdm.models.departments.Department;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -41,6 +42,8 @@ public class User {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthday;
+
+    private Department department;
 
     @NotNull
     private Role role;

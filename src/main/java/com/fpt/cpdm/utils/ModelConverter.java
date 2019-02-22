@@ -1,11 +1,10 @@
 package com.fpt.cpdm.utils;
 
 
-import com.fpt.cpdm.entities.CommentEntity;
-import com.fpt.cpdm.entities.DocumentEntity;
-import com.fpt.cpdm.entities.TaskEntity;
-import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.entities.*;
+import com.fpt.cpdm.models.Role;
 import com.fpt.cpdm.models.comments.Comment;
+import com.fpt.cpdm.models.departments.Department;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.users.User;
@@ -15,6 +14,16 @@ import org.modelmapper.ModelMapper;
 public class ModelConverter {
 
     private static final ModelMapper MODEL_MAPPER = new ModelMapper();
+
+    public static Role roleEntityToModel(RoleEntity roleEntity) {
+        Role role = MODEL_MAPPER.map(roleEntity, Role.class);
+        return role;
+    }
+
+    public static RoleEntity roleModelToEntity(Role role) {
+        RoleEntity roleEntity = MODEL_MAPPER.map(role, RoleEntity.class);
+        return roleEntity;
+    }
 
     public static User userEntityToModel(UserEntity userEntity) {
         User user = MODEL_MAPPER.map(userEntity, User.class);
@@ -56,5 +65,15 @@ public class ModelConverter {
     public static CommentEntity commentModelToEntity(Comment comment) {
         CommentEntity commentEntity = MODEL_MAPPER.map(comment, CommentEntity.class);
         return commentEntity;
+    }
+
+    public static Department departmentEntityToModel(DepartmentEntity departmentEntity) {
+        Department department = MODEL_MAPPER.map(departmentEntity, Department.class);
+        return department;
+    }
+
+    public static DepartmentEntity departmentModelToEntity(Department department) {
+        DepartmentEntity departmentEntity = MODEL_MAPPER.map(department, DepartmentEntity.class);
+        return departmentEntity;
     }
 }

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Comment {
+
     @EqualsAndHashCode.Include
     private Integer id;
 

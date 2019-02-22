@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -41,9 +42,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .configurationSource(corsConfigurationSource())
                 .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers("/users").hasRole("MANAGER")
+                .antMatchers(HttpMethod.POST,"/tasks").hasRole("MANAGER")
+                .antMatchers("/tasks/findByCurrentLoggedCreator").hasRole("MANAGER")
+                .antMatchers("/findAllStaffDisplayNameByDepartmentOfCurrentLoggedManager").hasRole("MANAGER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

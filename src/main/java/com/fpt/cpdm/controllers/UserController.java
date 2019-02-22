@@ -2,7 +2,10 @@ package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
+import com.fpt.cpdm.models.Role;
 import com.fpt.cpdm.models.users.User;
+import com.fpt.cpdm.models.users.UserDisplayName;
+import com.fpt.cpdm.services.RoleService;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -18,10 +22,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping
@@ -41,6 +47,24 @@ public class UserController {
         User user = userService.findById(id);
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/findAllStaffDisplayNameByDepartmentOfCurrentLoggedManager")
+    public ResponseEntity<List<UserDisplayName>> findAllStaffDisplayNameByDepartmentOfCurrentLoggedManager(Principal principal) {
+
+        // get current logged manager
+        User user = userService.findByEmail(principal.getName());
+
+        // get role 'STAFF'
+        Role role = roleService.findByName("STAFF");
+
+        List<UserDisplayName> userDisplayNames = userService
+                .findDisplayNameByDepartmentAndRole(user.getDepartment(), role);
+        if (userDisplayNames.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(userDisplayNames);
     }
 
     @PostMapping
