@@ -28,8 +28,7 @@ public class Comment {
     private LocalDateTime lastModifiedDate;
 
     private Integer status;
-
-    @NotNull
+    
     private User user;
 
     @NotNull
