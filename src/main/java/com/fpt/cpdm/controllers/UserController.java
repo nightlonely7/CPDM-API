@@ -49,6 +49,14 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/findAllByDisplayNameContaining/{name}")
+    public ResponseEntity<List<User>> readByName(@PathVariable(name = "name") String displayName) {
+
+        List<User> users = userService.findAllByDisplayNameContaining(displayName);
+
+        return ResponseEntity.ok(users);
+    }
+
     @GetMapping("/findAllStaffDisplayNameByDepartmentOfCurrentLoggedManager")
     public ResponseEntity<List<UserDisplayName>> findAllStaffDisplayNameByDepartmentOfCurrentLoggedManager(Principal principal) {
 

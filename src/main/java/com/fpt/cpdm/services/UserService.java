@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService, CRUDService<User> {
 
+    List<User> findAllByDisplayNameContaining(String displayName);
+
     User findByEmail(String email);
 
     List<UserDisplayName> findDisplayNameByDepartmentAndRole(Department department, Role role);

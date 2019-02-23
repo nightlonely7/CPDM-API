@@ -226,6 +226,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAllByDisplayNameContaining(String displayName) {
+        Optional<List<UserEntity>> optional = userRepository.findAllByDisplayNameContaining(displayName);
+        List<UserEntity> userEntities = optional.get();
+        List<User> users = getUsersConverted(userEntities);
+        return users;
+    }
+
+    @Override
     public User findByEmail(String email) {
 
         Optional<UserEntity> optional = userRepository.findByEmail(email);
