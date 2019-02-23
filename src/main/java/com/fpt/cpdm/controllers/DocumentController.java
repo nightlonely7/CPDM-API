@@ -28,10 +28,16 @@ public class DocumentController {
 
         List<Document> documents = documentService.findAll();
         if (documents.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build(); //phản hồi trạng thái noContent
         }
 
         return ResponseEntity.ok(documents);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Document> readById(@PathVariable(name = "id") Integer id){
+        Document document = documentService.findById(id);
+        return ResponseEntity.ok(document);
     }
 
     @PostMapping
@@ -49,6 +55,11 @@ public class DocumentController {
         return save(id, document, result);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable(name = "id") Integer id){
+        documentService.deleteById(id);
+    }
+
     private ResponseEntity<Document> save(Integer id, Document document, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -60,4 +71,6 @@ public class DocumentController {
 
         return ResponseEntity.ok(savedDocument);
     }
+
+
 }
