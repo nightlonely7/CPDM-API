@@ -1,7 +1,6 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
-import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
@@ -31,15 +30,9 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List> readAll(
-            @RequestParam(name = "summary", defaultValue = "false") boolean isSummary) {
+    public ResponseEntity<List<TaskSummary>> readAll() {
 
-        List tasks;
-        if (isSummary) {
-            tasks = taskService.findAllSummary();
-        } else {
-            tasks = taskService.findAll();
-        }
+        List<TaskSummary> tasks = taskService.findAllSummary();
         if (tasks.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -48,11 +41,8 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> readById(@PathVariable(name = "id") Integer id) {
-
-        Task task = taskService.findById(id);
-
-        return ResponseEntity.ok(task);
+    public ResponseEntity<TaskSummary> readById(@PathVariable(name = "id") Integer id) {
+        return null;
     }
 
     @GetMapping("/findByExecutor")
@@ -99,41 +89,39 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> create(@Valid @RequestBody Task task,
-                                       BindingResult result) {
+    public ResponseEntity<TaskSummary> create(@Valid @RequestBody Task task,
+                                              BindingResult result,
+                                              Principal principal) {
 
-        return save(null, task, result);
+        return save(null, task, result, principal);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> update(@PathVariable(name = "id") Integer id,
-                                       @Valid @RequestBody Task task,
-                                       BindingResult result) {
-
-        return save(id, task, result);
+    public ResponseEntity<TaskSummary> update(@PathVariable(name = "id") Integer id,
+                                              @Valid @RequestBody Task task,
+                                              BindingResult result,
+                                              Principal principal) {
+        return save(id, task, result, principal);
     }
 
-    private ResponseEntity<Task> save(Integer id, Task task, BindingResult result) {
+    private ResponseEntity<TaskSummary> save(Integer id, Task task, BindingResult result, Principal principal) {
 
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
+        // get current logged creator
+        User user = userService.findByEmail(principal.getName());
+
+        task.setCreator(user);
         task.setId(id);
-        Task savedDocument = taskService.save(task);
+        TaskSummary savedTaskSummary = taskService.save(task);
 
-        return ResponseEntity.ok(savedDocument);
+        return ResponseEntity.ok(savedTaskSummary);
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
-
-        if (taskService.existsById(id) == false) {
-            throw new TaskNotFoundException(id);
-        }
-        taskService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
+        return null;
     }
 }

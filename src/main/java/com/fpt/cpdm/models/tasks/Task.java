@@ -24,11 +24,9 @@ public class Task {
     @Size(min = 4, max = 50)
     private String title;
 
-    private String description;
+    private String summary;
 
-    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime createdTime;
+    private String description;
 
     @NotNull
     @FutureOrPresent
@@ -45,12 +43,10 @@ public class Task {
     @NotNull
     private Integer priority;
 
-    @NotNull
     private String status;
 
     private Task parentTask;
 
-    @NotNull
     private User creator;
 
     @NotNull

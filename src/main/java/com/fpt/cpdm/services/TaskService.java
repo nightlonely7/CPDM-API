@@ -6,7 +6,9 @@ import com.fpt.cpdm.models.users.User;
 
 import java.util.List;
 
-public interface TaskService extends CRUDService<Task> {
+public interface TaskService {
+
+    TaskSummary save(Task task);
 
     List<TaskSummary> findAllSummary();
 

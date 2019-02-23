@@ -1,17 +1,17 @@
 package com.fpt.cpdm.models.tasks;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.models.users.UserDisplayName;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface TaskSummary {
 
     Integer getId();
 
     String getTitle();
+
+    String getSummary();
 
     UserDisplayName getExecutor();
 
@@ -28,5 +28,5 @@ public interface TaskSummary {
 
     Integer getPriority();
 
-    List<DocumentSummary> getDocuments();
+    String getStatus();
 }

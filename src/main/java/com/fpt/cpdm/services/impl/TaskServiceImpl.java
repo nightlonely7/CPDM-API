@@ -38,7 +38,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task save(Task task) {
+    public TaskSummary save(Task task) {
 
         // check task exist (can be null)
         if (task.getId() != null && taskRepository.existsById(task.getId()) == false) {
@@ -65,44 +65,20 @@ public class TaskServiceImpl implements TaskService {
             throw new TaskNotFoundException(task.getParentTask().getId());
         }
 
-        // check documents exist
-        for (Document document : task.getDocuments()) {
-            if (documentRepository.existsById(document.getId()) == false) {
-                throw new DocumentNotFoundException(document.getId());
+        // check documents exist (can be null)
+        if (task.getDocuments() != null && task.getDocuments().isEmpty() == false) {
+            for (Document document : task.getDocuments()) {
+                if (documentRepository.existsById(document.getId()) == false) {
+                    throw new DocumentNotFoundException(document.getId());
+                }
             }
         }
 
         TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-        Task savedTask = ModelConverter.taskEntityToModel(savedTaskEntity);
+        TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
 
-        return savedTask;
-    }
-
-    @Override
-    public List<Task> saveAll(List<Task> tasks) {
-        // TODO
-        return null;
-    }
-
-    @Override
-    public Task findById(Integer id) {
-        // TODO
-        return null;
-    }
-
-    @Override
-    public boolean existsById(Integer id) {
-        // TODO
-        return false;
-    }
-
-    @Override
-    public List<Task> findAll() {
-        List<TaskEntity> taskEntities = taskRepository.findAll();
-
-        List<Task> tasks = getTasksConverted(taskEntities);
-        return tasks;
+        return savedTaskSummary;
     }
 
     @Override
@@ -130,55 +106,5 @@ public class TaskServiceImpl implements TaskService {
 
         return taskSummaries;
     }
-
-    @Override
-    public List<Task> findAllById(List<Integer> ids) {
-        // TODO
-        return null;
-    }
-
-    @Override
-    public long count() {
-        return taskRepository.count();
-    }
-
-    @Override
-    public void deleteById(Integer id) {
-        // TODO
-    }
-
-    @Override
-    public void delete(Task task) {
-        // TODO
-    }
-
-    @Override
-    public void deleteAll(List<Task> tasks) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void deleteAll() {
-        throw new UnsupportedOperationException();
-    }
-
-    private List<Task> getTasksConverted(List<TaskEntity> taskEntities) {
-        List<Task> tasks = new ArrayList<>();
-        for (TaskEntity taskEntity : taskEntities) {
-            Task task = ModelConverter.taskEntityToModel(taskEntity);
-            tasks.add(task);
-        }
-        return tasks;
-    }
-
-    private List<TaskEntity> getTaskEntityConverted(List<Task> tasks) {
-        List<TaskEntity> taskEntities = new ArrayList<>();
-        for (Task task : tasks) {
-            TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
-            taskEntities.add(taskEntity);
-        }
-        return taskEntities;
-    }
-
 
 }

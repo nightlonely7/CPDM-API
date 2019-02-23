@@ -15,8 +15,8 @@ INSERT INTO document (title, summary) VALUES ('123', 'qwe');
 INSERT INTO document (title, summary) VALUES ('qwe', 'asd');
 INSERT INTO document (title, summary) VALUES ('asd', 'zxc');
 
-INSERT INTO task (title, description, created_time, start_time, end_time, priority, status, creator_id, executor_id)
-          VALUES ('Day la task 01', 'Day la task 01', '2019-01-28 16:30:00', '2019-01-28 16:30:00',
+INSERT INTO task (title, summary, description, created_time, start_time, end_time, priority, status, creator_id, executor_id)
+          VALUES ('Day la title task 01', 'Day la summary task 01', 'Day la description task 01', '2019-01-28 16:30:00', '2019-01-28 16:30:00',
            '2019-02-28 23:59:59', 1, 'Working', 1, 2);
 
 INSERT INTO documents_tasks( task_id, document_id) values (1, 1);
