@@ -10,10 +10,10 @@ INSERT INTO user (display_name, password, email, phone, address, department_id, 
             values ('quang', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u',
              'quang@gmail.com', '0987654321', 'xyzabc tphcm', 1, 1);
 
-INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES ('abc', 'cty abc', '2016/05/22 18:30:31', '.......', 'abc.xyz');
-INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES ('cong van', 'cty aaa', '2017/09/20 07:22:11', '.......', 'abc.xyz');
-INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES ('tong tien', 'cty zzz', '2018/01/10 10:15:17', '.......', 'abc.xyz');
-INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES ('thong bao', 'cty abc', '2019/12/22 15:22:30', '.......', 'abc.xyz');
+INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES ('abc', 'cty abc', '2016-05-22 18:30:31', '.......', 'abc.xyz');
+INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES ('cong van', 'cty aaa', '2017-09-20 07:22:11', '.......', 'abc.xyz');
+INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES ('tong tien', 'cty zzz', '2018-01-10 10:15:17', '.......', 'abc.xyz');
+INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES ('thong bao', 'cty abc', '2019-12-22 15:22:30', '.......', 'abc.xyz');
 
 
 INSERT INTO task (title, summary, description, created_time, start_time, end_time, priority, status, creator_id, executor_id)
