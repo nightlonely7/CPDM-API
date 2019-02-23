@@ -6,9 +6,11 @@ import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.utils.ModelConverter;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +47,12 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Document findById(Integer id) {
-        // TODO
-        return null;
+        DocumentEntity documentEntity = documentRepository.findById(id).orElseThrow(
+                () -> new DocumentNotFoundException(id)
+        );
+        Document document = ModelConverter.documentEntityToModel(documentEntity);
+        document.setId(id);
+        return document;
     }
 
     @Override
@@ -59,6 +65,7 @@ public class DocumentServiceImpl implements DocumentService {
     public List<Document> findAll() {
 
         List<DocumentEntity> documentEntities = documentRepository.findAll();
+        //Convert danh sách documentEntities thành danh sách Model
         List<Document> documents = new ArrayList<>();
         for (DocumentEntity documentEntity : documentEntities) {
             Document document = ModelConverter.documentEntityToModel(documentEntity);
@@ -82,7 +89,12 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public void deleteById(Integer id) {
-        // TODO
+
+        if (documentRepository.existsById(id) == false){
+            throw new DocumentNotFoundException(id);
+        }
+        documentRepository.deleteById(id);
+
     }
 
     @Override
