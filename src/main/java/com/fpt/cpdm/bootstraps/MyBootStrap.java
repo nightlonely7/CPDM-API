@@ -63,7 +63,7 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
         User user2 = new User();
         user2.setId(null);
         user2.setDisplayName("Nguyễn Huỳnh Bách Nhân");
-        user2.setEmail("nhannhbse62643@fpt.edu.vn");
+            user2.setEmail("nhannhbse62643@fpt.edu.vn");
         user2.setPassword("12345678");
         user2.setPhone("0912345678");
         user2.setAddress("HCMC");

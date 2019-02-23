@@ -37,4 +37,10 @@ public class CommentEntity extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "task_id", referencedColumnName = "id")
     private TaskEntity task;
+
+    @PrePersist
+    public void onCreated(){
+        this.setCreatedDate(LocalDateTime.now());
+        this.setLastModifiedDate(LocalDateTime.now());
+    }
 }

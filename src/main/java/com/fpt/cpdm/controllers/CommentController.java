@@ -5,7 +5,9 @@ import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.comments.Comment;
 import com.fpt.cpdm.models.comments.CommentSummary;
 import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.services.CommentService;
+import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -20,10 +23,12 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final UserService userService;
 
     @Autowired
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, UserService userService) {
         this.commentService = commentService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -54,17 +59,21 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<Comment> create(@Valid @RequestBody Comment comment,
-                                           BindingResult result) {
+                                          BindingResult result, Principal principal) {
 
-        return save(null, comment, result);
+        return save(null, comment, result, principal);
     }
 
-    private ResponseEntity<Comment> save(Integer id, Comment comment, BindingResult result) {
+    private ResponseEntity<Comment> save(Integer id, Comment comment, BindingResult result, Principal principal) {
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
+
+        User user = userService.findByEmail(principal.getName());
+
         comment.setId(id);
+        comment.setUser(user);
         Comment savedComment = commentService.save(comment);
 
         return ResponseEntity.ok(savedComment);
