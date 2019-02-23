@@ -28,6 +28,10 @@ public class Task {
 
     private String description;
 
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime createdTime;
+
     @NotNull
     @FutureOrPresent
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
