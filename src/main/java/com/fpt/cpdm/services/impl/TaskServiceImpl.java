@@ -2,6 +2,7 @@ package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
@@ -35,6 +36,25 @@ public class TaskServiceImpl implements TaskService {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.documentRepository = documentRepository;
+    }
+
+    @Override
+    public TaskSummary changeStatus(Task task) {
+
+        TaskEntity taskEntity = taskRepository.findById(task.getId()).orElseThrow(
+                () -> new TaskNotFoundException(task.getId())
+        );
+
+        // check if executor related to task
+        if (task.getExecutor().getId().equals(taskEntity.getExecutor().getId()) == false) {
+            throw new UnauthorizedException("This user is not allow to change this task");
+        }
+
+        taskEntity.setStatus(task.getStatus());
+        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+        TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
+
+        return savedTaskSummary;
     }
 
     @Override

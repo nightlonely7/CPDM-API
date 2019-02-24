@@ -3,14 +3,15 @@ package com.fpt.cpdm.services.impl;
 import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.models.documents.Document;
+import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.utils.ModelConverter;
-import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +74,14 @@ public class DocumentServiceImpl implements DocumentService {
         }
 
         return documents;
+    }
+
+    @Override
+    public Page<DocumentSummary> findAllSummary(Pageable pageable) {
+
+        Page<DocumentSummary> documentSummaries = documentRepository.findAllSummaryBy(pageable);
+
+        return documentSummaries;
     }
 
     @Override
