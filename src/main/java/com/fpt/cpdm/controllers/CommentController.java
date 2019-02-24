@@ -64,6 +64,13 @@ public class CommentController {
         return save(null, comment, result, principal);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Comment> edit(@PathVariable(name = "id") Integer id,
+            @Valid @RequestBody Comment comment, BindingResult result, Principal principal) {
+
+        return save( id, comment, result, principal);
+    }
+
     private ResponseEntity<Comment> save(Integer id, Comment comment, BindingResult result, Principal principal) {
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);

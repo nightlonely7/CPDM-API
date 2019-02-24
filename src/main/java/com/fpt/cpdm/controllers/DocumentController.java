@@ -2,9 +2,13 @@ package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.documents.Document;
+import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,19 +27,30 @@ public class DocumentController {
         this.documentService = documentService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Document>> readAll() {
+//    @GetMapping
+//    public ResponseEntity<List<Document>> readAll() {
+//
+//        List<Document> documents = documentService.findAll();
+//        if (documents.isEmpty()) {
+//            return ResponseEntity.noContent().build(); //phản hồi trạng thái noContent
+//        }
+//
+//        return ResponseEntity.ok(documents);
+//    }
 
-        List<Document> documents = documentService.findAll();
-        if (documents.isEmpty()) {
+    @GetMapping
+    public ResponseEntity<Page<DocumentSummary>> readAll(@PageableDefault Pageable pageable) {
+
+        Page<DocumentSummary> documentSummaries = documentService.findAllSummary(pageable);
+        if (documentSummaries.isEmpty()) {
             return ResponseEntity.noContent().build(); //phản hồi trạng thái noContent
         }
 
-        return ResponseEntity.ok(documents);
+        return ResponseEntity.ok(documentSummaries);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Document> readById(@PathVariable(name = "id") Integer id){
+    public ResponseEntity<Document> readById(@PathVariable(name = "id") Integer id) {
         Document document = documentService.findById(id);
         return ResponseEntity.ok(document);
     }
@@ -56,7 +71,7 @@ public class DocumentController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable(name = "id") Integer id){
+    public void deleteById(@PathVariable(name = "id") Integer id) {
         documentService.deleteById(id);
     }
 

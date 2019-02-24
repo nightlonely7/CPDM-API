@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface TaskService {
 
+    TaskSummary changeStatus(Task task);
+
     TaskSummary save(Task task);
 
     List<TaskSummary> findAllSummary();

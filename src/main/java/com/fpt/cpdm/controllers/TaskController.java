@@ -48,7 +48,7 @@ public class TaskController {
     @GetMapping("/findByExecutor")
     public ResponseEntity<List<TaskSummary>> findByExecutor(@RequestParam("id") Integer id) {
 
-        // create id only user for finding
+        // create [id only] user for finding
         User user = new User();
         user.setId(id);
 
@@ -116,6 +116,23 @@ public class TaskController {
         task.setCreator(user);
         task.setId(id);
         TaskSummary savedTaskSummary = taskService.save(task);
+
+        return ResponseEntity.ok(savedTaskSummary);
+    }
+
+    @PatchMapping("/{id}/done")
+    public ResponseEntity taskDone(@PathVariable("id") Integer id, Principal principal) {
+
+        // get current logged executor
+        User executor = userService.findByEmail(principal.getName());
+
+        // create [id, executor, and status only] task for updating
+        Task task = new Task();
+        task.setId(id);
+        task.setExecutor(executor);
+        task.setStatus("Done");
+
+        TaskSummary savedTaskSummary = taskService.changeStatus(task);
 
         return ResponseEntity.ok(savedTaskSummary);
     }
