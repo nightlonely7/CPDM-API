@@ -33,6 +33,16 @@ start_time, end_time, priority, status, creator_id, executor_id) VALUES
 ('title task 04', 'summary task 04', 'description task 04', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2),
 ('title task 05', 'summary task 05', 'description task 05', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2),
+('title task 06', 'summary task 06', 'description task 06', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2),
+('title task 07', 'summary task 07', 'description task 07', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2),
+('title task 08', 'summary task 08', 'description task 08', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2),
+('title task 09', 'summary task 09', 'description task 09', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2),
+('title task 10', 'summary task 10', 'description task 10', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2);
 
 -- INSERT TASK-DOCUMENT MAPPING
