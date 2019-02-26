@@ -1,8 +1,11 @@
 package com.fpt.cpdm.repositories;
 
 import com.fpt.cpdm.entities.DocumentEntity;
+import com.fpt.cpdm.models.documents.DocumentSummary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DocumentRepository extends JpaRepository<DocumentEntity, Integer> {
-
+    Page<DocumentSummary> findAllSummaryBy(Pageable pageable);
 }

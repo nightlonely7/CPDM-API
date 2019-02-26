@@ -8,13 +8,15 @@ import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -30,9 +32,11 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskSummary>> readAll() {
+    public ResponseEntity<Page<TaskSummary>> readAll(
+            @PageableDefault Pageable pageable
+    ) {
 
-        List<TaskSummary> tasks = taskService.findAllSummary();
+        Page<TaskSummary> tasks = taskService.findAllSummary(pageable);
         if (tasks.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -46,13 +50,16 @@ public class TaskController {
     }
 
     @GetMapping("/findByExecutor")
-    public ResponseEntity<List<TaskSummary>> findByExecutor(@RequestParam("id") Integer id) {
+    public ResponseEntity<Page<TaskSummary>> findByExecutor(
+            @RequestParam("id") Integer id,
+            @PageableDefault Pageable pageable
+    ) {
 
-        // create id only user for finding
+        // create [id only] user for finding
         User user = new User();
         user.setId(id);
 
-        List<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(user);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(user, pageable);
         if (taskSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -61,12 +68,14 @@ public class TaskController {
     }
 
     @GetMapping("/findByCurrentLoggedExecutor")
-    public ResponseEntity<List<TaskSummary>> findByCurrentLoggedExecutor(Principal principal) {
+    public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedExecutor(
+            @PageableDefault Pageable pageable,
+            Principal principal) {
 
         // get current logged executor
         User user = userService.findByEmail(principal.getName());
 
-        List<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(user);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(user, pageable);
         if (taskSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -75,12 +84,31 @@ public class TaskController {
     }
 
     @GetMapping("/findByCurrentLoggedCreator")
-    public ResponseEntity<List<TaskSummary>> findByCurrentLoggedCreator(Principal principal) {
+    public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedCreator(
+            @PageableDefault Pageable pageable,
+            Principal principal) {
 
         // get current logged creator
         User user = userService.findByEmail(principal.getName());
 
-        List<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(user);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(user, pageable);
+        if (taskSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/search/findByTitleAndCurrentLoggedCreator")
+    public ResponseEntity<Page<TaskSummary>> findByTitleAndCurrentLoggedCreator(
+            @PageableDefault Pageable pageable,
+            @RequestParam("title") String title,
+            Principal principal) {
+
+        // get current logged creator
+        User user = userService.findByEmail(principal.getName());
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreatorAndTitleContaining(user, title, pageable);
         if (taskSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -116,6 +144,23 @@ public class TaskController {
         task.setCreator(user);
         task.setId(id);
         TaskSummary savedTaskSummary = taskService.save(task);
+
+        return ResponseEntity.ok(savedTaskSummary);
+    }
+
+    @PatchMapping("/{id}/done")
+    public ResponseEntity taskDone(@PathVariable("id") Integer id, Principal principal) {
+
+        // get current logged executor
+        User executor = userService.findByEmail(principal.getName());
+
+        // create [id, executor, and status only] task for updating
+        Task task = new Task();
+        task.setId(id);
+        task.setExecutor(executor);
+        task.setStatus("Done");
+
+        TaskSummary savedTaskSummary = taskService.changeStatus(task);
 
         return ResponseEntity.ok(savedTaskSummary);
     }

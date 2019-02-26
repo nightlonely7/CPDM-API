@@ -2,6 +2,7 @@ package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
@@ -16,10 +17,9 @@ import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -35,6 +35,25 @@ public class TaskServiceImpl implements TaskService {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.documentRepository = documentRepository;
+    }
+
+    @Override
+    public TaskSummary changeStatus(Task task) {
+
+        TaskEntity taskEntity = taskRepository.findById(task.getId()).orElseThrow(
+                () -> new TaskNotFoundException(task.getId())
+        );
+
+        // check if executor related to task
+        if (task.getExecutor().getId().equals(taskEntity.getExecutor().getId()) == false) {
+            throw new UnauthorizedException("This user is not allow to change this task");
+        }
+
+        taskEntity.setStatus(task.getStatus());
+        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+        TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
+
+        return savedTaskSummary;
     }
 
     @Override
@@ -82,27 +101,44 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskSummary> findAllSummary() {
+    public Page<TaskSummary> findAllSummary(Pageable pageable) {
 
-        List<TaskSummary> taskSummaries = taskRepository.findAllSummaryBy();
-
-        return taskSummaries;
-    }
-
-    @Override
-    public List<TaskSummary> findAllSummaryByExecutor(User user) {
-
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        List<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutor(userEntity);
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryBy(pageable);
 
         return taskSummaries;
     }
 
     @Override
-    public List<TaskSummary> findAllSummaryByCreator(User user) {
+    public Page<TaskSummary> findAllSummaryByExecutor(User user, Pageable pageable) {
 
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        List<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreator(userEntity);
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutor(userEntity, pageable);
+
+        return taskSummaries;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByCreator(User user, Pageable pageable) {
+
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreator(userEntity, pageable);
+
+        return taskSummaries;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByExecutorAndTitleContaining(User user, String title, Pageable pageable) {
+
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutorAndTitleContaining(userEntity, title, pageable);
+
+        return taskSummaries;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByCreatorAndTitleContaining(User user, String title, Pageable pageable) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreatorAndTitleContaining(userEntity, title, pageable);
 
         return taskSummaries;
     }
