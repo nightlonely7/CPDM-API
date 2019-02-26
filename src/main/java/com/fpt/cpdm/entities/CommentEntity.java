@@ -43,4 +43,9 @@ public class CommentEntity extends BaseEntity{
         this.setCreatedDate(LocalDateTime.now());
         this.setLastModifiedDate(LocalDateTime.now());
     }
+
+    @PreUpdate
+    public void onUpdate(){
+        this.setLastModifiedDate(LocalDateTime.now());
+    }
 }
