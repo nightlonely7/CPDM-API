@@ -68,6 +68,7 @@ public class CommentController {
     public ResponseEntity<Comment> edit(@PathVariable(name = "id") Integer id,
             @Valid @RequestBody Comment comment, BindingResult result, Principal principal) {
 
+        comment.setCreatedDate(commentService.findById(id).getCreatedDate());
         return save( id, comment, result, principal);
     }
 

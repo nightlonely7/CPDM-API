@@ -64,7 +64,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment findById(Integer id) {
-        return null;
+        CommentEntity commentEntity = commentRepository.findById(id).orElseThrow(
+                () -> new CommentNotFoundException(id)
+        );
+        return ModelConverter.commentEntityToModel(commentEntity);
     }
 
     @Override
