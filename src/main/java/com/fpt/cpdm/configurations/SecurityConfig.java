@@ -49,7 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users").hasRole("MANAGER")
                 .antMatchers(HttpMethod.POST,"/tasks").hasRole("MANAGER")
                 .antMatchers("/tasks/findByCurrentLoggedCreator").hasRole("MANAGER")
-                .antMatchers("/findAllStaffDisplayNameByDepartmentOfCurrentLoggedManager").hasRole("MANAGER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
