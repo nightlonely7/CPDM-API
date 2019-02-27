@@ -114,7 +114,7 @@ public class TaskServiceImpl implements TaskService {
     public Page<TaskSummary> findAllSummaryByExecutor(User user, Pageable pageable) {
 
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutor(userEntity, pageable);
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutorAndIsAvailableTrue(userEntity, pageable);
 
         return taskSummaries;
     }
@@ -123,7 +123,7 @@ public class TaskServiceImpl implements TaskService {
     public Page<TaskSummary> findAllSummaryByCreator(User user, String title, String summary, Pageable pageable) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
         //Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreator(userEntity, title, pageable);
-        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreatorAndTitleContainsAndSummaryContains(
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreatorAndTitleContainsAndSummaryContainsAndIsAvailableTrue(
                 userEntity, title, summary, pageable);
 
         return taskSummaries;
