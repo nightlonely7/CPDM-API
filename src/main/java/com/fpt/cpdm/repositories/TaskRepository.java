@@ -9,16 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
-    Page<TaskSummary> findAllSummaryBy(Pageable pageable);
-
     TaskSummary findSummaryById(Integer id);
 
     Page<TaskSummary> findAllSummaryByExecutor(UserEntity userEntity, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByCreator(UserEntity userEntity, Pageable pageable);
-
-    Page<TaskSummary> findAllSummaryByExecutorAndTitleContaining(UserEntity userEntity, String title, Pageable pageable);
-
-    Page<TaskSummary> findAllSummaryByCreatorAndTitleContaining(UserEntity userEntity, String title, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByCreatorAndTitleContainsAndSummaryContains(UserEntity userEntity, String title, String description, Pageable pageable);
 
 }

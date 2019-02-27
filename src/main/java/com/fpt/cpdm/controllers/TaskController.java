@@ -31,40 +31,9 @@ public class TaskController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public ResponseEntity<Page<TaskSummary>> readAll(
-            @PageableDefault Pageable pageable
-    ) {
-
-        Page<TaskSummary> tasks = taskService.findAllSummary(pageable);
-        if (tasks.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(tasks);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<TaskSummary> readById(@PathVariable(name = "id") Integer id) {
         return null;
-    }
-
-    @GetMapping("/findByExecutor")
-    public ResponseEntity<Page<TaskSummary>> findByExecutor(
-            @RequestParam("id") Integer id,
-            @PageableDefault Pageable pageable
-    ) {
-
-        // create [id only] user for finding
-        User user = new User();
-        user.setId(id);
-
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(user, pageable);
-        if (taskSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(taskSummaries);
     }
 
     @GetMapping("/findByCurrentLoggedExecutor")
@@ -84,31 +53,16 @@ public class TaskController {
     }
 
     @GetMapping("/findByCurrentLoggedCreator")
-    public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedCreator(
-            @PageableDefault Pageable pageable,
-            Principal principal) {
-
-        // get current logged creator
-        User user = userService.findByEmail(principal.getName());
-
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(user, pageable);
-        if (taskSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(taskSummaries);
-    }
-
-    @GetMapping("/search/findByTitleAndCurrentLoggedCreator")
     public ResponseEntity<Page<TaskSummary>> findByTitleAndCurrentLoggedCreator(
+            @RequestParam(value = "title", required = false, defaultValue = "") String title,
+            @RequestParam(value = "summary", required = false, defaultValue = "") String summary,
             @PageableDefault Pageable pageable,
-            @RequestParam("title") String title,
             Principal principal) {
 
         // get current logged creator
         User user = userService.findByEmail(principal.getName());
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreatorAndTitleContaining(user, title, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(user, title, summary, pageable);
         if (taskSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -138,6 +92,7 @@ public class TaskController {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
+
         // get current logged creator
         User user = userService.findByEmail(principal.getName());
 

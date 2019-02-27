@@ -46,7 +46,7 @@ start_time, end_time, priority, status, creator_id, executor_id) VALUES
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2);
 
 -- INSERT TASK-DOCUMENT MAPPING
-INSERT INTO documents_tasks( task_id, document_id) VALUES
+INSERT INTO tasks_documents(task_id, document_id) VALUES
 (1, 1), (1, 2), (1, 3);
 
 -- INSERT COMMENT
