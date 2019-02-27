@@ -14,13 +14,7 @@ public interface TaskService {
 
     TaskSummary save(Task task);
 
-    Page<TaskSummary> findAllSummary(Pageable pageable);
-
     Page<TaskSummary> findAllSummaryByExecutor(User user, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByCreator(User user, Pageable pageable);
-
-    Page<TaskSummary> findAllSummaryByExecutorAndTitleContaining(User user, String title, Pageable pageable);
-
-    Page<TaskSummary> findAllSummaryByCreatorAndTitleContaining(User user, String title, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByCreator(User user, String title, String summary, Pageable pageable);
 }
