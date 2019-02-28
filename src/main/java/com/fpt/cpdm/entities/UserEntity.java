@@ -86,4 +86,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
         return true;
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.setEnabled(true);
+    }
 }
