@@ -8,12 +8,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity(name = "Task")
-@Table(name = "task")
+@Entity(name = "TaskHistory")
+@Table(name = "task_history")
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true)
-public class TaskEntity extends BaseEntity {
+public class TaskHistoryEntity extends BaseEntity {
 
     @Basic
     @Column(name = "title")
@@ -60,10 +60,6 @@ public class TaskEntity extends BaseEntity {
     @JoinColumn(name = "executor_id", referencedColumnName = "id")
     private UserEntity executor;
 
-    @Basic
-    @Column(name = "is_available")
-    private Boolean isAvailable;
-
     @ManyToMany
     @JoinTable(name = "tasks_documents",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
@@ -74,6 +70,5 @@ public class TaskEntity extends BaseEntity {
     public void onCreated() {
         this.setCreatedTime(LocalDateTime.now());
         this.setStatus("Working");
-        this.setIsAvailable(Boolean.TRUE);
     }
 }

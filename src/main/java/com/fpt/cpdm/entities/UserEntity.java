@@ -55,6 +55,10 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @JoinColumn(name = "role_id")
     private RoleEntity role;
 
+    @Basic
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -82,8 +86,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
+    @PrePersist
+    public void prePersist() {
+        this.setEnabled(true);
     }
 }
