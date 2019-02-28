@@ -7,11 +7,11 @@ INSERT INTO department (name, alias) VALUES (
 'New Department 1', 'NEW1');
 
 -- INSERT USER
-INSERT INTO user (display_name, password, email, phone, address, department_id, role_id) VALUES
+INSERT INTO user (display_name, password, email, phone, address, department_id, role_id, is_enabled) VALUES
 ('khanhnp', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u','khanhnp@gmail.com'
-, '0123456789', 'abcxyz tphcm', 1, 2),
+, '0123456789', 'abcxyz tphcm', 1, 2, true),
 ('quang', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'quang@gmail.com'
-, '0987654321', 'xyzabc tphcm', 1, 1);
+, '0987654321', 'xyzabc tphcm', 1, 1, true);
 
 -- INSERT DOCUMENT
 INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES
