@@ -2,8 +2,11 @@ package com.fpt.cpdm.models.tasks;
 
 import com.fpt.cpdm.models.documents.DocumentSummary;
 
-public interface TaskDetail {
+import java.util.List;
 
-    String getTitle();
-    DocumentSummary getDocuments();
+public interface TaskDetail extends TaskSummary {
+
+    String getDescription();
+
+    List<DocumentSummary> getDocuments();
 }

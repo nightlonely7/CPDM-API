@@ -24,7 +24,7 @@ INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES
 -- INSERT TASK
 INSERT INTO task (title, summary, description, created_time,
 start_time, end_time, priority, status, creator_id, executor_id, is_available) VALUES
-('title task 01', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+('title task 01 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 02', 'summary task 02', 'description task 02', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, true),

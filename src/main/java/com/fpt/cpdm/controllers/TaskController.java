@@ -2,6 +2,7 @@ package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.services.TaskService;
@@ -32,8 +33,14 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskSummary> readById(@PathVariable(name = "id") Integer id) {
-        return null;
+    public ResponseEntity<TaskDetail> readById(@PathVariable(name = "id") Integer id, Principal principal) {
+
+        // get current logged executor
+        User user = userService.findByEmail(principal.getName());
+
+        TaskDetail taskDetail = taskService.findDetailById(user, id);
+
+        return ResponseEntity.ok(taskDetail);
     }
 
     @GetMapping("/findByCurrentLoggedExecutor")
@@ -122,6 +129,7 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
-        return null;
+        taskService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
