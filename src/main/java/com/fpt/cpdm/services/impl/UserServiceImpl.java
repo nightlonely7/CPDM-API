@@ -11,6 +11,7 @@ import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.Role;
 import com.fpt.cpdm.models.departments.Department;
 import com.fpt.cpdm.models.users.User;
+import com.fpt.cpdm.models.users.UserBasic;
 import com.fpt.cpdm.models.users.UserDisplayName;
 import com.fpt.cpdm.repositories.RoleRepository;
 import com.fpt.cpdm.repositories.UserRepository;
@@ -234,6 +235,16 @@ public class UserServiceImpl implements UserService {
         User user = ModelConverter.userEntityToModel(userEntity);
 
         return user;
+    }
+
+    @Override
+    public UserBasic findBasicByEmail(String email) {
+
+        Optional<UserBasic> optional = userRepository.findBasicByEmail(email);
+        UserBasic userBasic = optional.orElseThrow(
+                () -> new UsernameNotFoundException("User with email " + email + " not found!"));
+
+        return userBasic;
     }
 
     @Override
