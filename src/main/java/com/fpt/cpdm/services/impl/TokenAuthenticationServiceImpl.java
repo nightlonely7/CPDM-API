@@ -54,18 +54,21 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
     public Authentication getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
+
             // parse the token.
-            Claims claims;
+            String username;
+            List<String> authorities;
             try {
-                claims = Jwts.parser()
+                Claims claims = Jwts.parser()
                         .setSigningKey(SECRET)
                         .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                         .getBody();
+                username = claims.getSubject();
+                authorities = (List<String>) claims.get("authorities");
             } catch (Exception e) {
                 return null;
             }
-            String username = claims.getSubject();
-            List<String> authorities = (List<String>) claims.get("authorities");
+
             System.out.println(username);
             System.out.println(authorities);
             if (username != null) {
