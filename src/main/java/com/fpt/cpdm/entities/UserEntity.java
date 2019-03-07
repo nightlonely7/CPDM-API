@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,12 +24,16 @@ import java.util.List;
 public class UserEntity extends BaseEntity implements UserDetails {
 
     @Basic
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
+
+    @Basic
     @Column(name = "display_name", nullable = false, length = 30)
     private String displayName;
 
     @Basic
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
+    @Column(name = "full_name", length = 50)
+    private String fullName;
 
     @Basic
     @Column(name = "password", nullable = false)
@@ -46,6 +51,10 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(name = "birthday")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthday;
+
+    @Basic
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
@@ -89,5 +98,6 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @PrePersist
     public void prePersist() {
         this.setEnabled(true);
+        this.setCreatedTime(LocalDateTime.now());
     }
 }

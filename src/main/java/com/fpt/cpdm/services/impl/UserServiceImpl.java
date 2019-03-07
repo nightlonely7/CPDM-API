@@ -4,25 +4,26 @@ import com.fpt.cpdm.entities.DepartmentEntity;
 import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.NotAllowException;
-import com.fpt.cpdm.exceptions.roles.RoleNameNotFoundException;
+import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.roles.RoleNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserEmailDuplicateException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.Role;
 import com.fpt.cpdm.models.departments.Department;
-import com.fpt.cpdm.models.users.User;
-import com.fpt.cpdm.models.users.UserBasic;
-import com.fpt.cpdm.models.users.UserDisplayName;
+import com.fpt.cpdm.models.users.*;
 import com.fpt.cpdm.repositories.RoleRepository;
 import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,11 +52,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(User user) {
+    public UserDetail save(User user, Principal principal) {
 
-        // check id exist
+        // check id exist (no need for create)
         if (user.getId() != null && userRepository.existsById(user.getId()) == false) {
             throw new UserNotFoundException(user.getId());
+        }
+
+        // get creator/editor
+        UserEntity creator = userRepository.findByEmail(principal.getName()).orElseThrow(
+                () -> new UsernameNotFoundException(principal.getName())
+        );
+
+        // check creator not staff
+        if (user.getId() == null && creator.getRole().getName().equals("ROLE_STAFF")) {
+            throw new UnauthorizedException();
         }
 
         // check email duplicate
@@ -63,9 +74,21 @@ public class UserServiceImpl implements UserService {
             throw new UserEmailDuplicateException(user.getEmail());
         }
 
-        // check role
-        if (user.getRole() == null || roleRepository.existsById(user.getRole().getId()) == false) {
+        // for creating
+        if (user.getId() == null) {
+            user.setDisplayName(user.getEmail());
+        }
 
+        // set department and role if creator is manager (no need for admin)
+        if (creator.getRole().getName().equals("ROLE_MANAGER")) {
+
+            Department department = new Department();
+            department.setId(creator.getDepartment().getId());
+            user.setDepartment(department);
+
+            Role role = new Role();
+            role.setId(1); // id 1 for STAFF
+            user.setRole(role);
         }
 
         // encode password
@@ -81,127 +104,9 @@ public class UserServiceImpl implements UserService {
         userEntity.setRole(roleEntity);
 
         UserEntity savedUserEntity = userRepository.save(userEntity);
-        User savedUser = ModelConverter.userEntityToModel(savedUserEntity);
+        UserDetail savedUserDetail = userRepository.findDetailById(savedUserEntity.getId()).get();
 
-        return savedUser;
-    }
-
-
-    @Override
-    public List<User> saveAll(List<User> users) {
-
-        // check id exist
-        for (User user : users) {
-            if (user.getId() != null && userRepository.existsById(user.getId())) {
-                throw new UserNotFoundException(user.getId());
-            }
-        }
-
-        // check email duplicate
-        for (User user : users) {
-            if (user.getId() == null && userRepository.existsByEmail(user.getEmail())) {
-                throw new UserEmailDuplicateException(user.getEmail());
-            }
-        }
-
-        // encode password
-        for (User user : users) {
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
-            user.setPassword(encodedPassword);
-        }
-
-        // convert user models to entities and set roles
-        List<UserEntity> userEntities = new ArrayList<>();
-        for (User user : users) {
-            UserEntity userEntity = ModelConverter.userModelToEntity(user);
-            RoleEntity roleEntity = roleRepository.findById(userEntity.getRole().getId()).orElseThrow(
-                    () -> new RoleNotFoundException(userEntity.getRole().getId())
-            );
-            userEntity.setRole(roleEntity);
-            userEntities.add(userEntity);
-        }
-
-        List<UserEntity> savedUserEntities = userRepository.saveAll(userEntities);
-
-        // convert all user entities to models
-        List<User> savedUsers = getUsersConverted(savedUserEntities);
-
-        return savedUsers;
-    }
-
-    @Override
-    public User findById(Integer id) {
-
-        Optional<UserEntity> optional = userRepository.findById(id);
-        UserEntity userEntity = optional.orElseThrow(
-                () -> new UserNotFoundException(id)
-        );
-        User user = ModelConverter.userEntityToModel(userEntity);
-
-        return user;
-    }
-
-    @Override
-    public boolean existsById(Integer id) {
-
-        return userRepository.existsById(id);
-    }
-
-    @Override
-    public List<User> findAll() {
-
-        List<UserEntity> userEntities = userRepository.findAll();
-
-        // convert all user entities to models
-        List<User> users = getUsersConverted(userEntities);
-
-        return users;
-    }
-
-    @Override
-    public List<User> findAllById(List<Integer> ids) {
-
-        List<UserEntity> userEntities = userRepository.findAllById(ids);
-
-        // convert all user entities to models
-        List<User> users = getUsersConverted(userEntities);
-
-        return users;
-    }
-
-    @Override
-    public long count() {
-
-        return userRepository.count();
-    }
-
-    @Override
-    public void deleteById(Integer id) {
-
-        userRepository.deleteById(id);
-    }
-
-    @Override
-    public void delete(User user) {
-
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
-
-        userRepository.delete(userEntity);
-    }
-
-    @Override
-    public void deleteAll(List<User> users) {
-
-        // convert all user models to entities
-        List<UserEntity> userEntities = getUserEntitiesConverted(users);
-
-        userRepository.deleteAll(userEntities);
-    }
-
-    @Override
-    public void deleteAll() {
-
-        throw new NotAllowException("This method is not allowed");
+        return savedUserDetail;
     }
 
     private List<User> getUsersConverted(List<UserEntity> userEntities) {
@@ -227,6 +132,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDetail findDetailById(Integer id, Principal principal) {
+
+        // get API taker
+        UserEntity taker = userRepository.findByEmail(principal.getName()).orElseThrow(
+                () -> new UsernameNotFoundException(principal.getName())
+        );
+
+        // check if user is not staff
+        if (taker.getRole().getName().equals("ROLE_STAFF")) {
+            throw new UnauthorizedException();
+        }
+
+        // get user entity
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException(id)
+        );
+
+        // check if manager is the same department with staff (admin no need to check)
+        if (taker.getRole().getName().equals("ROLE_MANAGER")
+                && taker.getDepartment().equals(userEntity.getDepartment()) == false) {
+            throw new UnauthorizedException();
+        }
+
+        // get user detail
+        Optional<UserDetail> optional = userRepository.findDetailById(id);
+        UserDetail userDetail = optional.orElseThrow(
+                () -> new UserNotFoundException(id)
+        );
+
+        return userDetail;
+    }
+
+    @Override
+    public UserDetail findDetailByEmail(Principal principal) {
+        return null;
+    }
+
+    @Override
     public User findByEmail(String email) {
 
         Optional<UserEntity> optional = userRepository.findByEmail(email);
@@ -248,14 +191,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDisplayName> findDisplayNameByDepartmentAndRole(Department department, Role role) {
+    public List<UserDisplayName> findDisplayNameByDepartmentAndRole_Name(Department department, String roleName) {
 
         DepartmentEntity departmentEntity = ModelConverter.departmentModelToEntity(department);
-        RoleEntity roleEntity = ModelConverter.roleModelToEntity(role);
-        List<UserDisplayName> userDisplayNames = userRepository.findUserDisplayNameByDepartmentAndRole(
-                departmentEntity, roleEntity);
+        List<UserDisplayName> userDisplayNames = userRepository.findDisplayNameByDepartmentAndRole_Name(
+                departmentEntity, roleName);
 
         return userDisplayNames;
+    }
+
+    @Override
+    public Page<UserSummary> findSummaryByDepartmentAndRole_Name(Department department, String roleName, Pageable pageable) {
+        DepartmentEntity departmentEntity = ModelConverter.departmentModelToEntity(department);
+        Page<UserSummary> userSummaries = userRepository.findSummaryByDepartmentAndRole_Name(
+                departmentEntity, roleName, pageable);
+
+        return userSummaries;
+
     }
 
 }

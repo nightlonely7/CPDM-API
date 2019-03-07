@@ -53,4 +53,12 @@ public class MainController {
 
         return ResponseEntity.ok(userBasic);
     }
+
+//    @GetMapping("/self/full")
+//    public ResponseEntity<UserBasic> selfFull(Principal principal) {
+//
+//        UserBasic userBasic = userService.findDetailById()
+//
+//        return ResponseEntity.ok(userBasic);
+//    }
 }

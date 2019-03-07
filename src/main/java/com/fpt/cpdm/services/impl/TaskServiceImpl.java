@@ -49,7 +49,7 @@ public class TaskServiceImpl implements TaskService {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
 
         if (taskRepository.existsByCreatorOrExecutor(userEntity, userEntity) == false) {
-            throw new UnauthorizedException("This user is not allow to access this task");
+            throw new UnauthorizedException();
         }
 
         TaskDetail taskDetail = taskRepository.findDetailById(id);
@@ -66,7 +66,7 @@ public class TaskServiceImpl implements TaskService {
 
         // check if executor related to task
         if (task.getExecutor().getId().equals(taskEntity.getExecutor().getId()) == false) {
-            throw new UnauthorizedException("This user is not allow to change this task");
+            throw new UnauthorizedException();
         }
 
         taskEntity.setStatus(task.getStatus());
@@ -101,7 +101,7 @@ public class TaskServiceImpl implements TaskService {
 
         // check executor and creator in the same department
         if (executor.getDepartment().equals(creator.getDepartment()) == false) {
-            throw new DepartmentNotSameException("Executor and creator not in the same department");
+            throw new UnauthorizedException();
         }
 
         // check parent task exists (can be null)
