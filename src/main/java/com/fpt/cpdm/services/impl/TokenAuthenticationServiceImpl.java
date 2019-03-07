@@ -1,18 +1,23 @@
 package com.fpt.cpdm.services.impl;
 
-import com.fpt.cpdm.models.Token;
+import com.fpt.cpdm.models.UserToken;
+import com.fpt.cpdm.models.users.UserDisplayName;
+import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.TokenAuthenticationService;
-import com.fpt.cpdm.services.UserService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TokenAuthenticationServiceImpl implements TokenAuthenticationService {
@@ -22,23 +27,27 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
     private static final String TOKEN_PREFIX = "Bearer";
     private static final String HEADER_STRING = "Authorization";
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public TokenAuthenticationServiceImpl(UserService userService) {
-        this.userService = userService;
+    public TokenAuthenticationServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
+
     @Override
-    public Token getToken(String username) {
+    public UserToken getToken(Authentication auth) {
+        List<String> authorities = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         String tokenStr = Jwts.builder()
-                .setSubject(username)
+                .setSubject(auth.getName())
+                .claim("authorities", authorities)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
-        Token token = new Token();
-        token.setToken(tokenStr);
-        return token;
+        UserToken userToken = new UserToken();
+        userToken.setToken(tokenStr);
+        return userToken;
     }
 
     @Override
@@ -46,23 +55,22 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
             // parse the token.
-            String username;
+            Claims claims;
             try {
-                username = Jwts.parser()
+                claims = Jwts.parser()
                         .setSigningKey(SECRET)
                         .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
-                        .getBody()
-                        .getSubject();
+                        .getBody();
             } catch (Exception e) {
                 return null;
             }
-
+            String username = claims.getSubject();
+            List<String> authorities = (List<String>) claims.get("authorities");
+            System.out.println(username);
+            System.out.println(authorities);
             if (username != null) {
-                UserDetails user = userService.loadUserByUsername(username);
-                return new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
-                        user.getPassword(),
-                        user.getAuthorities());
+                return new UsernamePasswordAuthenticationToken(username, null,
+                        authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
             }
         }
         return null;
