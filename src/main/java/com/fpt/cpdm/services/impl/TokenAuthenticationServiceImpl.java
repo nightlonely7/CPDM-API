@@ -71,7 +71,7 @@ public class TokenAuthenticationServiceImpl implements TokenAuthenticationServic
 
             System.out.println(username);
             System.out.println(authorities);
-            if (username != null) {
+            if (username != null && authorities != null) {
                 return new UsernamePasswordAuthenticationToken(username, null,
                         authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
             }
