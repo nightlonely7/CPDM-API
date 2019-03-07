@@ -39,13 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .cors()
-                .configurationSource(corsConfigurationSource())
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/users").hasRole("MANAGER")
                 .antMatchers(HttpMethod.POST,"/tasks").hasRole("MANAGER")
                 .antMatchers("/tasks/findByCurrentLoggedCreator").hasRole("MANAGER")
@@ -57,6 +53,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // used for H2 Database
         http.csrf().disable();
         http.headers().frameOptions().sameOrigin();
+
+        //cors
+        http.cors().configurationSource(corsConfigurationSource());
+
+        // session
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override

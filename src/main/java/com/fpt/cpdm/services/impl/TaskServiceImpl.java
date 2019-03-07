@@ -10,6 +10,7 @@ import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.DepartmentRepository;
@@ -40,6 +41,20 @@ public class TaskServiceImpl implements TaskService {
         this.userRepository = userRepository;
         this.documentRepository = documentRepository;
         this.departmentRepository = departmentRepository;
+    }
+
+    @Override
+    public TaskDetail findDetailById(User user, Integer id) {
+
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+
+        if (taskRepository.existsByCreatorOrExecutor(userEntity, userEntity) == false) {
+            throw new UnauthorizedException("This user is not allow to access this task");
+        }
+
+        TaskDetail taskDetail = taskRepository.findDetailById(id);
+
+        return taskDetail;
     }
 
     @Override
@@ -127,6 +142,14 @@ public class TaskServiceImpl implements TaskService {
                 userEntity, title, summary, pageable);
 
         return taskSummaries;
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+
+        TaskEntity taskEntity = taskRepository.findById(id).get();
+        taskEntity.setIsAvailable(false);
+        taskRepository.save(taskEntity);
     }
 
 }
