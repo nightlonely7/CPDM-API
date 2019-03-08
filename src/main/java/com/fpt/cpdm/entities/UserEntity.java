@@ -36,6 +36,10 @@ public class UserEntity extends BaseEntity implements UserDetails {
     private String fullName;
 
     @Basic
+    @Column(name = "gender")
+    private String gender;
+
+    @Basic
     @Column(name = "password", nullable = false)
     private String password;
 

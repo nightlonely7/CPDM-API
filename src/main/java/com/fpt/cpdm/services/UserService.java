@@ -15,7 +15,7 @@ public interface UserService extends UserDetailsService {
 
     UserDetail findDetailById(Integer id, Principal principal);
 
-    UserDetail findDetailByEmail(Principal principal);
+    UserDetail findDetailByEmail(String email);
 
     User findByEmail(String email);
 

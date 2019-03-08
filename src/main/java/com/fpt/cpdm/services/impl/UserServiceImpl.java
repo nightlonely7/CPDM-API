@@ -165,8 +165,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetail findDetailByEmail(Principal principal) {
-        return null;
+    public UserDetail findDetailByEmail(String email) {
+
+        Optional<UserDetail> optional = userRepository.findDetailByEmail(email);
+        UserDetail userDetail = optional.orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        return userDetail;
     }
 
     @Override

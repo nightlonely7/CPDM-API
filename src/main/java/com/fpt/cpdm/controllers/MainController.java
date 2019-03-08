@@ -4,6 +4,7 @@ import com.fpt.cpdm.models.UserToken;
 import com.fpt.cpdm.models.users.Credential;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.models.users.UserBasic;
+import com.fpt.cpdm.models.users.UserDetail;
 import com.fpt.cpdm.services.TokenAuthenticationService;
 import com.fpt.cpdm.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +55,11 @@ public class MainController {
         return ResponseEntity.ok(userBasic);
     }
 
-//    @GetMapping("/self/full")
-//    public ResponseEntity<UserBasic> selfFull(Principal principal) {
-//
-//        UserBasic userBasic = userService.findDetailById()
-//
-//        return ResponseEntity.ok(userBasic);
-//    }
+    @GetMapping("/self/full")
+    public ResponseEntity<UserDetail> selfFull(Principal principal) {
+
+        UserDetail userDetail = userService.findDetailByEmail(principal.getName());
+
+        return ResponseEntity.ok(userDetail);
+    }
 }

@@ -16,6 +16,8 @@ public interface UserDetail {
 
     String getEmail();
 
+    String getGender();
+
     LocalDate getBirthday();
 
     String getPhone();
