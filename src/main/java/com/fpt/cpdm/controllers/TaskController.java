@@ -1,10 +1,14 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
+import com.fpt.cpdm.models.UploadFileResponse;
+import com.fpt.cpdm.models.taskFiles.TaskFilesSummary;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
+import com.fpt.cpdm.services.FileStorageService;
+import com.fpt.cpdm.services.TaskFilesService;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -15,9 +19,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -25,11 +32,15 @@ public class TaskController {
 
     private final TaskService taskService;
     private final UserService userService;
+    private final FileStorageService fileStorageService;
+    private final TaskFilesService taskFilesService;
 
     @Autowired
-    public TaskController(TaskService taskService, UserService userService) {
+    public TaskController(TaskService taskService, UserService userService, FileStorageService fileStorageService, TaskFilesService taskFilesService) {
         this.taskService = taskService;
         this.userService = userService;
+        this.fileStorageService = fileStorageService;
+        this.taskFilesService = taskFilesService;
     }
 
     @GetMapping("/{id}")
@@ -75,6 +86,40 @@ public class TaskController {
         }
 
         return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/{id}/files")
+    public ResponseEntity<List<TaskFilesSummary>> loadFiles(@PathVariable("id") Integer id) {
+
+        List<TaskFilesSummary> taskFilesSummaries = taskFilesService.findSummaryByTask_Id(id);
+        if (taskFilesSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskFilesSummaries);
+    }
+
+    @PostMapping("/{id}/uploadFile")
+    public ResponseEntity<UploadFileResponse> uploadFile(
+            @PathVariable("id") Integer id,
+            @RequestParam("file") MultipartFile file) {
+
+        // store the file
+        String filename = fileStorageService.store(file);
+
+        // set filename for task
+        if (filename.trim().isEmpty() == false) {
+            taskService.uploadFile(id, filename);
+        }
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/downloadFile/")
+                .path(filename)
+                .toUriString();
+        UploadFileResponse uploadFileResponse = new UploadFileResponse(filename, fileDownloadUri,
+                file.getContentType(), file.getSize());
+
+        return ResponseEntity.ok(uploadFileResponse);
     }
 
     @PostMapping

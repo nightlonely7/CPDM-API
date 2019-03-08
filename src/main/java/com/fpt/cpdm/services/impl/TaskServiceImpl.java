@@ -1,9 +1,9 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.TaskEntity;
+import com.fpt.cpdm.entities.TaskFilesEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
-import com.fpt.cpdm.exceptions.departments.DepartmentNotSameException;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
@@ -13,10 +13,7 @@ import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
-import com.fpt.cpdm.repositories.DepartmentRepository;
-import com.fpt.cpdm.repositories.DocumentRepository;
-import com.fpt.cpdm.repositories.TaskRepository;
-import com.fpt.cpdm.repositories.UserRepository;
+import com.fpt.cpdm.repositories.*;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +28,29 @@ public class TaskServiceImpl implements TaskService {
     private final UserRepository userRepository;
     private final DocumentRepository documentRepository;
     private final DepartmentRepository departmentRepository;
+    private final TaskFilesRepository taskFilesRepository;
 
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository,
                            UserRepository userRepository,
                            DocumentRepository documentRepository,
-                           DepartmentRepository departmentRepository) {
+                           DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.documentRepository = documentRepository;
         this.departmentRepository = departmentRepository;
+        this.taskFilesRepository = taskFilesRepository;
+    }
+
+    @Override
+    public void uploadFile(Integer id, String filename) {
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(
+                () -> new TaskNotFoundException(id)
+        );
+        TaskFilesEntity taskFilesEntity = new TaskFilesEntity();
+        taskFilesEntity.setTask(taskEntity);
+        taskFilesEntity.setFilename(filename);
+        taskFilesRepository.save(taskFilesEntity);
     }
 
     @Override
