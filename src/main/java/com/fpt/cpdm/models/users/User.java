@@ -21,9 +21,13 @@ public class User {
     @EqualsAndHashCode.Include
     private Integer id;
 
-    @NotNull
     @Size(min = 4, max = 30)
     private String displayName;
+
+    @Size(min = 4, max = 30)
+    private String fullName;
+
+    private String gender;
 
     @NotNull
     @Size(min = 8, max = 20)
@@ -45,6 +49,5 @@ public class User {
 
     private Department department;
 
-    @NotNull
     private Role role;
 }

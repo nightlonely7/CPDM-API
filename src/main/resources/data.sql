@@ -3,15 +3,18 @@ INSERT INTO role (name) VALUES
 ('ROLE_STAFF'), ('ROLE_MANAGER');
 
 -- INSERT DEPARTMENT
-INSERT INTO department (name, alias) VALUES (
-'New Department 1', 'NEW1');
+INSERT INTO department (name, alias) VALUES
+('New Department 1', 'NEW1'),
+('New Department 2', 'NEW2');
 
 -- INSERT USER
-INSERT INTO user (display_name, password, email, phone, address, department_id, role_id, is_enabled) VALUES
-('khanhnp', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u','khanhnp@gmail.com'
-, '0123456789', 'abcxyz tphcm', 1, 2, true),
-('quang', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'quang@gmail.com'
-, '0987654321', 'xyzabc tphcm', 1, 1, true);
+INSERT INTO user (display_name, full_name, password, email, phone, address, birthday, department_id, role_id, is_enabled) VALUES
+('khanhnp', 'Nguyễn Phú Khánh', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'khanhnp@gmail.com'
+, '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 2, true),
+('quang', 'Hoàng Vinh Quang', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'quang@gmail.com'
+, '0987654321', 'xyzabc tphcm', '1993-01-30', 1, 1, true),
+('hoang', 'Nguyễn Phú Hoàng', '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u','hoang@gmail.com'
+, '0123456789', 'abcxyz tphcm', '1993-09-30', 2, 1, true);
 
 -- INSERT DOCUMENT
 INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES

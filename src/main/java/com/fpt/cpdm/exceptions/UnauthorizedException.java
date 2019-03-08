@@ -3,10 +3,10 @@ package com.fpt.cpdm.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
+@ResponseStatus(HttpStatus.FORBIDDEN)
 public class UnauthorizedException extends RuntimeException {
 
-    public UnauthorizedException(String message) {
-        super(message, null, true, false);
+    public UnauthorizedException() {
+        super("This user is not allow to access this API", null, true, false);
     }
 }
