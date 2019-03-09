@@ -37,7 +37,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     @Basic
     @Column(name = "gender")
-    private String gender;
+    private Boolean gender;
 
     @Basic
     @Column(name = "password", nullable = false)

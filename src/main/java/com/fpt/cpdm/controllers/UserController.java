@@ -46,6 +46,19 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/search/all")
+    public ResponseEntity<Page<UserSummary>> findAllForAdmin(
+            @PageableDefault Pageable pageable
+    ) {
+
+        Page<UserSummary> userSummaries = userService.findAllSummaryForAdmin(pageable);
+        if (userSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(userSummaries);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserDetail> readById(
             @PathVariable(name = "id") Integer id,

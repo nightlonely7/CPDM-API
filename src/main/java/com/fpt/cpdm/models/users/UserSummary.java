@@ -19,4 +19,6 @@ public interface UserSummary {
     String getEmail();
 
     NameOnly getDepartment();
+
+    NameOnly getRole();
 }

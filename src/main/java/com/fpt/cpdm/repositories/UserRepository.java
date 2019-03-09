@@ -34,4 +34,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     List<UserDisplayName> findDisplayNameByDepartmentAndRole_Name(DepartmentEntity departmentEntity, String roleName);
 
     Page<UserSummary> findSummaryByDepartmentAndRole_Name(DepartmentEntity departmentEntity, String roleName, Pageable pageable);
+
+    Page<UserSummary> findAllSummaryBy(Pageable pageable);
+
+    Boolean existsByDepartment_Id(Integer id);
 }

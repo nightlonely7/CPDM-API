@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
+
     UserDetail save(User user, Principal principal);
 
     UserDetail findDetailById(Integer id, Principal principal);
@@ -26,4 +27,6 @@ public interface UserService extends UserDetailsService {
     List<UserDisplayName> findDisplayNameByDepartmentAndRole_Name(Department department, String roleName);
 
     Page<UserSummary> findSummaryByDepartmentAndRole_Name(Department department, String roleName, Pageable pageable);
+
+    Page<UserSummary> findAllSummaryForAdmin(Pageable pageable);
 }

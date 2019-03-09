@@ -5,6 +5,7 @@ import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.NotAllowException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
+import com.fpt.cpdm.exceptions.departments.DepartmentAlreadyHaveManagerException;
 import com.fpt.cpdm.exceptions.roles.RoleNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserEmailDuplicateException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
@@ -89,6 +90,11 @@ public class UserServiceImpl implements UserService {
             Role role = new Role();
             role.setId(1); // id 1 for STAFF
             user.setRole(role);
+        }
+
+        // check department is already have a manager
+        if (userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
         }
 
         // encode password
@@ -222,6 +228,11 @@ public class UserServiceImpl implements UserService {
 
         return userSummaries;
 
+    }
+
+    @Override
+    public Page<UserSummary> findAllSummaryForAdmin(Pageable pageable) {
+        return userRepository.findAllSummaryBy(pageable);
     }
 
 }

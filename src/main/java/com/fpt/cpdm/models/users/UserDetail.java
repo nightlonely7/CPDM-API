@@ -1,7 +1,7 @@
 package com.fpt.cpdm.models.users;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fpt.cpdm.models.NameOnly;
+import com.fpt.cpdm.models.NameIdOnly;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ public interface UserDetail {
 
     String getEmail();
 
-    String getGender();
+    Boolean getGender();
 
     LocalDate getBirthday();
 
@@ -24,9 +24,9 @@ public interface UserDetail {
 
     String getAddress();
 
-    NameOnly getRole();
+    NameIdOnly getRole();
 
-    NameOnly getDepartment();
+    NameIdOnly getDepartment();
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime getCreatedTime();
