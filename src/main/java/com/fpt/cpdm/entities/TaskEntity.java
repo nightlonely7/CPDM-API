@@ -60,6 +60,9 @@ public class TaskEntity extends BaseEntity {
     @JoinColumn(name = "executor_id", referencedColumnName = "id")
     private UserEntity executor;
 
+    @Transient
+    private List<String> filenames;
+
     @Basic
     @Column(name = "is_available")
     private Boolean isAvailable;

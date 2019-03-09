@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface TaskService {
 
+    void uploadFile(Integer id, String filename);
+
     TaskDetail findDetailById(User user, Integer id);
 
     TaskSummary changeStatus(Task task);
