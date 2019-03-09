@@ -24,10 +24,12 @@ public class User {
     @Size(min = 4, max = 30)
     private String displayName;
 
-    @Size(min = 4, max = 30)
+    @NotNull
+    @Size(min = 4, max= 50)
     private String fullName;
 
-    private String gender;
+    @NotNull
+    private Boolean gender;
 
     @NotNull
     @Size(min = 8, max = 20)
@@ -50,4 +52,7 @@ public class User {
     private Department department;
 
     private Role role;
+
+    @NotNull
+    private boolean isEnabled;
 }
