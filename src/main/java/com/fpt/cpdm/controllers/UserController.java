@@ -1,12 +1,7 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
-import com.fpt.cpdm.exceptions.users.UserNotFoundException;
-import com.fpt.cpdm.models.Role;
-import com.fpt.cpdm.models.users.User;
-import com.fpt.cpdm.models.users.UserDetail;
-import com.fpt.cpdm.models.users.UserDisplayName;
-import com.fpt.cpdm.models.users.UserSummary;
+import com.fpt.cpdm.models.users.*;
 import com.fpt.cpdm.services.RoleService;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -57,6 +52,22 @@ public class UserController {
         }
 
         return ResponseEntity.ok(userSummaries);
+    }
+
+    @GetMapping("/search/findAllForSelectByEmailContaining")
+    public ResponseEntity<List<UserForSelect>> findByEmailContaining(@RequestParam("email") String email) {
+
+        if (email.trim().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        List<UserForSelect> userForSelects = userService.findAllForSelectByEmailContains(email);
+
+        if (userForSelects.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(userForSelects);
     }
 
     @GetMapping("/{id}")

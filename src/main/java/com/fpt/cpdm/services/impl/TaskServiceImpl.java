@@ -1,5 +1,6 @@
 package com.fpt.cpdm.services.impl;
 
+import com.fpt.cpdm.configurations.AuthenticationFacade;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.TaskFilesEntity;
 import com.fpt.cpdm.entities.UserEntity;
@@ -8,8 +9,10 @@ import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
+import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.tasks.TaskCreateForm;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
@@ -19,7 +22,11 @@ import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -29,17 +36,20 @@ public class TaskServiceImpl implements TaskService {
     private final DocumentRepository documentRepository;
     private final DepartmentRepository departmentRepository;
     private final TaskFilesRepository taskFilesRepository;
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository,
                            UserRepository userRepository,
                            DocumentRepository documentRepository,
-                           DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository) {
+                           DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository,
+                           AuthenticationFacade authenticationFacade) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.documentRepository = documentRepository;
         this.departmentRepository = departmentRepository;
         this.taskFilesRepository = taskFilesRepository;
+        this.authenticationFacade = authenticationFacade;
     }
 
     @Override
@@ -65,6 +75,19 @@ public class TaskServiceImpl implements TaskService {
         TaskDetail taskDetail = taskRepository.findDetailById(id);
 
         return taskDetail;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByRelatives(Pageable pageable) {
+
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByRelatives(userEntity, pageable);
+        return taskSummaries;
     }
 
     @Override
@@ -133,6 +156,39 @@ public class TaskServiceImpl implements TaskService {
         TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
 
         return savedTaskSummary;
+    }
+
+    @Override
+    public TaskSummary create(TaskCreateForm taskCreateForm) {
+
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity creator = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        UserEntity executor = new UserEntity();
+        executor.setId(taskCreateForm.getExecutor().getId());
+
+        List<UserEntity> relatives = new ArrayList<>();
+        for (IdOnlyForm idOnlyForm : taskCreateForm.getRelatives()) {
+            UserEntity relative = new UserEntity(idOnlyForm.getId());
+            relatives.add(relative);
+        }
+
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setCreator(creator);
+        taskEntity.setExecutor(executor);
+        taskEntity.setRelatives(relatives);
+        taskEntity.setPriority(taskCreateForm.getPriority());
+        taskEntity.setTitle(taskCreateForm.getTitle());
+        taskEntity.setSummary(taskCreateForm.getSummary());
+        taskEntity.setDescription(taskCreateForm.getDescription());
+        taskEntity.setStartTime(taskCreateForm.getStartTime());
+        taskEntity.setEndTime(taskCreateForm.getEndTime());
+
+        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+        TaskSummary taskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
+        return taskSummary;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.fpt.cpdm.services.impl;
 import com.fpt.cpdm.entities.DepartmentEntity;
 import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.UserEntity;
-import com.fpt.cpdm.exceptions.NotAllowException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.departments.DepartmentAlreadyHaveManagerException;
 import com.fpt.cpdm.exceptions.roles.RoleNotFoundException;
@@ -187,6 +186,11 @@ public class UserServiceImpl implements UserService {
         List<UserEntity> userEntities = optional.get();
         List<User> users = getUsersConverted(userEntities);
         return users;
+    }
+
+    @Override
+    public List<UserForSelect> findAllForSelectByEmailContains(String email) {
+        return userRepository.findAllForSelectByEmailContainsAndEnabledIsTrue(email);
     }
 
     @Override

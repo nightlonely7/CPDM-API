@@ -2,6 +2,7 @@ package com.fpt.cpdm.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +22,12 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true)
+@NoArgsConstructor
 public class UserEntity extends BaseEntity implements UserDetails {
+
+    public UserEntity(Integer id) {
+        super.setId(id);
+    }
 
     @Basic
     @Column(name = "email", unique = true, nullable = false)
@@ -70,7 +76,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     @Basic
     @Column(name = "is_enabled")
-    private boolean isEnabled;
+    private boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,6 +3,7 @@ package com.fpt.cpdm.entities;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,14 +31,17 @@ public class TaskEntity extends BaseEntity {
 
     @Basic
     @Column(name = "created_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime createdTime;
 
     @Basic
     @Column(name = "start_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime;
 
     @Basic
     @Column(name = "end_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime endTime;
 
     @Basic
@@ -60,8 +64,11 @@ public class TaskEntity extends BaseEntity {
     @JoinColumn(name = "executor_id", referencedColumnName = "id")
     private UserEntity executor;
 
-    @Transient
-    private List<String> filenames;
+    @ManyToMany
+    @JoinTable(name = "task_relative",
+            joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private List<UserEntity> relatives;
 
     @Basic
     @Column(name = "is_available")

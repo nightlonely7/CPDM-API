@@ -4,6 +4,7 @@ import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.UploadFileResponse;
 import com.fpt.cpdm.models.taskFiles.TaskFilesSummary;
 import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.tasks.TaskCreateForm;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
@@ -88,6 +89,17 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
+    @GetMapping("/search/relatives")
+    public ResponseEntity<Page<TaskSummary>> relatives(@PageableDefault Pageable pageable) {
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(pageable);
+        if (taskSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
     @GetMapping("/{id}/files")
     public ResponseEntity<List<TaskFilesSummary>> loadFiles(@PathVariable("id") Integer id) {
 
@@ -123,11 +135,18 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskSummary> create(@Valid @RequestBody Task task,
-                                              BindingResult result,
-                                              Principal principal) {
+    public ResponseEntity create(@Valid @RequestBody TaskCreateForm taskCreateForm,
+                                 BindingResult result,
+                                 Principal principal) {
+        if (result.hasErrors()) {
+            String message = ModelErrorMessage.build(result);
+            throw new ModelNotValidException(message);
+        }
 
-        return save(null, task, result, principal);
+        TaskSummary taskSummary = taskService.create(taskCreateForm);
+
+
+        return ResponseEntity.ok(taskSummary);
     }
 
     @PutMapping("/{id}")

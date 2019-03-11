@@ -1,6 +1,7 @@
 package com.fpt.cpdm.services;
 
 import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.tasks.TaskCreateForm;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
@@ -16,9 +17,13 @@ public interface TaskService {
 
     TaskDetail findDetailById(User user, Integer id);
 
+    Page<TaskSummary> findAllSummaryByRelatives(Pageable pageable);
+
     TaskSummary changeStatus(Task task);
 
     TaskSummary save(Task task);
+
+    TaskSummary create(TaskCreateForm taskCreateForm);
 
     Page<TaskSummary> findAllSummaryByExecutor(User user, Pageable pageable);
 

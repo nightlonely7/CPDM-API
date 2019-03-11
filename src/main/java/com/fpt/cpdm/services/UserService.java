@@ -20,6 +20,8 @@ public interface UserService extends UserDetailsService {
 
     List<User> findAllByDisplayNameContaining(String displayName);
 
+    List<UserForSelect> findAllForSelectByEmailContains(String email);
+
     User findByEmail(String email);
 
     UserBasic findBasicByEmail(String email);

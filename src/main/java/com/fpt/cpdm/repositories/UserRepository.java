@@ -4,10 +4,7 @@ import com.fpt.cpdm.entities.DepartmentEntity;
 import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.models.departments.DepartmentDTO;
-import com.fpt.cpdm.models.users.UserBasic;
-import com.fpt.cpdm.models.users.UserDetail;
-import com.fpt.cpdm.models.users.UserDisplayName;
-import com.fpt.cpdm.models.users.UserSummary;
+import com.fpt.cpdm.models.users.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,6 +29,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     UserDisplayName findDisplayNameByEmail(String email);
 
     List<UserDisplayName> findDisplayNameByDepartmentAndRole_Name(DepartmentEntity departmentEntity, String roleName);
+
+    List<UserForSelect> findAllForSelectByEmailContainsAndEnabledIsTrue(String email);
 
     Page<UserSummary> findSummaryByDepartmentAndRole_Name(DepartmentEntity departmentEntity, String roleName, Pageable pageable);
 
