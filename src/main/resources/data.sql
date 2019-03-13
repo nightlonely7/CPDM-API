@@ -65,6 +65,14 @@ start_time, end_time, priority, status, creator_id, executor_id, is_available) V
 INSERT INTO task_relative(task_id, user_id) VALUES
 (1, 3), (1, 4), (1, 5), (1, 6);
 
+-- INSERT TASK_ISSUE
+INSERT INTO task_issue(task_id, summary, detail, weight, status, created_time) VALUES
+(1, 'issue 1', 'detail 1', 1, 'working', '2019-02-28 23:59:59'),
+(1, 'issue 2', 'detail 2', 1, 'working', '2019-02-28 23:59:59'),
+(1, 'issue 3', 'detail 3', 1, 'working', '2019-02-28 23:59:59'),
+(1, 'issue 4', 'detail 4', 1, 'working', '2019-02-28 23:59:59'),
+(1, 'issue 5', 'detail 5', 1, 'completed', '2019-02-28 23:59:59');
+
 -- INSERT TASK-DOCUMENT MAPPING
 INSERT INTO tasks_documents(task_id, document_id) VALUES
 (1, 1), (1, 2), (1, 3);

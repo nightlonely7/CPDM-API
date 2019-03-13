@@ -1,8 +1,9 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
+import com.fpt.cpdm.forms.tasks.issues.TaskIssueCreateForm;
 import com.fpt.cpdm.models.UploadFileResponse;
-import com.fpt.cpdm.models.taskFiles.TaskFilesSummary;
+import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskCreateForm;
 import com.fpt.cpdm.models.tasks.TaskDetail;
@@ -45,17 +46,14 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDetail> readById(@PathVariable(name = "id") Integer id, Principal principal) {
+    public ResponseEntity<TaskDetail> readById(@PathVariable(name = "id") Integer id) {
 
-        // get current logged executor
-        User user = userService.findByEmail(principal.getName());
-
-        TaskDetail taskDetail = taskService.findDetailById(user, id);
+        TaskDetail taskDetail = taskService.findDetailById(id);
 
         return ResponseEntity.ok(taskDetail);
     }
 
-    @GetMapping("/findByCurrentLoggedExecutor")
+    @GetMapping("/search/executes")
     public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedExecutor(
             @PageableDefault Pageable pageable,
             Principal principal) {
@@ -71,7 +69,7 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
-    @GetMapping("/findByCurrentLoggedCreator")
+    @GetMapping("/search/creates")
     public ResponseEntity<Page<TaskSummary>> findByTitleAndCurrentLoggedCreator(
             @RequestParam(value = "title", required = false, defaultValue = "") String title,
             @RequestParam(value = "summary", required = false, defaultValue = "") String summary,
@@ -111,7 +109,7 @@ public class TaskController {
         return ResponseEntity.ok(taskFilesSummaries);
     }
 
-    @PostMapping("/{id}/uploadFile")
+    @PostMapping("/{id}/files")
     public ResponseEntity<UploadFileResponse> uploadFile(
             @PathVariable("id") Integer id,
             @RequestParam("file") MultipartFile file) {
@@ -132,6 +130,12 @@ public class TaskController {
                 file.getContentType(), file.getSize());
 
         return ResponseEntity.ok(uploadFileResponse);
+    }
+
+    @PostMapping("/{id}/issues")
+    public ResponseEntity createIssue(@PathVariable("id") Integer id, @RequestBody TaskIssueCreateForm taskIssueCreateForm) {
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping

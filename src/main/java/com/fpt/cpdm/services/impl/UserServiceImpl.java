@@ -2,16 +2,19 @@ package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.DepartmentEntity;
 import com.fpt.cpdm.entities.RoleEntity;
+import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.departments.DepartmentAlreadyHaveManagerException;
 import com.fpt.cpdm.exceptions.roles.RoleNotFoundException;
+import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserEmailDuplicateException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.Role;
 import com.fpt.cpdm.models.departments.Department;
 import com.fpt.cpdm.models.users.*;
 import com.fpt.cpdm.repositories.RoleRepository;
+import com.fpt.cpdm.repositories.TaskRepository;
 import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ModelConverter;
@@ -34,12 +37,14 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final TaskRepository taskRepository;
 
     @Autowired
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository, TaskRepository taskRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.taskRepository = taskRepository;
     }
 
     @Override
@@ -191,6 +196,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserForSelect> findAllForSelectByEmailContains(String email) {
         return userRepository.findAllForSelectByEmailContainsAndEnabledIsTrue(email);
+    }
+
+    @Override
+    public List<UserSummary> findAllSummaryRelatedByTask_Id(Integer id) {
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(
+                () -> new TaskNotFoundException(id)
+        );
+
+        return userRepository.findAllSummaryByRelatedTasksAndEnabledTrue(taskEntity);
     }
 
     @Override

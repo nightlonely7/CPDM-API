@@ -64,11 +64,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDetail findDetailById(User user, Integer id) {
+    public TaskDetail findDetailById(Integer id) {
 
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
 
-        if (taskRepository.existsByCreatorOrExecutor(userEntity, userEntity) == false) {
+        if (taskRepository.existsByCreatorOrExecutorOrRelatives(userEntity, userEntity, userEntity) == false) {
             throw new UnauthorizedException();
         }
 

@@ -74,6 +74,9 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @JoinColumn(name = "role_id")
     private RoleEntity role;
 
+    @ManyToMany(mappedBy = "relatives")
+    private List<TaskEntity> relatedTasks;
+
     @Basic
     @Column(name = "is_enabled")
     private boolean enabled;

@@ -74,6 +74,10 @@ public class TaskEntity extends BaseEntity {
     @Column(name = "is_available")
     private Boolean isAvailable;
 
+    @Basic
+    @OneToMany(mappedBy = "task")
+    private List<TaskIssueEntity> issues;
+
     @ManyToMany
     @JoinTable(name = "tasks_documents",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),

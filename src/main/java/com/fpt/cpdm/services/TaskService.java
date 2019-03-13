@@ -15,7 +15,7 @@ public interface TaskService {
 
     void uploadFile(Integer id, String filename);
 
-    TaskDetail findDetailById(User user, Integer id);
+    TaskDetail findDetailById(Integer id);
 
     Page<TaskSummary> findAllSummaryByRelatives(Pageable pageable);
 

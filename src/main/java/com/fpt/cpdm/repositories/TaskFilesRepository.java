@@ -1,7 +1,7 @@
 package com.fpt.cpdm.repositories;
 
 import com.fpt.cpdm.entities.TaskFilesEntity;
-import com.fpt.cpdm.models.taskFiles.TaskFilesSummary;
+import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
