@@ -68,7 +68,31 @@ public class TaskRelativeServiceImpl implements TaskRelativeService {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer taskId, Integer userId) {
 
+        TaskEntity taskEntity = taskRepository.findById(taskId).orElseThrow(
+                () -> new TaskNotFoundException(taskId)
+        );
+
+        List<UserSummary> currentRelatives = userRepository.findAllSummaryByRelatedTasksAndEnabledTrue(taskEntity);
+        UserSummary userToRemove = null;
+        for (UserSummary userSummary : currentRelatives) {
+            if (userSummary.getId().equals(userId)) {
+                userToRemove = userSummary;
+            }
+        }
+
+        if (userToRemove != null) {
+            currentRelatives.remove(userToRemove);
+        }
+
+        List<UserEntity> relatives = new ArrayList<>();
+        for (UserSummary userSummary : currentRelatives) {
+            UserEntity relative = new UserEntity(userSummary.getId());
+            relatives.add(relative);
+        }
+        taskEntity.setRelatives(relatives);
+
+        taskRepository.save(taskEntity);
     }
 }

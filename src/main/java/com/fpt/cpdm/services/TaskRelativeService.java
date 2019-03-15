@@ -11,5 +11,5 @@ public interface TaskRelativeService {
 
     List<UserSummary> add(Integer taskId, List<IdOnlyForm> taskIssueForm);
 
-    void delete(Integer id);
+    void delete(Integer taskId, Integer userId);
 }

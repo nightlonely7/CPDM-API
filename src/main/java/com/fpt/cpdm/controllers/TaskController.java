@@ -126,6 +126,16 @@ public class TaskController {
         return ResponseEntity.ok(userSummaries);
     }
 
+    @DeleteMapping("/{id}/relatives/{userId}")
+    public ResponseEntity<List<UserSummary>> editRelatives(
+            @PathVariable("id") Integer id,
+            @PathVariable("userId") Integer userId) {
+
+        taskRelativeService.delete(id, userId);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}/files")
     public ResponseEntity<List<TaskFilesSummary>> loadFiles(@PathVariable("id") Integer id) {
 
