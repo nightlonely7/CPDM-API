@@ -10,9 +10,5 @@ public interface TaskDetail extends TaskSummary {
 
     String getDescription();
 
-    List<UserSummary> getRelatives();
-
-    List<TaskIssueDetail> getIssues();
-
     List<DocumentSummary> getDocuments();
 }

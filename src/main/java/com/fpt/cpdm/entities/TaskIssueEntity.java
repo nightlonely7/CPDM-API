@@ -1,9 +1,6 @@
 package com.fpt.cpdm.entities;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,9 +8,11 @@ import java.time.LocalDateTime;
 @Entity(name = "TaskIssue")
 @Table(name = "task_issue")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true)
-@NoArgsConstructor
 public class TaskIssueEntity extends BaseEntity {
 
     @ManyToOne
@@ -40,8 +39,13 @@ public class TaskIssueEntity extends BaseEntity {
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
+    @Basic
+    @Column(name = "available")
+    private Boolean available;
+
     @PrePersist
     private void onCreate() {
         this.createdTime = LocalDateTime.now();
+        this.available = Boolean.TRUE;
     }
 }

@@ -12,7 +12,7 @@ import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
-import com.fpt.cpdm.models.tasks.TaskCreateForm;
+import com.fpt.cpdm.forms.tasks.TaskCreateForm;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
