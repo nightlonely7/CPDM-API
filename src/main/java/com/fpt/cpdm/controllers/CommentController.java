@@ -1,15 +1,21 @@
 package com.fpt.cpdm.controllers;
 
-
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.comments.Comment;
 import com.fpt.cpdm.models.comments.CommentSummary;
+import com.fpt.cpdm.models.storedComments.StoredComment;
+import com.fpt.cpdm.models.storedComments.StoredCommentSummary;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.services.CommentService;
+import com.fpt.cpdm.services.StoredCommentService;
 import com.fpt.cpdm.services.UserService;
+import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +30,13 @@ public class CommentController {
 
     private final CommentService commentService;
     private final UserService userService;
+    private final StoredCommentService storedCommentService;
 
     @Autowired
-    public CommentController(CommentService commentService, UserService userService) {
+    public CommentController(CommentService commentService, UserService userService, StoredCommentService storedCommentService) {
         this.commentService = commentService;
         this.userService = userService;
+        this.storedCommentService = storedCommentService;
     }
 
     @GetMapping
@@ -43,18 +51,35 @@ public class CommentController {
     }
 
     @GetMapping("/findByTask")
-    public ResponseEntity<List<CommentSummary>> findByTask(@RequestParam("id") Integer id) {
+    public ResponseEntity<Page<CommentSummary>> findByTask(@RequestParam("id") Integer id,
+                                                           @PageableDefault Pageable pageable) {
 
         // create id only task for finding
         Task task = new Task();
         task.setId(id);
 
-        List<CommentSummary> commentSummaries = commentService.findAllSummaryByTask(task);
+        Integer deletedStatusCode = Enum.CommentStatus.Deleted.getCommentStatusCode();
+        Page<CommentSummary> commentSummaries = commentService.findAllSummaryByTaskAndStatusNot(task, pageable, deletedStatusCode);
         if (commentSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(commentSummaries);
+    }
+
+    @GetMapping("/loadOldVesion/{id}")
+    public ResponseEntity<List<StoredCommentSummary>> loadOldVesion(@PathVariable(name = "id") Integer id) {
+
+        Comment commnet = new Comment();
+        commnet.setId(id);
+
+        List<StoredCommentSummary> storedComments = storedCommentService.findAllSummaryByCommentOrderByCreatedDateDesc(commnet);
+
+        if (storedComments.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(storedComments);
     }
 
     @PostMapping
@@ -67,8 +92,14 @@ public class CommentController {
     @PutMapping("/{id}")
     public ResponseEntity<Comment> edit(@PathVariable(name = "id") Integer id,
             @Valid @RequestBody Comment comment, BindingResult result, Principal principal) {
-
-        comment.setCreatedDate(commentService.findById(id).getCreatedDate());
+        Comment oldComment = commentService.findById(id);
+        comment.setCreatedDate(oldComment.getCreatedDate());
+        if(comment.getStatus() == Enum.CommentStatus.Edited.getCommentStatusCode()){
+            StoredComment storedComment = new StoredComment();
+            storedComment.setContent(oldComment.getContent());
+            storedComment.setComment(oldComment);
+            storedCommentService.save(storedComment);
+        }
         return save( id, comment, result, principal);
     }
 
@@ -86,4 +117,12 @@ public class CommentController {
 
         return ResponseEntity.ok(savedComment);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity updateDeleteStatus(@PathVariable(name = "id") Integer id)
+    {
+        commentService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

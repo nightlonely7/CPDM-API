@@ -1,21 +1,16 @@
-package com.fpt.cpdm.models.comments;
+package com.fpt.cpdm.models.leaveRequests;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.users.User;
-import javafx.beans.DefaultProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Comment {
-
+public class LeaveRequest {
     @EqualsAndHashCode.Include
     private Integer id;
 
@@ -23,18 +18,20 @@ public class Comment {
 
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime createdDate;
+    private LocalDateTime fromDate;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime toDate;
+
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime createdDate;
 
     private Integer status;
-    
+
     private User user;
 
-    @NotNull
-    private Task task;
+    private User approver;
 
-    private Integer parentCommentId;
 }

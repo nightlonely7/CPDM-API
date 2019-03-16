@@ -4,6 +4,8 @@ package com.fpt.cpdm.utils;
 import com.fpt.cpdm.entities.*;
 import com.fpt.cpdm.models.Role;
 import com.fpt.cpdm.models.comments.Comment;
+import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
+import com.fpt.cpdm.models.storedComments.StoredComment;
 import com.fpt.cpdm.models.departments.Department;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
@@ -67,6 +69,16 @@ public class ModelConverter {
         return commentEntity;
     }
 
+    public static StoredComment storedCommentEntityToModel(StoredCommentEntity storedCommentEntity) {
+        StoredComment storedComment = MODEL_MAPPER.map(storedCommentEntity, StoredComment.class);
+        return storedComment;
+    }
+
+    public static StoredCommentEntity storedCommentModelToEntity(StoredComment storedComment) {
+        StoredCommentEntity storedCommentEntity = MODEL_MAPPER.map(storedComment, StoredCommentEntity.class);
+        return storedCommentEntity;
+    }
+
     public static Department departmentEntityToModel(DepartmentEntity departmentEntity) {
         Department department = MODEL_MAPPER.map(departmentEntity, Department.class);
         return department;
@@ -75,5 +87,15 @@ public class ModelConverter {
     public static DepartmentEntity departmentModelToEntity(Department department) {
         DepartmentEntity departmentEntity = MODEL_MAPPER.map(department, DepartmentEntity.class);
         return departmentEntity;
+    }
+
+    public static LeaveRequest leaveRequestEntityToModel(LeaveRequestEntity leaveRequestEntity) {
+        LeaveRequest leaveRequest = MODEL_MAPPER.map(leaveRequestEntity, LeaveRequest.class);
+        return leaveRequest;
+    }
+
+    public static LeaveRequestEntity leaveRequestModelToEntity(LeaveRequest leaveRequest) {
+        LeaveRequestEntity leaveRequestEntity = MODEL_MAPPER.map(leaveRequest, LeaveRequestEntity.class);
+        return leaveRequestEntity;
     }
 }

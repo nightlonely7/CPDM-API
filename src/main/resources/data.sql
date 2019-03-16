@@ -78,5 +78,29 @@ INSERT INTO tasks_documents(task_id, document_id) VALUES
 (1, 1), (1, 2), (1, 3);
 
 -- INSERT COMMENT
-INSERT INTO comment (content, created_date, last_modified_date, status, user_id, task_id) VALUES
-('Test content','2019-02-28 23:59:59', '2019-02-28 23:59:59', 1, 1 , 1);
+INSERT INTO comment (content, created_date, last_modified_date, status, user_id, task_id,parent_comment_id) VALUES
+('Test content','2019-02-28 23:59:59', '2019-02-28 23:59:59', 0, 1 , 1, null);
+INSERT INTO comment (content, created_date, last_modified_date, status, user_id, task_id,parent_comment_id) VALUES
+('Cuộc họp diễn lúc 7 giờ','2019-02-28 12:59:59', '2019-02-28 23:59:59', 0, 1 , 7, null);
+INSERT INTO comment (content, created_date, last_modified_date, status, user_id, task_id,parent_comment_id) VALUES
+('Hẹn gặp lại','2019-02-28 13:59:59', '2019-02-28 23:59:59', 0, 2 , 7, null);
+
+INSERT INTO comment (content, created_date, last_modified_date, status, user_id, task_id,parent_comment_id) VALUES
+('Tôi sẽ đến đúng giờ','2019-02-28 14:59:59', '2019-02-28 23:59:59', 0, 2 , 7, null);
+INSERT INTO comment (content, created_date, last_modified_date, status, user_id, task_id,parent_comment_id) VALUES
+('Cám ơn đã thông báo','2019-02-28 15:59:59', '2019-02-28 23:59:59', 1, 2 , 7, null);
+INSERT INTO comment (content, created_date, last_modified_date, status, user_id, task_id,parent_comment_id) VALUES
+('Da bi xoa','2019-02-28 16:59:59', '2019-02-28 23:59:59', 2, 2 , 7, null);
+
+-- INSERT STORED COMMENT
+INSERT INTO stored_comment (content, created_date, comment_id) VALUES
+('Cám ơn đã thông bá','2019-02-28 15:29:59', 5);
+INSERT INTO stored_comment (content, created_date, comment_id) VALUES
+('Cám ơn đã thông báx','2019-02-28 15:30:59', 5);
+
+-- INSERT LEAVE REQUEST
+
+INSERT INTO leave_request (content, from_date, to_date, created_date, status, user_id, approver_id) VALUES
+('Đơn xin nghỉ phép 2 ngày','2019-03-16 23:29:59', '2019-03-18 23:29:59', '2019-03-16 23:29:59', 0, 2, 1);
+INSERT INTO leave_request (content, from_date, to_date, created_date, status, user_id, approver_id) VALUES
+('Đơn xin nghỉ phép 1 ngày','2019-03-13 23:29:59', '2019-03-13 23:29:59', '2019-03-14 23:29:59', 1, 2, 1);
