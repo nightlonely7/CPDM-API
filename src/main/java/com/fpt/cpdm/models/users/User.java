@@ -5,6 +5,7 @@ import com.fpt.cpdm.models.Role;
 import com.fpt.cpdm.models.departments.Department;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
@@ -20,11 +21,14 @@ public class User {
     @EqualsAndHashCode.Include
     private Integer id;
 
-    @NotNull
     @Size(min = 4, max = 30)
     private String displayName;
 
-    @NotNull
+    @Size(min = 4, max= 50)
+    private String fullName;
+
+    private Boolean gender;
+
     @Size(min = 8, max = 20)
     private String password;
 
@@ -44,6 +48,8 @@ public class User {
 
     private Department department;
 
-    @NotNull
     private Role role;
+
+    @NotNull
+    private boolean isEnabled;
 }

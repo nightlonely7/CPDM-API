@@ -2,6 +2,7 @@ package com.fpt.cpdm.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,15 +22,28 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true)
+@NoArgsConstructor
 public class UserEntity extends BaseEntity implements UserDetails {
+
+    public UserEntity(Integer id) {
+        super.setId(id);
+    }
+
+    @Basic
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
 
     @Basic
     @Column(name = "display_name", nullable = false, length = 30)
     private String displayName;
 
     @Basic
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
+    @Column(name = "full_name", length = 50)
+    private String fullName;
+
+    @Basic
+    @Column(name = "gender")
+    private Boolean gender;
 
     @Basic
     @Column(name = "password", nullable = false)
@@ -47,6 +62,10 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthday;
 
+    @Basic
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
+
     @ManyToOne
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;
@@ -55,9 +74,12 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @JoinColumn(name = "role_id")
     private RoleEntity role;
 
+    @ManyToMany(mappedBy = "relatives")
+    private List<TaskEntity> relatedTasks;
+
     @Basic
     @Column(name = "is_enabled")
-    private boolean isEnabled;
+    private boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -89,5 +111,6 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @PrePersist
     public void prePersist() {
         this.setEnabled(true);
+        this.setCreatedTime(LocalDateTime.now());
     }
 }

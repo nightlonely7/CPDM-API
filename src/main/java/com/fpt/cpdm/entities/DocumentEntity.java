@@ -37,6 +37,4 @@ public class DocumentEntity extends BaseEntity {
     @Column(name = "link")
     private String link;
 
-
-
 }

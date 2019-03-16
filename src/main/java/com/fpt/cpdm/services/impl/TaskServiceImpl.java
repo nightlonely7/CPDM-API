@@ -1,28 +1,32 @@
 package com.fpt.cpdm.services.impl;
 
+import com.fpt.cpdm.configurations.AuthenticationFacade;
 import com.fpt.cpdm.entities.TaskEntity;
+import com.fpt.cpdm.entities.TaskFilesEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
-import com.fpt.cpdm.exceptions.departments.DepartmentNotSameException;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
+import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.forms.tasks.TaskCreateForm;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
-import com.fpt.cpdm.repositories.DepartmentRepository;
-import com.fpt.cpdm.repositories.DocumentRepository;
-import com.fpt.cpdm.repositories.TaskRepository;
-import com.fpt.cpdm.repositories.UserRepository;
+import com.fpt.cpdm.repositories.*;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -31,30 +35,62 @@ public class TaskServiceImpl implements TaskService {
     private final UserRepository userRepository;
     private final DocumentRepository documentRepository;
     private final DepartmentRepository departmentRepository;
+    private final TaskFilesRepository taskFilesRepository;
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository,
                            UserRepository userRepository,
                            DocumentRepository documentRepository,
-                           DepartmentRepository departmentRepository) {
+                           DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository,
+                           AuthenticationFacade authenticationFacade) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.documentRepository = documentRepository;
         this.departmentRepository = departmentRepository;
+        this.taskFilesRepository = taskFilesRepository;
+        this.authenticationFacade = authenticationFacade;
     }
 
     @Override
-    public TaskDetail findDetailById(User user, Integer id) {
+    public void uploadFile(Integer id, String filename) {
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(
+                () -> new TaskNotFoundException(id)
+        );
+        TaskFilesEntity taskFilesEntity = new TaskFilesEntity();
+        taskFilesEntity.setTask(taskEntity);
+        taskFilesEntity.setFilename(filename);
+        taskFilesRepository.save(taskFilesEntity);
+    }
 
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+    @Override
+    public TaskDetail findDetailById(Integer id) {
 
-        if (taskRepository.existsByCreatorOrExecutor(userEntity, userEntity) == false) {
-            throw new UnauthorizedException("This user is not allow to access this task");
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        if (taskRepository.existsByCreatorOrExecutorOrRelatives(userEntity, userEntity, userEntity) == false) {
+            throw new UnauthorizedException();
         }
 
         TaskDetail taskDetail = taskRepository.findDetailById(id);
 
         return taskDetail;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByRelatives(Pageable pageable) {
+
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByRelatives(userEntity, pageable);
+        return taskSummaries;
     }
 
     @Override
@@ -66,7 +102,7 @@ public class TaskServiceImpl implements TaskService {
 
         // check if executor related to task
         if (task.getExecutor().getId().equals(taskEntity.getExecutor().getId()) == false) {
-            throw new UnauthorizedException("This user is not allow to change this task");
+            throw new UnauthorizedException();
         }
 
         taskEntity.setStatus(task.getStatus());
@@ -101,7 +137,7 @@ public class TaskServiceImpl implements TaskService {
 
         // check executor and creator in the same department
         if (executor.getDepartment().equals(creator.getDepartment()) == false) {
-            throw new DepartmentNotSameException("Executor and creator not in the same department");
+            throw new UnauthorizedException();
         }
 
         // check parent task exists (can be null)
@@ -123,6 +159,39 @@ public class TaskServiceImpl implements TaskService {
         TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
 
         return savedTaskSummary;
+    }
+
+    @Override
+    public TaskSummary create(TaskCreateForm taskCreateForm) {
+
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity creator = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        UserEntity executor = new UserEntity();
+        executor.setId(taskCreateForm.getExecutor().getId());
+
+        List<UserEntity> relatives = new ArrayList<>();
+        for (IdOnlyForm idOnlyForm : taskCreateForm.getRelatives()) {
+            UserEntity relative = new UserEntity(idOnlyForm.getId());
+            relatives.add(relative);
+        }
+
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setCreator(creator);
+        taskEntity.setExecutor(executor);
+        taskEntity.setRelatives(relatives);
+        taskEntity.setPriority(taskCreateForm.getPriority());
+        taskEntity.setTitle(taskCreateForm.getTitle());
+        taskEntity.setSummary(taskCreateForm.getSummary());
+        taskEntity.setDescription(taskCreateForm.getDescription());
+        taskEntity.setStartTime(taskCreateForm.getStartTime());
+        taskEntity.setEndTime(taskCreateForm.getEndTime());
+
+        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+        TaskSummary taskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
+        return taskSummary;
     }
 
     @Override
