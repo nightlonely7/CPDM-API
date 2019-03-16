@@ -64,6 +64,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Page<TaskSummary> findAllSummaryByTitle(String title, Pageable pageable) {
+
+        Page<TaskSummary> taskSummaries = taskRepository.findSummaryByTitleContaining(title, pageable);
+
+        return taskSummaries;
+    }
+
+    @Override
     public TaskDetail findDetailById(User user, Integer id) {
 
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
@@ -87,6 +95,13 @@ public class TaskServiceImpl implements TaskService {
         );
 
         Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByRelatives(userEntity, pageable);
+        return taskSummaries;
+    }
+
+    @Override
+    public Page<TaskSummary> findSummaryByTitleAndSummaryAndDescriptionContaining(String title, String summary, String description, Pageable pageable) {
+        Page<TaskSummary> taskSummaries = taskRepository.findSummaryByTitleAndSummaryAndDescriptionContaining(
+                title, summary, description, pageable);
         return taskSummaries;
     }
 

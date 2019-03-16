@@ -125,7 +125,6 @@ public class UserController {
                                              @Valid @RequestBody User user,
                                              BindingResult result,
                                              Principal principal) {
-
         return save(id, user, result, principal);
     }
 
@@ -143,10 +142,12 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
-
-
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/check/existByEmail")
+    public ResponseEntity<Boolean> existsByEmail(@Valid @RequestParam("email") String email){
+        return ResponseEntity.ok(userService.existsByEmail(email));
+    }
 
 }

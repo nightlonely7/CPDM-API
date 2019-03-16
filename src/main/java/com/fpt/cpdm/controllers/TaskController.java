@@ -55,6 +55,25 @@ public class TaskController {
         return ResponseEntity.ok(taskDetail);
     }
 
+    @GetMapping("/findAllSummaryByTitle/search")
+    public ResponseEntity<Page<TaskSummary>> findAllSummaryByTitle(@RequestParam(name = "title") String title,
+                                               @PageableDefault Pageable pageable) {
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByTitle(title, pageable);
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/advancedSearch/search")
+    public ResponseEntity<Page<TaskSummary>> findSummaryByTitleAndSummaryAndDescriptionContaining(
+            @RequestParam(name = "searchValue") String searchValue, @PageableDefault Pageable pageable) {
+
+        Page<TaskSummary> taskSummaries = taskService.findSummaryByTitleAndSummaryAndDescriptionContaining(
+                searchValue, searchValue, searchValue, pageable);
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
     @GetMapping("/findByCurrentLoggedExecutor")
     public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedExecutor(
             @PageableDefault Pageable pageable,

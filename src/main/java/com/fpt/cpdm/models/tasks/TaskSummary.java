@@ -13,6 +13,8 @@ public interface TaskSummary {
 
     String getSummary();
 
+    String getDescription();
+
     UserDisplayName getExecutor();
 
     UserDisplayName getCreator();
