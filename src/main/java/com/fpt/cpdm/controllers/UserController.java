@@ -54,6 +54,18 @@ public class UserController {
         return ResponseEntity.ok(userSummaries);
     }
 
+    @GetMapping("/search/relatedByTask_Id")
+    public ResponseEntity<List<UserSummary>> findAllRelatedByTask_Id(@RequestParam("id") Integer id) {
+
+        List<UserSummary> userSummaries = userService.findAllSummaryRelatedByTask_Id(id);
+
+        if (userSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(userSummaries);
+    }
+
     @GetMapping("/search/findAllForSelectByEmailContaining")
     public ResponseEntity<List<UserForSelect>> findByEmailContaining(@RequestParam("email") String email) {
 

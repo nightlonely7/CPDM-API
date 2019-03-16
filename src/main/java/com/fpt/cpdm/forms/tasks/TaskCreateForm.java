@@ -1,4 +1,4 @@
-package com.fpt.cpdm.models.tasks;
+package com.fpt.cpdm.forms.tasks;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fpt.cpdm.models.IdOnlyForm;

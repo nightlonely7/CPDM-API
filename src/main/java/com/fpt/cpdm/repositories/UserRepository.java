@@ -2,6 +2,7 @@ package com.fpt.cpdm.repositories;
 
 import com.fpt.cpdm.entities.DepartmentEntity;
 import com.fpt.cpdm.entities.RoleEntity;
+import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.models.departments.DepartmentDTO;
 import com.fpt.cpdm.models.users.*;
@@ -31,6 +32,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     List<UserDisplayName> findDisplayNameByDepartmentAndRole_Name(DepartmentEntity departmentEntity, String roleName);
 
     List<UserForSelect> findAllForSelectByEmailContainsAndEnabledIsTrue(String email);
+
+    List<UserSummary> findAllSummaryByRelatedTasksAndEnabledTrue(TaskEntity taskEntity);
 
     Page<UserSummary> findSummaryByDepartmentAndRole_Name(DepartmentEntity departmentEntity, String roleName, Pageable pageable);
 

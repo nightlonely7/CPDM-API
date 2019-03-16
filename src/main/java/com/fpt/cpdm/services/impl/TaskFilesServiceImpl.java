@@ -1,7 +1,6 @@
 package com.fpt.cpdm.services.impl;
 
-import com.fpt.cpdm.models.taskFiles.TaskFilesSummary;
-import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 import com.fpt.cpdm.repositories.TaskFilesRepository;
 import com.fpt.cpdm.services.TaskFilesService;
 import org.springframework.beans.factory.annotation.Autowired;

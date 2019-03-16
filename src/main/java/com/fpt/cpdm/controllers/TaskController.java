@@ -1,17 +1,19 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
+
+import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
+import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.UploadFileResponse;
-import com.fpt.cpdm.models.taskFiles.TaskFilesSummary;
+import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 import com.fpt.cpdm.models.tasks.Task;
-import com.fpt.cpdm.models.tasks.TaskCreateForm;
+import com.fpt.cpdm.forms.tasks.TaskCreateForm;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
+import com.fpt.cpdm.models.tasks.task_issues.TaskIssueDetail;
 import com.fpt.cpdm.models.users.User;
-import com.fpt.cpdm.services.FileStorageService;
-import com.fpt.cpdm.services.TaskFilesService;
-import com.fpt.cpdm.services.TaskService;
-import com.fpt.cpdm.services.UserService;
+import com.fpt.cpdm.models.users.UserSummary;
+import com.fpt.cpdm.services.*;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,46 +37,28 @@ public class TaskController {
     private final UserService userService;
     private final FileStorageService fileStorageService;
     private final TaskFilesService taskFilesService;
+    private final TaskIssueService taskIssueService;
+    private final TaskRelativeService taskRelativeService;
 
     @Autowired
-    public TaskController(TaskService taskService, UserService userService, FileStorageService fileStorageService, TaskFilesService taskFilesService) {
+    public TaskController(TaskService taskService, UserService userService, FileStorageService fileStorageService, TaskFilesService taskFilesService, TaskIssueService taskIssueService, TaskRelativeService taskRelativeService) {
         this.taskService = taskService;
         this.userService = userService;
         this.fileStorageService = fileStorageService;
         this.taskFilesService = taskFilesService;
+        this.taskIssueService = taskIssueService;
+        this.taskRelativeService = taskRelativeService;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDetail> readById(@PathVariable(name = "id") Integer id, Principal principal) {
+    public ResponseEntity<TaskDetail> readById(@PathVariable(name = "id") Integer id) {
 
-        // get current logged executor
-        User user = userService.findByEmail(principal.getName());
-
-        TaskDetail taskDetail = taskService.findDetailById(user, id);
+        TaskDetail taskDetail = taskService.findDetailById(id);
 
         return ResponseEntity.ok(taskDetail);
     }
 
-    @GetMapping("/findAllSummaryByTitle/search")
-    public ResponseEntity<Page<TaskSummary>> findAllSummaryByTitle(@RequestParam(name = "title") String title,
-                                               @PageableDefault Pageable pageable) {
-
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByTitle(title, pageable);
-
-        return ResponseEntity.ok(taskSummaries);
-    }
-
-    @GetMapping("/advancedSearch/search")
-    public ResponseEntity<Page<TaskSummary>> findSummaryByTitleAndSummaryAndDescriptionContaining(
-            @RequestParam(name = "searchValue") String searchValue, @PageableDefault Pageable pageable) {
-
-        Page<TaskSummary> taskSummaries = taskService.findSummaryByTitleAndSummaryAndDescriptionContaining(
-                searchValue, searchValue, searchValue, pageable);
-
-        return ResponseEntity.ok(taskSummaries);
-    }
-
-    @GetMapping("/findByCurrentLoggedExecutor")
+    @GetMapping("/search/executes")
     public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedExecutor(
             @PageableDefault Pageable pageable,
             Principal principal) {
@@ -90,7 +74,7 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
-    @GetMapping("/findByCurrentLoggedCreator")
+    @GetMapping("/search/creates")
     public ResponseEntity<Page<TaskSummary>> findByTitleAndCurrentLoggedCreator(
             @RequestParam(value = "title", required = false, defaultValue = "") String title,
             @RequestParam(value = "summary", required = false, defaultValue = "") String summary,
@@ -119,6 +103,40 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
+    @GetMapping("/{id}/relatives")
+    public ResponseEntity<List<UserSummary>> readAllRelatives(@PathVariable("id") Integer id) {
+
+        List<UserSummary> userSummaries = taskRelativeService.readAll(id);
+        if (userSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(userSummaries);
+    }
+
+    @PostMapping("/{id}/relatives")
+    public ResponseEntity<List<UserSummary>> editRelatives(
+            @PathVariable("id") Integer id,
+            @RequestBody List<IdOnlyForm> relatives) {
+
+        List<UserSummary> userSummaries = taskRelativeService.add(id, relatives);
+        if (userSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(userSummaries);
+    }
+
+    @DeleteMapping("/{id}/relatives/{userId}")
+    public ResponseEntity<List<UserSummary>> editRelatives(
+            @PathVariable("id") Integer id,
+            @PathVariable("userId") Integer userId) {
+
+        taskRelativeService.delete(id, userId);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}/files")
     public ResponseEntity<List<TaskFilesSummary>> loadFiles(@PathVariable("id") Integer id) {
 
@@ -130,7 +148,7 @@ public class TaskController {
         return ResponseEntity.ok(taskFilesSummaries);
     }
 
-    @PostMapping("/{id}/uploadFile")
+    @PostMapping("/{id}/files")
     public ResponseEntity<UploadFileResponse> uploadFile(
             @PathVariable("id") Integer id,
             @RequestParam("file") MultipartFile file) {
@@ -153,10 +171,34 @@ public class TaskController {
         return ResponseEntity.ok(uploadFileResponse);
     }
 
+    @GetMapping("/{taskId}/issues")
+    public ResponseEntity<List<TaskIssueDetail>> readAllIssue(@PathVariable("taskId") Integer taskId) {
+
+        List<TaskIssueDetail> taskIssueDetails = taskIssueService.readAll(taskId);
+        if (taskIssueDetails.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskIssueDetails);
+    }
+
+    @PostMapping("/{taskId}/issues")
+    public ResponseEntity<TaskIssueDetail> createIssue(@PathVariable("taskId") Integer taskId,
+                                                       @Valid @RequestBody TaskIssueForm taskIssueForm,
+                                                       BindingResult result) {
+        if (result.hasErrors()) {
+            String message = ModelErrorMessage.build(result);
+            throw new ModelNotValidException(message);
+        }
+
+        TaskIssueDetail taskIssueDetail = taskIssueService.create(taskId, taskIssueForm);
+
+        return ResponseEntity.ok(taskIssueDetail);
+    }
+
     @PostMapping
     public ResponseEntity create(@Valid @RequestBody TaskCreateForm taskCreateForm,
-                                 BindingResult result,
-                                 Principal principal) {
+                                 BindingResult result) {
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);

@@ -14,6 +14,8 @@ import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.CommentService;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -92,7 +94,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteById(Integer id) {
-
+        commentRepository.deleteById(id);
     }
 
     @Override
@@ -111,10 +113,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentSummary> findAllSummaryByTask(Task task) {
+    public Page<CommentSummary> findAllSummaryByTaskAndStatusNot(Task task, Pageable pageable, Integer status){
 
         TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
-        List<CommentSummary> commentSummaries = commentRepository.findAllSummaryByTask(taskEntity);
+        Page<CommentSummary> commentSummaries = commentRepository.findAllSummaryByTaskAndStatusNot(taskEntity, pageable, status);
+        return commentSummaries;
+    }
+
+    @Override
+    public List<CommentSummary> findAllSummaryByParentCommentId(Integer parentCommentId) {
+        List<CommentSummary> commentSummaries = commentRepository.findAllSummaryByParentCommentId(parentCommentId);
 
         return commentSummaries;
     }

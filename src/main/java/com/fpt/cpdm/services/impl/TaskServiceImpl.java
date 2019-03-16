@@ -12,7 +12,7 @@ import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
-import com.fpt.cpdm.models.tasks.TaskCreateForm;
+import com.fpt.cpdm.forms.tasks.TaskCreateForm;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
@@ -64,19 +64,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByTitle(String title, Pageable pageable) {
+    public TaskDetail findDetailById(Integer id) {
 
-        Page<TaskSummary> taskSummaries = taskRepository.findSummaryByTitleContaining(title, pageable);
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
 
-        return taskSummaries;
-    }
-
-    @Override
-    public TaskDetail findDetailById(User user, Integer id) {
-
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
-
-        if (taskRepository.existsByCreatorOrExecutor(userEntity, userEntity) == false) {
+        if (taskRepository.existsByCreatorOrExecutorOrRelatives(userEntity, userEntity, userEntity) == false) {
             throw new UnauthorizedException();
         }
 
@@ -95,13 +90,6 @@ public class TaskServiceImpl implements TaskService {
         );
 
         Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByRelatives(userEntity, pageable);
-        return taskSummaries;
-    }
-
-    @Override
-    public Page<TaskSummary> findSummaryByTitleAndSummaryAndDescriptionContaining(String title, String summary, String description, Pageable pageable) {
-        Page<TaskSummary> taskSummaries = taskRepository.findSummaryByTitleAndSummaryAndDescriptionContaining(
-                title, summary, description, pageable);
         return taskSummaries;
     }
 

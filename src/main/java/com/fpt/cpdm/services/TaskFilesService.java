@@ -1,6 +1,6 @@
 package com.fpt.cpdm.services;
 
-import com.fpt.cpdm.models.taskFiles.TaskFilesSummary;
+import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 
 import java.util.List;
 
