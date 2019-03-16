@@ -1,21 +1,17 @@
-package com.fpt.cpdm.models.comments;
+package com.fpt.cpdm.models.storedComments;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fpt.cpdm.models.tasks.Task;
-import com.fpt.cpdm.models.users.User;
-import javafx.beans.DefaultProperty;
+import com.fpt.cpdm.models.comments.Comment;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Comment {
-
+public class StoredComment {
     @EqualsAndHashCode.Include
     private Integer id;
 
@@ -25,16 +21,6 @@ public class Comment {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdDate;
 
-    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime lastModifiedDate;
-
-    private Integer status;
-    
-    private User user;
-
     @NotNull
-    private Task task;
-
-    private Integer parentCommentId;
+    private Comment comment;
 }

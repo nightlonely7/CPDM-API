@@ -1,11 +1,13 @@
 package com.fpt.cpdm.entities;
 
+import com.fpt.cpdm.models.comments.Comment;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "Comment")
 @Table(name = "comment")
@@ -37,6 +39,10 @@ public class CommentEntity extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "task_id", referencedColumnName = "id")
     private TaskEntity task;
+
+    @Basic
+    @Column(name = "parent_comment_id")
+    private Integer parentCommentId;
 
     @PrePersist
     public void onCreated(){
