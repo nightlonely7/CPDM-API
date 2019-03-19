@@ -210,11 +210,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByCreator(User user, String title, String summary, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByCreator(User user, String title, String summary, Integer projectId, Pageable pageable) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        //Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreator(userEntity, title, pageable);
-        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreatorAndTitleContainsAndSummaryContainsAndAvailableTrue(
-                userEntity, title, summary, pageable);
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreatorAndTitleContainsAndSummaryContainsAndProject_IdAndAvailableTrue(
+                userEntity, title, summary, projectId, pageable);
 
         return taskSummaries;
     }

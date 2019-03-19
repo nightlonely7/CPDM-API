@@ -24,7 +24,8 @@ public interface TaskService {
 
     Page<TaskSummary> findAllSummaryByExecutor(User user, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByCreator(User user, String title, String summary, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByCreator
+            (User user, String title, String summary, Integer projectId, Pageable pageable);
 
     void deleteById(Integer id);
 }
