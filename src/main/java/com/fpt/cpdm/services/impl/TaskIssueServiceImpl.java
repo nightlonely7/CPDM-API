@@ -44,7 +44,6 @@ public class TaskIssueServiceImpl implements TaskIssueService {
         TaskIssueEntity taskIssueEntity = TaskIssueEntity.builder()
                 .summary(taskIssueForm.getSummary())
                 .detail(taskIssueForm.getDetail())
-                .weight(taskIssueForm.getWeight())
                 .status("working")
                 .task(taskEntity)
                 .build();
@@ -67,7 +66,6 @@ public class TaskIssueServiceImpl implements TaskIssueService {
 
         taskIssueEntity.setDetail(taskIssueForm.getDetail());
         taskIssueEntity.setSummary(taskIssueForm.getSummary());
-        taskIssueEntity.setWeight(taskIssueForm.getWeight());
 
         taskIssueRepository.save(taskIssueEntity);
         TaskIssueDetail savedTaskIssueDetail = taskIssueRepository.findDetailByIdAndAvailableTrue(id).orElseThrow(
