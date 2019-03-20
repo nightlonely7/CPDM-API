@@ -1,9 +1,11 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
+import com.fpt.cpdm.models.leaveRequests.Leave;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequestSummary;
 import com.fpt.cpdm.models.users.User;
+import com.fpt.cpdm.models.users.UserLeaves;
 import com.fpt.cpdm.models.users.UserSummary;
 import com.fpt.cpdm.services.LeaveRequestService;
 import com.fpt.cpdm.services.UserService;
@@ -11,6 +13,8 @@ import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -111,7 +115,7 @@ public class LeaveRequestController {
     }
 
     @GetMapping("/findByUserAndDateRange")
-    public ResponseEntity<List<LeaveRequestSummary>> viewLeaves(
+    public ResponseEntity<List<LeaveRequestSummary>> findByUserAndDateRange(
             @RequestParam String fromDate, @RequestParam String toDate, @RequestParam Integer userId) {
 
         LocalDate from = LocalDate.parse(fromDate);
@@ -128,6 +132,55 @@ public class LeaveRequestController {
         }
 
         return ResponseEntity.ok(leaveRequestSummaries);
+    }
+
+    @GetMapping("/viewLeaves")
+    public ResponseEntity<Page<UserLeaves>> viewLeaves(
+            @RequestParam String fromDate, @RequestParam String toDate,
+            @PageableDefault Pageable pageable) {
+
+        LocalDate from = LocalDate.parse(fromDate);
+        LocalDate to = LocalDate.parse(toDate);
+
+        Page<UserSummary> userSummaries = userService.findAllSummaryForAdmin(pageable);
+
+        ArrayList<UserLeaves> userLeaveList = new ArrayList<UserLeaves>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+
+        int countPlusDate = -1;
+        for ( UserSummary userSummary : userSummaries) {
+            UserLeaves userLeaves = new UserLeaves();
+            userLeaves.setDisplayName(userSummary.getDisplayName());
+            ArrayList<Leave> list = new ArrayList<>();
+            User user = new User();
+            user.setId(userSummary.getId());
+            while(from.plusDays(countPlusDate).isBefore(to)){
+                LocalDate tmpDate = from.plusDays(countPlusDate);
+                countPlusDate++;
+                Leave leave = new Leave();
+                leave.setDate(tmpDate);
+                leave.setWaiting(false);
+                leave.setApproved(false);
+                if(leaveRequestService.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(tmpDate,tmpDate,user,approvedCode)){
+                    leave.setApproved(true);
+                } else if(leaveRequestService.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(tmpDate,tmpDate,user,newCode)){
+                    leave.setWaiting(true);
+                }
+                list.add(leave);
+            }
+            countPlusDate = -1;
+            userLeaves.setLeaveList(list);
+            userLeaveList.add(userLeaves);
+        }
+
+        Page<UserLeaves> PageImpl = new PageImpl<UserLeaves>(userLeaveList, new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),userLeaveList.size());
+
+        if (userSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(PageImpl);
     }
 
 }

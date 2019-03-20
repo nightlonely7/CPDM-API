@@ -52,6 +52,12 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
+    public boolean existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(LocalDate fromDate, LocalDate toDate, User user, Integer status) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return leaveRequestRepository.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(fromDate,toDate,userEntity,status);
+    }
+
+    @Override
     public LeaveRequest save(LeaveRequest model) {
 
         // check user exists
