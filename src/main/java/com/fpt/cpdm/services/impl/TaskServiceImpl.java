@@ -1,6 +1,7 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.configurations.AuthenticationFacade;
+import com.fpt.cpdm.entities.ProjectEntity;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.TaskFilesEntity;
 import com.fpt.cpdm.entities.UserEntity;
@@ -172,6 +173,9 @@ public class TaskServiceImpl implements TaskService {
         UserEntity executor = new UserEntity();
         executor.setId(taskCreateForm.getExecutor().getId());
 
+        ProjectEntity project = new ProjectEntity();
+        project.setId(taskCreateForm.getProject().getId());
+
         List<UserEntity> relatives = new ArrayList<>();
         for (IdOnlyForm idOnlyForm : taskCreateForm.getRelatives()) {
             UserEntity relative = new UserEntity(idOnlyForm.getId());
@@ -179,6 +183,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setProject(project);
         taskEntity.setCreator(creator);
         taskEntity.setExecutor(executor);
         taskEntity.setRelatives(relatives);
@@ -191,6 +196,7 @@ public class TaskServiceImpl implements TaskService {
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
         TaskSummary taskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
+
         return taskSummary;
     }
 
@@ -198,17 +204,16 @@ public class TaskServiceImpl implements TaskService {
     public Page<TaskSummary> findAllSummaryByExecutor(User user, Pageable pageable) {
 
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutorAndIsAvailableTrue(userEntity, pageable);
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutorAndAvailableTrue(userEntity, pageable);
 
         return taskSummaries;
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByCreator(User user, String title, String summary, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByCreator(User user, String title, String summary, Integer projectId, Pageable pageable) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        //Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreator(userEntity, title, pageable);
-        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreatorAndTitleContainsAndSummaryContainsAndIsAvailableTrue(
-                userEntity, title, summary, pageable);
+        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreatorAndTitleContainsAndSummaryContainsAndProject_IdAndAvailableTrue(
+                userEntity, title, summary, projectId, pageable);
 
         return taskSummaries;
     }
@@ -217,7 +222,7 @@ public class TaskServiceImpl implements TaskService {
     public void deleteById(Integer id) {
 
         TaskEntity taskEntity = taskRepository.findById(id).get();
-        taskEntity.setIsAvailable(false);
+        taskEntity.setAvailable(false);
         taskRepository.save(taskEntity);
     }
 

@@ -13,7 +13,4 @@ public class TaskIssueForm {
     private String summary;
 
     private String detail;
-
-    @NotNull
-    private Integer weight;
 }
