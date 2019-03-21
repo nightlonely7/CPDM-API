@@ -3,14 +3,12 @@ package com.fpt.cpdm.models.comments;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.users.User;
-import javafx.beans.DefaultProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

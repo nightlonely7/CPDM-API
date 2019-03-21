@@ -53,6 +53,10 @@ public class TaskEntity extends BaseEntity {
     private String status;
 
     @ManyToOne
+    @JoinColumn(name = "project_id", referencedColumnName = "id")
+    private ProjectEntity project;
+
+    @ManyToOne
     @JoinColumn(name = "parent_task_id", referencedColumnName = "id")
     private TaskEntity parentTask;
 
@@ -71,8 +75,8 @@ public class TaskEntity extends BaseEntity {
     private List<UserEntity> relatives;
 
     @Basic
-    @Column(name = "is_available")
-    private Boolean isAvailable;
+    @Column(name = "available")
+    private Boolean available;
 
     @Basic
     @OneToMany(mappedBy = "task")
@@ -88,6 +92,6 @@ public class TaskEntity extends BaseEntity {
     public void onCreated() {
         this.setCreatedTime(LocalDateTime.now());
         this.setStatus("Working");
-        this.setIsAvailable(Boolean.TRUE);
+        this.setAvailable(Boolean.TRUE);
     }
 }

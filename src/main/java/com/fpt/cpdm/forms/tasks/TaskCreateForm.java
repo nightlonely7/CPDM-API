@@ -40,6 +40,9 @@ public class TaskCreateForm {
     @NotNull
     private IdOnlyForm executor;
 
+    @NotNull
+    private IdOnlyForm project;
+
     private List<IdOnlyForm> relatives;
 
 }
