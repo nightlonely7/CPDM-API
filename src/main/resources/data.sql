@@ -7,12 +7,6 @@ INSERT INTO department (name, alias) VALUES
 ('New Department 1', 'NEW1'),
 ('New Department 2', 'NEW2');
 
--- INSERT PROJECT
-INSERT INTO project (name, alias) VALUES
-('Không dự án', ''),
-('New project 1', 'P1'),
-('New project 2', 'P2');
-
 -- INSERT USER
 INSERT INTO user (display_name, full_name, gender, password, email, phone, address, birthday, department_id, role_id, is_enabled, created_time) VALUES
 ('khanhnp', 'Nguyễn Phú Khánh', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'khanhnp@gmail.com'
@@ -44,27 +38,27 @@ INSERT INTO document (title, name_company, day_arrived, summary, link) VALUES
 
 -- INSERT TASK
 INSERT INTO task (title, summary, description, created_time,
-start_time, end_time, priority, status, project_id, creator_id, executor_id, available) VALUES
+start_time, end_time, priority, status, creator_id, executor_id, is_available) VALUES
 ('title task 01 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true),
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 02', 'summary task 02', 'description task 02', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true),
+, '2019-01-28 16:30:00', '2019-03-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 03', 'summary task 03', 'description task 03', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true),
+, '2019-01-28 16:30:00', '2019-04-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 04', 'summary task 04', 'description task 04', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true),
+, '2019-01-28 16:30:00', '2019-04-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 05', 'summary task 05', 'description task 05', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true),
+, '2019-01-28 16:30:00', '2019-03-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 06', 'summary task 06', 'description task 06', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true),
+, '2019-01-28 16:30:00', '2019-06-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 07', 'summary task 07', 'description task 07', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true),
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 08', 'summary task 08', 'description task 08', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true),
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 09', 'summary task 09', 'description task 09', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true),
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, true),
 ('title task 10', 'summary task 10', 'description task 10', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 1, 2, true);
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, true);
 
 
 -- INSERT TASK-RELATIVES MAPPING
@@ -72,12 +66,12 @@ INSERT INTO task_relative(task_id, user_id) VALUES
 (1, 3), (1, 4), (1, 5), (1, 6);
 
 -- INSERT TASK_ISSUE
-INSERT INTO task_issue(task_id, summary, detail, status, created_time, available) VALUES
-(1, 'issue 1', 'detail 1', 'working', '2019-02-28 23:59:59', true),
-(1, 'issue 2', 'detail 2', 'working', '2019-02-28 23:59:59', true),
-(1, 'issue 3', 'detail 3', 'working', '2019-02-28 23:59:59', true),
-(1, 'issue 4', 'detail 4', 'working', '2019-02-28 23:59:59', true),
-(1, 'issue 5', 'detail 5', 'completed', '2019-02-28 23:59:59', true);
+INSERT INTO task_issue(task_id, summary, detail, weight, status, created_time, available) VALUES
+(1, 'issue 1', 'detail 1', 1, 'working', '2019-02-28 23:59:59', true),
+(1, 'issue 2', 'detail 2', 1, 'working', '2019-02-28 23:59:59', true),
+(1, 'issue 3', 'detail 3', 1, 'working', '2019-02-28 23:59:59', true),
+(1, 'issue 4', 'detail 4', 1, 'working', '2019-02-28 23:59:59', true),
+(1, 'issue 5', 'detail 5', 1, 'completed', '2019-02-28 23:59:59', true);
 
 -- INSERT TASK-DOCUMENT MAPPING
 INSERT INTO tasks_documents(task_id, document_id) VALUES
