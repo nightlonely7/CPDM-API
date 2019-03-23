@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity(name = "Document")
@@ -22,19 +19,25 @@ public class DocumentEntity extends BaseEntity {
     private String title;
 
     @Basic
-    @Column(name = "name_company")
-    private String nameCompany;
-
-    @Basic
-    @Column(name = "day_arrived")
-    private LocalDateTime dayArrived;
-
-    @Basic
     @Column(name = "summary")
     private String summary;
 
     @Basic
-    @Column(name = "link")
-    private String link;
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", referencedColumnName = "id")
+    private ProjectEntity project;
+
+    @Basic
+    @Column(name = "status")
+    private String status;
+
+    @PrePersist
+    private void onCreate() {
+        this.createdTime = LocalDateTime.now();
+        this.status = "created";
+    }
 
 }

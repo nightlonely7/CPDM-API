@@ -1,6 +1,7 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
+import com.fpt.cpdm.forms.documents.DocumentCreateForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.services.DocumentService;
@@ -14,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/documents")
@@ -43,23 +43,24 @@ public class DocumentController {
 
         Page<DocumentSummary> documentSummaries = documentService.findAllSummary(pageable);
         if (documentSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build(); //phản hồi trạng thái noContent
+            return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(documentSummaries);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Document> readById(@PathVariable(name = "id") Integer id) {
-        Document document = documentService.findById(id);
-        return ResponseEntity.ok(document);
-    }
 
     @PostMapping
-    public ResponseEntity<Document> create(@Valid @RequestBody Document document,
-                                           BindingResult result) {
+    public ResponseEntity<DocumentSummary> create(@Valid @RequestBody DocumentCreateForm documentCreateForm,
+                                                  BindingResult result) {
+        if (result.hasErrors()) {
+            String message = ModelErrorMessage.build(result);
+            throw new ModelNotValidException(message);
+        }
 
-        return save(null, document, result);
+        DocumentSummary documentSummary = documentService.create(documentCreateForm);
+
+        return ResponseEntity.ok(documentSummary);
     }
 
     @PutMapping("/{id}")
@@ -72,7 +73,6 @@ public class DocumentController {
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable(name = "id") Integer id) {
-        documentService.deleteById(id);
     }
 
     private ResponseEntity<Document> save(Integer id, Document document, BindingResult result) {
@@ -82,9 +82,8 @@ public class DocumentController {
             throw new ModelNotValidException(message);
         }
         document.setId(id);
-        Document savedDocument = documentService.save(document);
 
-        return ResponseEntity.ok(savedDocument);
+        return null;
     }
 
 

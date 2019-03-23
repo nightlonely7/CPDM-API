@@ -238,7 +238,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/done")
-    public ResponseEntity taskDone(@PathVariable("id") Integer id, Principal principal) {
+    public ResponseEntity<TaskSummary> taskDone(@PathVariable("id") Integer id, Principal principal) {
 
         // get current logged executor
         User executor = userService.findByEmail(principal.getName());
