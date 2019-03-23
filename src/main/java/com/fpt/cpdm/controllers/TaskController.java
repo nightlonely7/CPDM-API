@@ -259,5 +259,14 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}/childs")
+    public ResponseEntity childTask(@PathVariable(name="id") Integer id,
+                                    @PageableDefault Pageable pageable){
+        Page<TaskSummary> taskSummaries = taskService.findAllByParentTaskId(id, pageable);
+        if (taskSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(taskSummaries);
+    }
     
 }

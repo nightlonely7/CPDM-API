@@ -28,4 +28,6 @@ public interface TaskService {
             (User user, String title, String summary, Integer projectId, Pageable pageable);
 
     void deleteById(Integer id);
+
+    Page<TaskSummary> findAllByParentTaskId(Integer taskId, Pageable pageable);
 }

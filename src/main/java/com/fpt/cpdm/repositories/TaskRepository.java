@@ -23,4 +23,5 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     Boolean existsByCreatorOrExecutorOrRelatives(UserEntity creator, UserEntity executor, UserEntity relative);
 
+    Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable);
 }

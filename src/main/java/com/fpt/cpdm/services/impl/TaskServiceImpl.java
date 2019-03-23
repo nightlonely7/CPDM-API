@@ -226,4 +226,11 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(taskEntity);
     }
 
+    @Override
+    public Page<TaskSummary> findAllByParentTaskId(Integer taskId, Pageable pageable) {
+        Page<TaskSummary> taskSummaries = taskRepository.findAllByParentTask_Id(taskId, pageable);
+
+        return taskSummaries;
+    }
+
 }
