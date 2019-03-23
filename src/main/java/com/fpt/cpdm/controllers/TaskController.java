@@ -78,13 +78,14 @@ public class TaskController {
     public ResponseEntity<Page<TaskSummary>> findByTitleAndCurrentLoggedCreator(
             @RequestParam(value = "title", required = false, defaultValue = "") String title,
             @RequestParam(value = "summary", required = false, defaultValue = "") String summary,
+            @RequestParam(value = "projectId", required = false, defaultValue = "1") Integer projectId,
             @PageableDefault Pageable pageable,
             Principal principal) {
 
         // get current logged creator
         User user = userService.findByEmail(principal.getName());
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(user, title, summary, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(user, title, summary, projectId, pageable);
         if (taskSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

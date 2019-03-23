@@ -10,8 +10,6 @@ public interface TaskIssueDetail {
 
     String getDetail();
 
-    Integer getWeight();
-
     String getStatus();
 
     LocalDateTime getCreatedTime();

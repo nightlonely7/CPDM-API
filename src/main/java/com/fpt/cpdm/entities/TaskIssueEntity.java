@@ -28,10 +28,6 @@ public class TaskIssueEntity extends BaseEntity {
     private String detail;
 
     @Basic
-    @Column(name = "weight")
-    private Integer weight;
-
-    @Basic
     @Column(name = "status")
     private String status;
 

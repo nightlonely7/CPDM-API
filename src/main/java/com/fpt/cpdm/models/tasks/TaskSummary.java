@@ -15,6 +15,8 @@ public interface TaskSummary {
 
     String getDescription();
 
+    NameIdOnly getProject();
+
     UserDisplayName getExecutor();
 
     UserDisplayName getCreator();
