@@ -43,6 +43,8 @@ public class TaskCreateForm {
     @NotNull
     private IdOnlyForm project;
 
+    private IdOnlyForm parentTask;
+
     private List<IdOnlyForm> relatives;
 
 }
