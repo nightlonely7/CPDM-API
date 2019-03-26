@@ -35,4 +35,6 @@ public interface TaskService {
     Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable);
 
     List<TaskBasic> findAllBasicByCurrentExecutorAndProject_Id(Integer projectId);
+
+    boolean existsByExecutorAndStatus(User user, String status);
 }

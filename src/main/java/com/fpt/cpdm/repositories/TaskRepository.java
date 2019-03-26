@@ -17,6 +17,11 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     TaskDetail findDetailById(Integer id);
 
+    Page<TaskSummary> findSummaryByTitleContaining(String title, Pageable pageable);
+
+    Page<TaskSummary> findSummaryByTitleAndSummaryAndDescriptionContaining(String title, String summary,
+                                                                           String description, Pageable pageable);
+
     TaskSummary findSummaryById(Integer id);
 
     Page<TaskSummary> findAllSummaryByRelatives(UserEntity userEntity, Pageable pageable);
@@ -46,4 +51,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
     Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable);
 
     List<TaskBasic> findAllBasicByExecutorAndProject_Id(UserEntity executor, Integer projectId);
+
+    boolean existsByExecutorAndStatus(UserEntity userEntity, String status);
 }

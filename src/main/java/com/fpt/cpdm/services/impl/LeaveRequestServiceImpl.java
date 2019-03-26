@@ -2,6 +2,7 @@ package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.LeaveRequestEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.exceptions.leaveRequests.LeaveRequestNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequestSummary;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,17 +31,30 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
-    public Page<LeaveRequestSummary> findAllSummaryByUserOrderByCreatedDateDesc(User user, Pageable pageable) {
+    public Page<LeaveRequestSummary> findAllSummaryByUserAndStatus(User user, Integer status, Pageable pageable) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        Page<LeaveRequestSummary> leaveRequestSummaries = leaveRequestRepository.findAllSummaryByUserOrderByCreatedDateDesc(userEntity, pageable);
+        Page<LeaveRequestSummary> leaveRequestSummaries = leaveRequestRepository.findAllSummaryByUserAndStatus(userEntity, status, pageable);
         return leaveRequestSummaries;
     }
 
     @Override
-    public Page<LeaveRequestSummary> findAllSummaryByApproverOrderByCreatedDateDesc(User approver, Pageable pageable) {
+    public Page<LeaveRequestSummary> findAllSummaryByApproverAndStatus(User approver, Integer status, Pageable pageable) {
         UserEntity userEntity = ModelConverter.userModelToEntity(approver);
-        Page<LeaveRequestSummary> leaveRequestSummaries = leaveRequestRepository.findAllSummaryByUserOrderByCreatedDateDesc(userEntity, pageable);
+        Page<LeaveRequestSummary> leaveRequestSummaries = leaveRequestRepository.findAllSummaryByApproverAndStatus(userEntity, status, pageable);
         return leaveRequestSummaries;
+    }
+
+    @Override
+    public List<LeaveRequestSummary> findAllSummaryByFromDateGreaterThanEqualOrToDateLessThanEqualAndUser(LocalDate toDate, LocalDate fromDate, User user) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestRepository.findAllSummaryByFromDateGreaterThanEqualOrToDateLessThanEqualAndUser(toDate, fromDate, userEntity);
+        return leaveRequestSummaries;
+    }
+
+    @Override
+    public boolean existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(LocalDate fromDate, LocalDate toDate, User user, Integer status) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return leaveRequestRepository.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(fromDate,toDate,userEntity,status);
     }
 
     @Override
@@ -66,7 +82,10 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
 
     @Override
     public LeaveRequest findById(Integer id) {
-        return null;
+        LeaveRequestEntity leaveRequestEntity = leaveRequestRepository.findById(id).orElseThrow(
+                () -> new LeaveRequestNotFoundException(id)
+        );
+        return ModelConverter.leaveRequestEntityToModel(leaveRequestEntity);
     }
 
     @Override

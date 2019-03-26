@@ -2,7 +2,9 @@ package com.fpt.cpdm.models.leaveRequests;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fpt.cpdm.models.IdOnly;
+import com.fpt.cpdm.models.users.UserDisplayName;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface LeaveRequestSummary {
@@ -11,18 +13,18 @@ public interface LeaveRequestSummary {
 
     String getContent();
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    LocalDateTime getFromDate();
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    LocalDate getFromDate();
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    LocalDateTime getToDate();
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    LocalDate getToDate();
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    LocalDateTime getCreatedDate();
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    LocalDate getCreatedDate();
 
     Integer getStatus();
 
-    IdOnly getUser();
+    UserDisplayName getUser();
 
-    IdOnly getApprover();
+    UserDisplayName getApprover();
 }

@@ -67,8 +67,8 @@ public class CommentController {
         return ResponseEntity.ok(commentSummaries);
     }
 
-    @GetMapping("/loadOldVesion/{id}")
-    public ResponseEntity<List<StoredCommentSummary>> loadOldVesion(@PathVariable(name = "id") Integer id) {
+    @GetMapping("/loadOldVersion/{id}")
+    public ResponseEntity<List<StoredCommentSummary>> loadOldVersion(@PathVariable(name = "id") Integer id) {
 
         Comment commnet = new Comment();
         commnet.setId(id);

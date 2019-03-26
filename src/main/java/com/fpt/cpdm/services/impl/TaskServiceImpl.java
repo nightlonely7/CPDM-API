@@ -265,7 +265,6 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.advanceSearch(creator, null, title, summary, projectId, pageable);
     }
 
-
     @Override
     public void deleteById(Integer id) {
 
@@ -276,7 +275,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable) {
-
         Page<TaskSummary> taskSummaries = taskRepository.findAllByParentTask_Id(taskId, pageable);
 
         return taskSummaries;
@@ -291,6 +289,12 @@ public class TaskServiceImpl implements TaskService {
         List<TaskBasic> taskBasics = taskRepository.findAllBasicByExecutorAndProject_Id(executor, projectId);
 
         return taskBasics;
+    }
+
+    @Override
+    public boolean existsByExecutorAndStatus(User user, String status) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return taskRepository.existsByExecutorAndStatus(userEntity, status);
     }
 
 }

@@ -117,6 +117,22 @@ public class UserController {
         return ResponseEntity.ok(managers);
     }
 
+    @GetMapping("/findAllfDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager")
+    public ResponseEntity<List<UserDisplayName>> findAllfDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager(
+            @RequestParam("roleName") String roleName, Principal principal) {
+
+        // get current logged manager
+        User user = userService.findByEmail(principal.getName());
+
+        List<UserDisplayName> userDisplayNames = userService
+                .findDisplayNameByDepartmentAndRole_Name(user.getDepartment(), roleName);
+        if (userDisplayNames.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(userDisplayNames);
+    }
+
     @GetMapping("/findAllStaffSummaryByDepartmentOfCurrentLoggedManager")
     public ResponseEntity<Page<UserSummary>> findAllStaffSummaryByDepartmentOfCurrentLoggedManager(
             @PageableDefault Pageable pageable,
@@ -147,7 +163,6 @@ public class UserController {
                                              @Valid @RequestBody User user,
                                              BindingResult result,
                                              Principal principal) {
-
         return save(id, user, result, principal);
     }
 
@@ -169,5 +184,9 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/check/existByEmail")
+    public ResponseEntity<Boolean> existsByEmail(@Valid @RequestParam("email") String email){
+        return ResponseEntity.ok(userService.existsByEmail(email));
+    }
 
 }

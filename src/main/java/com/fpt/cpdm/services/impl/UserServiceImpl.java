@@ -98,6 +98,9 @@ public class UserServiceImpl implements UserService {
         }
 
         // check department is already have a manager
+//        if (userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+//            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
+//        }
         if (user.getRole().getId() == 1 // 1 for "ROLE_STAFF"
                 && userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
             throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
@@ -259,6 +262,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserSummary> findAllSummaryForAdmin(Pageable pageable) {
         return userRepository.findAllSummaryBy(pageable);
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
 }
