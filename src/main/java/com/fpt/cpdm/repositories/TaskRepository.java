@@ -8,6 +8,8 @@ import com.fpt.cpdm.models.tasks.TaskSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -23,6 +25,21 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     Page<TaskSummary> findAllSummaryByCreatorAndTitleContainsAndSummaryContainsAndProject_IdAndAvailableTrue
             (UserEntity userEntity, String title, String description, Integer projectId, Pageable pageable);
+
+    @Query("select t from TaskEntity t where " +
+            "(:creator is null or t.creator = :creator) and" +
+            "(:executor is null or t.executor = :executor) and" +
+            "(:title is null or t.title like %:title%) and " +
+            "(:summary is null or t.summary like %:summary%) and " +
+            "(:projectId is null or t.project.id = :projectId) and" +
+            "(t.available = true)")
+    Page<TaskSummary> advanceSearch(
+            @Param("creator") UserEntity creator,
+            @Param("executor") UserEntity executor,
+            @Param("title") String title,
+            @Param("summary") String summary,
+            @Param("projectId") Integer projectId,
+            Pageable pageable);
 
     Boolean existsByCreatorOrExecutorOrRelatives(UserEntity creator, UserEntity executor, UserEntity relative);
 

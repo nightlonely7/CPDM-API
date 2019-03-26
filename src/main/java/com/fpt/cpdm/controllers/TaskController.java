@@ -1,16 +1,16 @@
 package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
-
+import com.fpt.cpdm.forms.tasks.TaskCreateForm;
+import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.UploadFileResponse;
-import com.fpt.cpdm.models.tasks.TaskBasic;
-import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 import com.fpt.cpdm.models.tasks.Task;
-import com.fpt.cpdm.forms.tasks.TaskCreateForm;
+import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
+import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 import com.fpt.cpdm.models.tasks.task_issues.TaskIssueDetail;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.models.users.UserSummary;
@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,36 +61,26 @@ public class TaskController {
     }
 
     @GetMapping("/search/executes")
-    public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedExecutor(
-            @PageableDefault Pageable pageable,
-            Principal principal) {
+    public ResponseEntity<Page<TaskSummary>> findByLoggedExecutor(
+            @RequestParam(value = "title", required = false, defaultValue = "") String title,
+            @RequestParam(value = "summary", required = false, defaultValue = "") String summary,
+            @RequestParam(value = "projectId", required = false) Integer projectId,
+            @PageableDefault Pageable pageable) {
 
-        // get current logged executor
-        User user = userService.findByEmail(principal.getName());
-
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(user, pageable);
-        if (taskSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(title, summary, projectId, pageable);
 
         return ResponseEntity.ok(taskSummaries);
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER"})
     @GetMapping("/search/creates")
-    public ResponseEntity<Page<TaskSummary>> findByTitleAndCurrentLoggedCreator(
+    public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedCreator(
             @RequestParam(value = "title", required = false, defaultValue = "") String title,
             @RequestParam(value = "summary", required = false, defaultValue = "") String summary,
-            @RequestParam(value = "projectId", required = false, defaultValue = "1") Integer projectId,
-            @PageableDefault Pageable pageable,
-            Principal principal) {
+            @RequestParam(value = "projectId", required = false) Integer projectId,
+            @PageableDefault Pageable pageable) {
 
-        // get current logged creator
-        User user = userService.findByEmail(principal.getName());
-
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(user, title, summary, projectId, pageable);
-        if (taskSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(title, summary, projectId, pageable);
 
         return ResponseEntity.ok(taskSummaries);
     }
@@ -98,9 +89,7 @@ public class TaskController {
     public ResponseEntity<Page<TaskSummary>> relatives(@PageableDefault Pageable pageable) {
 
         Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(pageable);
-        if (taskSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+
 
         return ResponseEntity.ok(taskSummaries);
     }
@@ -199,43 +188,34 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity create(@Valid @RequestBody TaskCreateForm taskCreateForm,
-                                 BindingResult result) {
+    public ResponseEntity<TaskDetail> create(@Valid @RequestBody TaskCreateForm taskCreateForm,
+                                             BindingResult result) {
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
 
-        TaskSummary taskSummary = taskService.create(taskCreateForm);
+        TaskDetail taskDetail = taskService.create(taskCreateForm);
 
 
-        return ResponseEntity.ok(taskSummary);
+        return ResponseEntity.ok(taskDetail);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskSummary> update(@PathVariable(name = "id") Integer id,
-                                              @Valid @RequestBody Task task,
-                                              BindingResult result,
-                                              Principal principal) {
-        return save(id, task, result, principal);
-    }
-
-    private ResponseEntity<TaskSummary> save(Integer id, Task task, BindingResult result, Principal principal) {
-
+    public ResponseEntity<TaskDetail> update(@PathVariable(name = "id") Integer id,
+                                             @Valid @RequestBody TaskUpdateForm taskUpdateForm,
+                                             BindingResult result) {
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
 
-        // get current logged creator
-        User user = userService.findByEmail(principal.getName());
+        TaskDetail taskDetail = taskService.update(id, taskUpdateForm);
 
-        task.setCreator(user);
-        task.setId(id);
-        TaskSummary savedTaskSummary = taskService.save(task);
 
-        return ResponseEntity.ok(savedTaskSummary);
+        return ResponseEntity.ok(taskDetail);
     }
+
 
     @PatchMapping("/{id}/done")
     public ResponseEntity<TaskSummary> taskDone(@PathVariable("id") Integer id, Principal principal) {
@@ -260,23 +240,22 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/{id}/childs")
-    public ResponseEntity childTask(@PathVariable(name="id") Integer id,
-                                    @PageableDefault Pageable pageable){
+    public ResponseEntity childTask(@PathVariable(name = "id") Integer id,
+                                    @PageableDefault Pageable pageable) {
         Page<TaskSummary> taskSummaries = taskService.findAllByParentTask_Id(id, pageable);
-        if (taskSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+
         return ResponseEntity.ok(taskSummaries);
     }
 
     @GetMapping("/search/basicByExecutes")
-    public ResponseEntity getBasicByExecute(@RequestParam("projectId") Integer projectId){
+    public ResponseEntity getBasicByExecute(@RequestParam("projectId") Integer projectId) {
         List<TaskBasic> taskBasics = taskService.findAllBasicByCurrentExecutorAndProject_Id(projectId);
-        if(taskBasics.isEmpty()){
+        if (taskBasics.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(taskBasics);
     }
-    
+
 }

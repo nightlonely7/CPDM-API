@@ -6,21 +6,16 @@ import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.TaskFilesEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
-import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
-import com.fpt.cpdm.exceptions.tasks.TaskTimeException;
-import com.fpt.cpdm.exceptions.users.UserNotFoundException;
-import com.fpt.cpdm.models.IdOnlyForm;
-import com.fpt.cpdm.models.documents.Document;
-import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
+import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
+import com.fpt.cpdm.models.IdOnlyForm;
+import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
-import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.*;
 import com.fpt.cpdm.services.TaskService;
-import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -114,57 +109,57 @@ public class TaskServiceImpl implements TaskService {
         return savedTaskSummary;
     }
 
+//    @Override
+//    public TaskSummary save(Task task) {
+//
+//        // check task exist (can be null)
+//        if (task.getId() != null && taskRepository.existsById(task.getId()) == false) {
+//            throw new TaskNotFoundException(task.getId());
+//        }
+//
+//        // check end time after start time
+//        if (task.getEndTime().isBefore(task.getStartTime())) {
+//            throw new TaskTimeException("End time is before start time!");
+//        }
+//
+//        // find executor
+//        UserEntity executor = userRepository.findById(task.getExecutor().getId()).orElseThrow(
+//                () -> new UserNotFoundException(task.getExecutor().getId())
+//        );
+//
+//        // find creator
+//        UserEntity creator = userRepository.findById(task.getCreator().getId()).orElseThrow(
+//                () -> new UserNotFoundException(task.getCreator().getId())
+//        );
+//
+//        // check executor and creator in the same department
+//        if (executor.getDepartment().equals(creator.getDepartment()) == false) {
+//            throw new UnauthorizedException();
+//        }
+//
+//        // check parent task exists (can be null)
+//        if (task.getParentTask() != null && taskRepository.existsById(task.getParentTask().getId()) == false) {
+//            throw new TaskNotFoundException(task.getParentTask().getId());
+//        }
+//
+//        // check documents exist (can be null)
+//        if (task.getDocuments() != null && task.getDocuments().isEmpty() == false) {
+//            for (Document document : task.getDocuments()) {
+//                if (documentRepository.existsById(document.getId()) == false) {
+//                    throw new DocumentNotFoundException(document.getId());
+//                }
+//            }
+//        }
+//
+//        TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
+//        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+//        TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
+//
+//        return savedTaskSummary;
+//    }
+
     @Override
-    public TaskSummary save(Task task) {
-
-        // check task exist (can be null)
-        if (task.getId() != null && taskRepository.existsById(task.getId()) == false) {
-            throw new TaskNotFoundException(task.getId());
-        }
-
-        // check end time after start time
-        if (task.getEndTime().isBefore(task.getStartTime())) {
-            throw new TaskTimeException("End time is before start time!");
-        }
-
-        // find executor
-        UserEntity executor = userRepository.findById(task.getExecutor().getId()).orElseThrow(
-                () -> new UserNotFoundException(task.getExecutor().getId())
-        );
-
-        // find creator
-        UserEntity creator = userRepository.findById(task.getCreator().getId()).orElseThrow(
-                () -> new UserNotFoundException(task.getCreator().getId())
-        );
-
-        // check executor and creator in the same department
-        if (executor.getDepartment().equals(creator.getDepartment()) == false) {
-            throw new UnauthorizedException();
-        }
-
-        // check parent task exists (can be null)
-        if (task.getParentTask() != null && taskRepository.existsById(task.getParentTask().getId()) == false) {
-            throw new TaskNotFoundException(task.getParentTask().getId());
-        }
-
-        // check documents exist (can be null)
-        if (task.getDocuments() != null && task.getDocuments().isEmpty() == false) {
-            for (Document document : task.getDocuments()) {
-                if (documentRepository.existsById(document.getId()) == false) {
-                    throw new DocumentNotFoundException(document.getId());
-                }
-            }
-        }
-
-        TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
-        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-        TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
-
-        return savedTaskSummary;
-    }
-
-    @Override
-    public TaskSummary create(TaskCreateForm taskCreateForm) {
+    public TaskDetail create(TaskCreateForm taskCreateForm) {
 
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity creator = userRepository.findByEmail(email).orElseThrow(
@@ -178,7 +173,7 @@ public class TaskServiceImpl implements TaskService {
         project.setId(taskCreateForm.getProject().getId());
 
         TaskEntity parentTask = null;
-        if(taskCreateForm.getParentTask()!=null){
+        if (taskCreateForm.getParentTask() != null) {
             parentTask = new TaskEntity();
             parentTask.setId(taskCreateForm.getParentTask().getId());
         }
@@ -192,42 +187,84 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
-        TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setProject(project);
-        taskEntity.setCreator(creator);
-        taskEntity.setExecutor(executor);
-        taskEntity.setRelatives(relatives);
-        taskEntity.setParentTask(parentTask);
-        taskEntity.setPriority(taskCreateForm.getPriority());
-        taskEntity.setTitle(taskCreateForm.getTitle());
-        taskEntity.setSummary(taskCreateForm.getSummary());
-        taskEntity.setDescription(taskCreateForm.getDescription());
-        taskEntity.setStartTime(taskCreateForm.getStartTime());
-        taskEntity.setEndTime(taskCreateForm.getEndTime());
+        TaskEntity taskEntity = TaskEntity.builder()
+                .project(project)
+                .creator(creator)
+                .executor(executor)
+                .relatives(relatives)
+                .parentTask(parentTask)
+                .priority(taskCreateForm.getPriority())
+                .title(taskCreateForm.getTitle())
+                .summary(taskCreateForm.getSummary())
+                .description(taskCreateForm.getDescription())
+                .startTime(taskCreateForm.getStartTime())
+                .endTime(taskCreateForm.getEndTime())
+                .build();
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-        TaskSummary taskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
+        TaskDetail taskDetail = taskRepository.findDetailById(savedTaskEntity.getId());
 
-        return taskSummary;
+        return taskDetail;
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByExecutor(User user, Pageable pageable) {
+    public TaskDetail update(Integer id, TaskUpdateForm taskUpdateForm) {
 
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByExecutorAndAvailableTrue(userEntity, pageable);
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(
+                () -> new TaskNotFoundException(id)
+        );
 
-        return taskSummaries;
+        UserEntity executor = new UserEntity();
+        executor.setId(taskUpdateForm.getExecutor().getId());
+
+        ProjectEntity project = new ProjectEntity();
+        project.setId(taskUpdateForm.getProject().getId());
+
+        TaskEntity parentTask = null;
+        if (taskUpdateForm.getParentTask() != null) {
+            parentTask = new TaskEntity();
+            parentTask.setId(taskUpdateForm.getParentTask().getId());
+        }
+
+        taskEntity.setProject(project);
+        taskEntity.setExecutor(executor);
+        taskEntity.setParentTask(parentTask);
+        taskEntity.setTitle(taskUpdateForm.getTitle());
+        taskEntity.setSummary(taskUpdateForm.getSummary());
+        taskEntity.setDescription(taskUpdateForm.getDescription());
+        taskEntity.setStartTime(taskUpdateForm.getStartTime());
+        taskEntity.setEndTime(taskUpdateForm.getEndTime());
+        taskEntity.setPriority(taskUpdateForm.getPriority());
+
+
+        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+        TaskDetail taskDetail = taskRepository.findDetailById(savedTaskEntity.getId());
+
+        return taskDetail;
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByCreator(User user, String title, String summary, Integer projectId, Pageable pageable) {
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByCreatorAndTitleContainsAndSummaryContainsAndProject_IdAndAvailableTrue(
-                userEntity, title, summary, projectId, pageable);
+    public Page<TaskSummary> findAllSummaryByExecutor(String title, String summary, Integer projectId, Pageable pageable) {
 
-        return taskSummaries;
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        return taskRepository.advanceSearch(null, executor, title, summary, projectId, pageable);
     }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByCreator(String title, String summary, Integer projectId, Pageable pageable) {
+
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity creator = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        return taskRepository.advanceSearch(creator, null, title, summary, projectId, pageable);
+    }
+
 
     @Override
     public void deleteById(Integer id) {
@@ -239,6 +276,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable) {
+
         Page<TaskSummary> taskSummaries = taskRepository.findAllByParentTask_Id(taskId, pageable);
 
         return taskSummaries;

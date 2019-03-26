@@ -1,5 +1,6 @@
 package com.fpt.cpdm.services;
 
+import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
 import com.fpt.cpdm.models.tasks.TaskBasic;
@@ -21,14 +22,13 @@ public interface TaskService {
 
     TaskSummary changeStatus(Task task);
 
-    TaskSummary save(Task task);
+    TaskDetail create(TaskCreateForm taskCreateForm);
 
-    TaskSummary create(TaskCreateForm taskCreateForm);
+    TaskDetail update(Integer id, TaskUpdateForm taskUpdateForm);
 
-    Page<TaskSummary> findAllSummaryByExecutor(User user, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByExecutor(String title, String summary, Integer projectId, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByCreator
-            (User user, String title, String summary, Integer projectId, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByCreator(String title, String summary, Integer projectId, Pageable pageable);
 
     void deleteById(Integer id);
 
