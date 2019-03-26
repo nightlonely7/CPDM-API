@@ -8,6 +8,8 @@ import com.fpt.cpdm.models.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface TaskService {
 
     void uploadFile(Integer id, String filename);
@@ -28,4 +30,6 @@ public interface TaskService {
             (User user, String title, String summary, Integer projectId, Pageable pageable);
 
     void deleteById(Integer id);
+
+    boolean existsByExecutorAndStatus(User user, String status);
 }

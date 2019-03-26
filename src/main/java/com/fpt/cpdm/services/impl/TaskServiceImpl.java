@@ -226,4 +226,10 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(taskEntity);
     }
 
+    @Override
+    public boolean existsByExecutorAndStatus(User user, String status) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return taskRepository.existsByExecutorAndStatus(userEntity, status);
+    }
+
 }

@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     TaskDetail findDetailById(Integer id);
@@ -23,4 +25,5 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     Boolean existsByCreatorOrExecutorOrRelatives(UserEntity creator, UserEntity executor, UserEntity relative);
 
+    boolean existsByExecutorAndStatus(UserEntity userEntity, String status);
 }
