@@ -32,8 +32,9 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             (UserEntity userEntity, String title, String description, Integer projectId, Pageable pageable);
 
     @Query("select t from TaskEntity t where " +
-            "(:creator is null or t.creator = :creator) and" +
-            "(:executor is null or t.executor = :executor) and" +
+            "(:creator is null or t.creator = :creator) and " +
+            "(:executor is null or t.executor = :executor) and " +
+            "(:relative is null or :relative member of t.relatives) and " +
             "(:title is null or t.title like %:title%) and " +
             "(:summary is null or t.summary like %:summary%) and " +
             "(:projectId is null or t.project.id = :projectId) and" +
@@ -41,6 +42,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
     Page<TaskSummary> advanceSearch(
             @Param("creator") UserEntity creator,
             @Param("executor") UserEntity executor,
+            @Param("relative") UserEntity relative,
             @Param("title") String title,
             @Param("summary") String summary,
             @Param("projectId") Integer projectId,

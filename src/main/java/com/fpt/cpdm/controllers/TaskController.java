@@ -86,10 +86,13 @@ public class TaskController {
     }
 
     @GetMapping("/search/relatives")
-    public ResponseEntity<Page<TaskSummary>> relatives(@PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<TaskSummary>> relatives(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "summary", required = false) String summary,
+            @RequestParam(value = "projectId", required = false) Integer projectId,
+            @PageableDefault Pageable pageable) {
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(pageable);
-
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(title, summary, projectId, pageable);
 
         return ResponseEntity.ok(taskSummaries);
     }

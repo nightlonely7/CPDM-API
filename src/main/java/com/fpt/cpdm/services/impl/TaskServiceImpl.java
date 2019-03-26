@@ -79,18 +79,7 @@ public class TaskServiceImpl implements TaskService {
         return taskDetail;
     }
 
-    @Override
-    public Page<TaskSummary> findAllSummaryByRelatives(Pageable pageable) {
 
-        // get current logged user
-        String email = authenticationFacade.getAuthentication().getName();
-        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException(email)
-        );
-
-        Page<TaskSummary> taskSummaries = taskRepository.findAllSummaryByRelatives(userEntity, pageable);
-        return taskSummaries;
-    }
 
     @Override
     public TaskSummary changeStatus(Task task) {
@@ -248,23 +237,38 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Page<TaskSummary> findAllSummaryByExecutor(String title, String summary, Integer projectId, Pageable pageable) {
 
+        // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
 
-        return taskRepository.advanceSearch(null, executor, title, summary, projectId, pageable);
+        return taskRepository.advanceSearch(null, executor, null, title, summary, projectId, pageable);
     }
 
     @Override
     public Page<TaskSummary> findAllSummaryByCreator(String title, String summary, Integer projectId, Pageable pageable) {
 
+        // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity creator = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
 
-        return taskRepository.advanceSearch(creator, null, title, summary, projectId, pageable);
+        return taskRepository.advanceSearch(creator, null, null, title, summary, projectId, pageable);
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByRelatives(String title, String summary, Integer projectId, Pageable pageable) {
+
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity relative = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+        List<UserEntity> relatives = new ArrayList<>();
+        relatives.add(relative);
+        return taskRepository.advanceSearch(null, null, relative, title, summary, projectId, pageable);
     }
 
     @Override

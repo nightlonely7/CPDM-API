@@ -18,7 +18,7 @@ public interface TaskService {
 
     TaskDetail findDetailById(Integer id);
 
-    Page<TaskSummary> findAllSummaryByRelatives(Pageable pageable);
+    Page<TaskSummary> findAllSummaryByRelatives(String title, String summary, Integer projectId, Pageable pageable);
 
     TaskSummary changeStatus(Task task);
 
