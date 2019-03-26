@@ -14,6 +14,7 @@ import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
+import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
@@ -224,6 +225,30 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity taskEntity = taskRepository.findById(id).get();
         taskEntity.setAvailable(false);
         taskRepository.save(taskEntity);
+    }
+
+    @Override
+    public Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable) {
+        Page<TaskSummary> taskSummaries = taskRepository.findAllByParentTask_Id(taskId, pageable);
+
+        return taskSummaries;
+    }
+
+    @Override
+    public List<TaskBasic> findAllBasicByCurrentExecutorAndProject_Id(Integer projectId) {
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+        List<TaskBasic> taskBasics = taskRepository.findAllBasicByExecutorAndProject_Id(executor, projectId);
+
+        return taskBasics;
+    }
+
+    @Override
+    public boolean existsByExecutorAndStatus(User user, String status) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return taskRepository.existsByExecutorAndStatus(userEntity, status);
     }
 
 }

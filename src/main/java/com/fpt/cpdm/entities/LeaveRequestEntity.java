@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity(name = "LeaveRequest")
@@ -21,15 +22,15 @@ public class LeaveRequestEntity extends BaseEntity {
 
     @Basic
     @Column(name = "from_date")
-    private LocalDateTime fromDate;
+    private LocalDate fromDate;
 
     @Basic
     @Column(name = "to_date")
-    private LocalDateTime toDate;
+    private LocalDate toDate;
 
     @Basic
     @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
     @Basic
     @Column(name = "status")
@@ -42,4 +43,9 @@ public class LeaveRequestEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "approver_id", referencedColumnName = "id")
     private UserEntity approver;
+
+    @PrePersist
+    public void onCreated(){
+        this.setCreatedDate(LocalDate.now());
+    }
 }

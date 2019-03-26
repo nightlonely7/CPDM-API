@@ -107,6 +107,22 @@ public class UserController {
         return ResponseEntity.ok(userDisplayNames);
     }
 
+    @GetMapping("/findAllfDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager")
+    public ResponseEntity<List<UserDisplayName>> findAllfDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager(
+            @RequestParam("roleName") String roleName, Principal principal) {
+
+        // get current logged manager
+        User user = userService.findByEmail(principal.getName());
+
+        List<UserDisplayName> userDisplayNames = userService
+                .findDisplayNameByDepartmentAndRole_Name(user.getDepartment(), roleName);
+        if (userDisplayNames.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(userDisplayNames);
+    }
+
     @GetMapping("/findAllStaffSummaryByDepartmentOfCurrentLoggedManager")
     public ResponseEntity<Page<UserSummary>> findAllStaffSummaryByDepartmentOfCurrentLoggedManager(
             @PageableDefault Pageable pageable,

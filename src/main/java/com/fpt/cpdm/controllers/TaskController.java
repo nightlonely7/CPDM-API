@@ -5,6 +5,7 @@ import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.UploadFileResponse;
+import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
@@ -237,7 +238,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/done")
-    public ResponseEntity taskDone(@PathVariable("id") Integer id, Principal principal) {
+    public ResponseEntity<TaskSummary> taskDone(@PathVariable("id") Integer id, Principal principal) {
 
         // get current logged executor
         User executor = userService.findByEmail(principal.getName());
@@ -258,4 +259,24 @@ public class TaskController {
         taskService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/childs")
+    public ResponseEntity childTask(@PathVariable(name="id") Integer id,
+                                    @PageableDefault Pageable pageable){
+        Page<TaskSummary> taskSummaries = taskService.findAllByParentTask_Id(id, pageable);
+        if (taskSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/search/basicByExecutes")
+    public ResponseEntity getBasicByExecute(@RequestParam("projectId") Integer projectId){
+        List<TaskBasic> taskBasics = taskService.findAllBasicByCurrentExecutorAndProject_Id(projectId);
+        if(taskBasics.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(taskBasics);
+    }
+    
 }

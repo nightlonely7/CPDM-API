@@ -1,6 +1,7 @@
 package com.fpt.cpdm.models.tasks;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fpt.cpdm.models.NameIdOnly;
 import com.fpt.cpdm.models.users.UserDisplayName;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,8 @@ public interface TaskSummary {
     String getDescription();
 
     NameIdOnly getProject();
+
+    IdOnly getParentTask();
 
     UserDisplayName getExecutor();
 
