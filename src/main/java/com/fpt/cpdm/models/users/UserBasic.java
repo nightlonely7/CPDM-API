@@ -8,4 +8,6 @@ public interface UserBasic {
     String getDisplayName();
 
     NameOnly getRole();
+
+    String getEmail();
 }
