@@ -16,7 +16,7 @@ public class Enum {
     }
 
     public enum LeaveRequestStatus{
-        New (0), Approved (1), OverDate (2);
+        New (0), Approved (1), Declined (2);
 
         private final int leaveRequestStatusCode;
 

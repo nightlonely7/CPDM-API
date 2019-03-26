@@ -14,7 +14,6 @@ import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
-import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
@@ -177,19 +176,10 @@ public class TaskServiceImpl implements TaskService {
         ProjectEntity project = new ProjectEntity();
         project.setId(taskCreateForm.getProject().getId());
 
-        TaskEntity parentTask = null;
-        if(taskCreateForm.getParentTask()!=null){
-            parentTask = new TaskEntity();
-            parentTask.setId(taskCreateForm.getParentTask().getId());
-        }
-
-
         List<UserEntity> relatives = new ArrayList<>();
-        if (taskCreateForm.getRelatives() != null) {
-            for (IdOnlyForm idOnlyForm : taskCreateForm.getRelatives()) {
-                UserEntity relative = new UserEntity(idOnlyForm.getId());
-                relatives.add(relative);
-            }
+        for (IdOnlyForm idOnlyForm : taskCreateForm.getRelatives()) {
+            UserEntity relative = new UserEntity(idOnlyForm.getId());
+            relatives.add(relative);
         }
 
         TaskEntity taskEntity = new TaskEntity();
@@ -197,7 +187,6 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setCreator(creator);
         taskEntity.setExecutor(executor);
         taskEntity.setRelatives(relatives);
-        taskEntity.setParentTask(parentTask);
         taskEntity.setPriority(taskCreateForm.getPriority());
         taskEntity.setTitle(taskCreateForm.getTitle());
         taskEntity.setSummary(taskCreateForm.getSummary());
@@ -253,6 +242,12 @@ public class TaskServiceImpl implements TaskService {
         List<TaskBasic> taskBasics = taskRepository.findAllBasicByExecutorAndProject_Id(executor, projectId);
 
         return taskBasics;
+    }
+
+    @Override
+    public boolean existsByExecutorAndStatus(User user, String status) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return taskRepository.existsByExecutorAndStatus(userEntity, status);
     }
 
 }
