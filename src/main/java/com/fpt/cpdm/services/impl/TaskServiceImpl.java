@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -249,6 +250,11 @@ public class TaskServiceImpl implements TaskService {
     public boolean existsByExecutorAndStatus(User user, String status) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
         return taskRepository.existsByExecutorAndStatus(userEntity, status);
+    }
+
+    @Override
+    public List<TaskSummary> findAllByExecutorAndStatusAndToday(User user, Integer status, LocalDate date) {
+        return null;
     }
 
 }

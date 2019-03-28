@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
@@ -31,4 +32,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
     List<TaskBasic> findAllBasicByExecutorAndProject_Id(UserEntity executor, Integer projectId);
 
     boolean existsByExecutorAndStatus(UserEntity userEntity, String status);
+
+    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeGreaterThanEqualOrExecutorAndStatusAndEndTimeLessThanEqual(UserEntity userEntity, Integer status, LocalDate date, UserEntity userEntity2, Integer status2, LocalDate date2);
 }

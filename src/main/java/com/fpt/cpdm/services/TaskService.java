@@ -9,6 +9,7 @@ import com.fpt.cpdm.models.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TaskService {
@@ -37,4 +38,6 @@ public interface TaskService {
     List<TaskBasic> findAllBasicByCurrentExecutorAndProject_Id(Integer projectId);
 
     boolean existsByExecutorAndStatus(User user, String status);
+
+    List<TaskSummary> findAllByExecutorAndStatusAndToday(User user, Integer status, LocalDate date);
 }

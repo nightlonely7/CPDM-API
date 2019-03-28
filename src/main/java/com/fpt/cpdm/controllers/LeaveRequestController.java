@@ -15,6 +15,7 @@ import com.fpt.cpdm.services.UserService;
 import com.fpt.cpdm.utils.ConstantManager;
 import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelErrorMessage;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class LeaveRequestController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/findByUser")
+    @GetMapping("/search/findByUser")
     public ResponseEntity<Page<LeaveRequestSummary>> findbyUser(@RequestParam Integer status,
                                                                 @PageableDefault Pageable pageable,
                                                                 Principal principal) {
@@ -76,7 +77,7 @@ public class LeaveRequestController {
         return ResponseEntity.ok(leaveRequestSummaries);
     }
 
-    @GetMapping("/findByApprover")
+    @GetMapping("/search/findByApprover")
     public ResponseEntity<Page<LeaveRequestSummary>> findByApprover(@RequestParam Integer status,
                                                                     @PageableDefault Pageable pageable,
                                                                     Principal principal) {
@@ -96,7 +97,7 @@ public class LeaveRequestController {
                                                BindingResult result, Principal principal) {
 
         //Get number of day off requested
-        int diff = (int) DAYS.between(leaveRequest.getFromDate(),leaveRequest.getToDate());
+        int diff = (int) DAYS.between(leaveRequest.getFromDate(),leaveRequest.getToDate()) + 1;
 
         ArrayList<PolicyForFree> policyForFrees = new ArrayList<>();
 
@@ -172,7 +173,7 @@ public class LeaveRequestController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/findByUserAndDateRange")
+    @GetMapping("/search/findByUserAndDateRange")
     public ResponseEntity<List<LeaveRequestSummary>> findByUserAndDateRange(
             @RequestParam String fromDate, @RequestParam String toDate, @RequestParam Integer userId) {
 
@@ -192,7 +193,7 @@ public class LeaveRequestController {
         return ResponseEntity.ok(leaveRequestSummaries);
     }
 
-    @GetMapping("/viewLeaves")
+    @GetMapping("/search/viewLeaves")
     public ResponseEntity<Page<UserLeaves>> viewLeaves(
             @RequestParam String fromDate, @RequestParam String toDate,
             @PageableDefault Pageable pageable) {
@@ -214,8 +215,8 @@ public class LeaveRequestController {
             User user = new User();
             user.setId(userSummary.getId());
             while(from.plusDays(countPlusDate).isBefore(to)){
-                LocalDate tmpDate = from.plusDays(countPlusDate);
                 countPlusDate++;
+                LocalDate tmpDate = from.plusDays(countPlusDate);
                 Leave leave = new Leave();
                 leave.setDate(tmpDate);
                 leave.setWaiting(false);
@@ -241,4 +242,29 @@ public class LeaveRequestController {
         return ResponseEntity.ok(PageImpl);
     }
 
+    @GetMapping("/search/notAllowDateFromToday")
+    public ResponseEntity<List<LocalDate>> getNotAllowedDate(Principal principal){
+        //Check number of day of policy rule
+        User user = userService.findByEmail(principal.getName());
+        LocalDate today = LocalDate.now();
+
+        List<Integer> integerList = new ArrayList<>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        integerList.add(newCode);
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+        integerList.add(approvedCode);
+
+        List<LeaveRequestSummary> leaveRequests  = leaveRequestService.findAllSummaryByUserAndStatusInAndToday(user,integerList,today);
+        List<LocalDate> result = new ArrayList<>();
+        for ( LeaveRequestSummary leaveRequest : leaveRequests) {
+            LocalDate from = leaveRequest.getFromDate();
+            LocalDate to = leaveRequest.getToDate();
+            int count = -1;
+            while(from.plusDays(count).isBefore(to)){
+                count++;
+                result.add(from.plusDays(count));
+            }
+        }
+        return ResponseEntity.ok(result);
+    }
 }
