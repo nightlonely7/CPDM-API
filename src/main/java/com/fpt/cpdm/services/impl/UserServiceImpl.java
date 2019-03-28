@@ -21,6 +21,7 @@ import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -97,6 +98,9 @@ public class UserServiceImpl implements UserService {
         }
 
         // check department is already have a manager
+//        if (userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+//            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
+//        }
         if (user.getRole().getId() == 1 // 1 for "ROLE_STAFF"
                 && userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
             throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
@@ -200,6 +204,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Secured("ROLE_ADMIN")
+    public List<UserSummary> findAllManagerForSelect() {
+        return userRepository.findAllSummaryByRole_Name("ROLE_MANAGER");
+    }
+
+    @Override
     public List<UserSummary> findAllSummaryRelatedByTask_Id(Integer id) {
         TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(
                 () -> new TaskNotFoundException(id)
@@ -252,6 +262,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserSummary> findAllSummaryForAdmin(Pageable pageable) {
         return userRepository.findAllSummaryBy(pageable);
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
 }

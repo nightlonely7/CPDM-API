@@ -5,14 +5,13 @@ import com.fpt.cpdm.models.IdOnlyForm;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class TaskCreateForm {
+public class TaskUpdateForm {
 
     @NotNull
     @Size(min = 4, max = 50)
@@ -23,19 +22,13 @@ public class TaskCreateForm {
     private String description;
 
     @NotNull
-    @FutureOrPresent
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime;
 
     @NotNull
-    @FutureOrPresent
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime endTime;
 
     @NotNull
@@ -48,7 +41,5 @@ public class TaskCreateForm {
     private IdOnlyForm project;
 
     private IdOnlyForm parentTask;
-
-    private List<IdOnlyForm> relatives;
 
 }

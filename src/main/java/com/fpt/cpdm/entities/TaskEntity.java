@@ -1,17 +1,18 @@
 package com.fpt.cpdm.entities;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity(name = "Task")
+@Entity(name = "TaskEntity")
 @Table(name = "task")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true)
 public class TaskEntity extends BaseEntity {
@@ -33,6 +34,11 @@ public class TaskEntity extends BaseEntity {
     @Column(name = "created_time")
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime createdTime;
+
+    @Basic
+    @Column(name = "last_modified_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime lastModifiedTime;
 
     @Basic
     @Column(name = "start_time")
@@ -91,7 +97,13 @@ public class TaskEntity extends BaseEntity {
     @PrePersist
     public void onCreated() {
         this.setCreatedTime(LocalDateTime.now());
+        this.setLastModifiedTime(LocalDateTime.now());
         this.setStatus("Working");
         this.setAvailable(Boolean.TRUE);
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.setLastModifiedTime(LocalDateTime.now());
     }
 }
