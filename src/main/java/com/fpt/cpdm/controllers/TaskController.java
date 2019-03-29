@@ -2,6 +2,7 @@ package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
+import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
 import com.fpt.cpdm.models.IdOnlyForm;
@@ -63,53 +64,29 @@ public class TaskController {
     }
 
     @GetMapping("/search/executes")
-    public ResponseEntity<Page<TaskSummary>> findByLoggedExecutor(
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "summary", required = false) String summary,
-            @RequestParam(value = "startTimeFrom", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeFrom,
-            @RequestParam(value = "startTimeTo", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeTo,
-            @RequestParam(value = "projectId", required = false) Integer projectId,
-            @PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<TaskSummary>> findByLoggedExecutor(@RequestBody TaskSearchForm taskSearchForm,
+                                                                  @PageableDefault Pageable pageable) {
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(
-                title, summary, startTimeFrom, startTimeTo, projectId, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(taskSearchForm, pageable);
 
         return ResponseEntity.ok(taskSummaries);
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_MANAGER"})
     @GetMapping("/search/creates")
-    public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedCreator(
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "summary", required = false) String summary,
-            @RequestParam(value = "startTimeFrom", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeFrom,
-            @RequestParam(value = "startTimeTo", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeTo,
-            @RequestParam(value = "projectId", required = false) Integer projectId,
-            @PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedCreator(@RequestBody TaskSearchForm taskSearchForm,
+                                                                        @PageableDefault Pageable pageable) {
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(
-                title, summary, startTimeFrom, startTimeTo, projectId, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(taskSearchForm, pageable);
 
         return ResponseEntity.ok(taskSummaries);
     }
 
     @GetMapping("/search/relatives")
-    public ResponseEntity<Page<TaskSummary>> relatives(
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "summary", required = false) String summary,
-            @RequestParam(value = "startTimeFrom", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeFrom,
-            @RequestParam(value = "startTimeTo", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeTo,
-            @RequestParam(value = "projectId", required = false) Integer projectId,
-            @PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<TaskSummary>> relatives(@RequestBody TaskSearchForm taskSearchForm,
+                                                       @PageableDefault Pageable pageable) {
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(
-                title, summary, startTimeFrom, startTimeTo, projectId, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(taskSearchForm, pageable);
 
         return ResponseEntity.ok(taskSummaries);
     }

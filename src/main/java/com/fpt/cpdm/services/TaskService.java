@@ -1,6 +1,7 @@
 package com.fpt.cpdm.services;
 
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
+import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskBasic;
@@ -26,17 +27,11 @@ public interface TaskService {
 
     TaskDetail update(Integer id, TaskUpdateForm taskUpdateForm);
 
-    Page<TaskSummary> findAllSummaryByExecutor(
-            String title, String summary, LocalDateTime startTimeFrom, LocalDateTime startTimeTo,
-             Integer projectId, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByExecutor(TaskSearchForm taskSearchForm, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByCreator(
-            String title, String summary, LocalDateTime startTimeFrom, LocalDateTime startTimeTo,
-             Integer projectId, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByCreator(TaskSearchForm taskSearchForm, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByRelatives(
-            String title, String summary, LocalDateTime startTimeFrom, LocalDateTime startTimeTo,
-             Integer projectId, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByRelatives(TaskSearchForm taskSearchForm, Pageable pageable);
 
     void deleteById(Integer id);
 

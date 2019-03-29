@@ -41,6 +41,8 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             "(:summary is null or t.summary like %:summary%) and " +
             "(:startTimeFrom is null or t.startTime >= :startTimeFrom) and " +
             "(:startTimeTo is null or t.startTime <= :startTimeTo) and " +
+            "(:endTimeFrom is null or t.endTime >= :endTimeFrom) and " +
+            "(:endTimeTo is null or t.endTime <= :endTimeTo) and " +
             "(:projectId is null or t.project.id = :projectId) and " +
             "(t.available = true)")
     Page<TaskSummary> advanceSearch(
@@ -51,6 +53,8 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             @Param("summary") String summary,
             @Param("startTimeFrom") LocalDateTime startTimeFrom,
             @Param("startTimeTo") LocalDateTime startTimeTo,
+            @Param("endTimeFrom") LocalDateTime endTimeFrom,
+            @Param("endTimeTo") LocalDateTime endTimeTo,
             @Param("projectId") Integer projectId,
             Pageable pageable);
 
