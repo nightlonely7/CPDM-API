@@ -40,6 +40,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +98,7 @@ public class LeaveRequestController {
                                                BindingResult result, Principal principal) {
 
         //Get number of day off requested
-        int diff = (int) DAYS.between(leaveRequest.getFromDate(),leaveRequest.getToDate()) + 1;
+        int diff = (int) DAYS.between(leaveRequest.getFromDate(), leaveRequest.getToDate()) + 1;
 
         ArrayList<PolicyForFree> policyForFrees = new ArrayList<>();
 
@@ -107,13 +108,13 @@ public class LeaveRequestController {
             FileReader fr = new FileReader(ConstantManager.policyForLeavePath);
             JSONParser parser = new JSONParser(fr);
             List list = parser.list();
-            if(list.size() > 0){
+            if (list.size() > 0) {
                 List<PolicyForFree> policyForFreeList = (List<PolicyForFree>) list;
                 policyForFreeList.sort((o1, o2) -> o1.getValidFromDate().compareTo(o2.getValidFromDate()));
                 LocalDate fromDate = leaveRequest.getFromDate();
-                for ( PolicyForFree item :policyForFreeList) {
-                    if(fromDate.isAfter(item.getValidFromDate())){
-                        if(item.getNumberOfDayOffFreeCheck() != null){
+                for (PolicyForFree item : policyForFreeList) {
+                    if (fromDate.isAfter(item.getValidFromDate())) {
+                        if (item.getNumberOfDayOffFreeCheck() != null) {
                             numberOfDateFreeCheck = item.getNumberOfDayOffFreeCheck();
                         }
                     }
@@ -123,15 +124,20 @@ public class LeaveRequestController {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         //Check number of day of policy rule
         User user = userService.findByEmail(principal.getName());
         //Deny if exist working task if request days greater than policy free check days
-        if(diff > numberOfDateFreeCheck){
-            if(taskService.existsByExecutorAndStatus(user, "Working")){
+        if (diff > numberOfDateFreeCheck) {
+            //check task start in date range request
+            if (taskService.existsByExecutorAndStatusAndStartTimeIsBetween(user, "Working", leaveRequest.getFromDate().atStartOfDay(), leaveRequest.getToDate().plusDays(1).atStartOfDay())) {
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+            }
+            //check task strat before but still not end
+            if (taskService.existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(user, "Working", leaveRequest.getFromDate().atStartOfDay())) {
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
             }
         }
@@ -183,8 +189,15 @@ public class LeaveRequestController {
         User user = new User();
         user.setId(userId);
 
-        List<LeaveRequestSummary> leaveRequestSummaries =  leaveRequestService.findAllSummaryByFromDateGreaterThanEqualOrToDateLessThanEqualAndUser(to,from,user);
+        List<Integer> integerList = new ArrayList<>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        integerList.add(newCode);
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+        integerList.add(approvedCode);
 
+        //Get all leave request waiting or approved by user
+        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBetween(user, integerList, from, to);
+        leaveRequestSummaries.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(user, integerList, from));
 
         if (leaveRequestSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -208,22 +221,22 @@ public class LeaveRequestController {
         Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
 
         int countPlusDate = -1;
-        for ( UserSummary userSummary : userSummaries) {
+        for (UserSummary userSummary : userSummaries) {
             UserLeaves userLeaves = new UserLeaves();
             userLeaves.setDisplayName(userSummary.getDisplayName());
             ArrayList<Leave> list = new ArrayList<>();
             User user = new User();
             user.setId(userSummary.getId());
-            while(from.plusDays(countPlusDate).isBefore(to)){
+            while (from.plusDays(countPlusDate).isBefore(to)) {
                 countPlusDate++;
                 LocalDate tmpDate = from.plusDays(countPlusDate);
                 Leave leave = new Leave();
                 leave.setDate(tmpDate);
                 leave.setWaiting(false);
                 leave.setApproved(false);
-                if(leaveRequestService.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(tmpDate,tmpDate,user,approvedCode)){
+                if (leaveRequestService.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(tmpDate, tmpDate, user, approvedCode)) {
                     leave.setApproved(true);
-                } else if(leaveRequestService.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(tmpDate,tmpDate,user,newCode)){
+                } else if (leaveRequestService.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(tmpDate, tmpDate, user, newCode)) {
                     leave.setWaiting(true);
                 }
                 list.add(leave);
@@ -233,7 +246,7 @@ public class LeaveRequestController {
             userLeaveList.add(userLeaves);
         }
 
-        Page<UserLeaves> PageImpl = new PageImpl<UserLeaves>(userLeaveList, new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),userLeaveList.size());
+        Page<UserLeaves> PageImpl = new PageImpl<UserLeaves>(userLeaveList, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), userLeaveList.size());
 
         if (userSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -243,10 +256,11 @@ public class LeaveRequestController {
     }
 
     @GetMapping("/search/notAllowDateFromToday")
-    public ResponseEntity<List<LocalDate>> getNotAllowedDate(Principal principal){
+    public ResponseEntity<List<LocalDate>> getNotAllowedDateFromToday(Principal principal) {
         //Check number of day of policy rule
         User user = userService.findByEmail(principal.getName());
         LocalDate today = LocalDate.now();
+        LocalDate limitDay = LocalDate.now().plusDays(366);
 
         List<Integer> integerList = new ArrayList<>();
         Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
@@ -254,15 +268,68 @@ public class LeaveRequestController {
         Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
         integerList.add(approvedCode);
 
-        List<LeaveRequestSummary> leaveRequests  = leaveRequestService.findAllSummaryByUserAndStatusInAndToday(user,integerList,today);
+        //Get all leave request waiting or approved by user
+        List<LeaveRequestSummary> leaveRequests = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBetween(user, integerList, today, limitDay);
+        leaveRequests.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(user, integerList, today));
+
+        //Make date list from leave request from - to date
         List<LocalDate> result = new ArrayList<>();
-        for ( LeaveRequestSummary leaveRequest : leaveRequests) {
+        for (LeaveRequestSummary leaveRequest : leaveRequests) {
             LocalDate from = leaveRequest.getFromDate();
             LocalDate to = leaveRequest.getToDate();
             int count = -1;
-            while(from.plusDays(count).isBefore(to)){
+            while (from.plusDays(count).isBefore(to)) {
                 count++;
                 result.add(from.plusDays(count));
+            }
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/search/workingTaskDateFromToday")
+    public ResponseEntity<List<LocalDate>> getWorkingTaskDateFromToday(Principal principal) {
+        //Check number of day of policy rule
+        User user = userService.findByEmail(principal.getName());
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        //Limit task in 365 days
+        LocalDateTime limitDay = LocalDate.now().plusDays(366).atStartOfDay();
+
+        //Get all working task by executor
+        List<TaskSummary> taskSummaries = taskService.findAllByExecutorAndStatusAndStartTimeIsBetween(user, "Working", today, limitDay);
+        taskSummaries.addAll(taskService.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(user, "Working", today));
+        //Sort by start time
+        taskSummaries.sort((o1, o2) -> o1.getStartTime().compareTo(o2.getStartTime()));
+
+        //Declare result list
+        List<LocalDate> result = new ArrayList<>();
+
+        //Get working date range from task list
+        LocalDate tmpMaxDate = LocalDate.MIN;
+        List<LocalDate> tmpStartDateList = new ArrayList<>();
+        List<LocalDate> tmpEndDateList = new ArrayList<>();
+        int index = -1;
+        for (TaskSummary taskSummary : taskSummaries) {
+            LocalDate fromDate = taskSummary.getStartTime().toLocalDate();
+            LocalDate toDate = taskSummary.getEndTime().toLocalDate();
+            //Task list was sorted by start time
+            if (fromDate.isAfter(tmpMaxDate)) {
+                tmpStartDateList.add(fromDate);
+                tmpEndDateList.add(toDate);
+                tmpMaxDate = toDate;
+                index++;
+            } else if (toDate.isAfter(tmpMaxDate)) {
+                tmpEndDateList.set(index, toDate);
+                tmpMaxDate = toDate;
+            }
+        }
+
+        //add each day from day ranges to result list
+        for ( LocalDate startDateOfRange : tmpStartDateList) {
+            LocalDate endDateOfRange = tmpEndDateList.get(tmpStartDateList.indexOf(startDateOfRange));
+            int count = -1;
+            while (startDateOfRange.plusDays(count).isBefore(endDateOfRange)) {
+                count++;
+                result.add(startDateOfRange.plusDays(count));
             }
         }
         return ResponseEntity.ok(result);

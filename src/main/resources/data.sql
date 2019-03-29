@@ -65,6 +65,22 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 10', 'summary task 10', 'description task 10', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true);
+-- ('title task 11', 'summary task 11', 'description task 11', '2019-03-28 16:30:00'
+-- , '2019-03-27 16:30:00', '2019-03-29 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+-- ('title task 11b', 'summary task 11b', 'description task 11b', '2019-03-28 16:30:00'
+-- , '2019-03-29 16:30:00', '2019-03-30 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+-- ('title task 11c', 'summary task 11c', 'description task 11c', '2019-03-28 16:30:00'
+-- , '2019-03-29 16:30:00', '2019-03-31 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+-- ('title task 11d', 'summary task 11d', 'description task 11d', '2019-03-28 16:30:00'
+-- , '2019-03-30 16:30:00', '2019-04-02 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+-- ('title task 12', 'summary task 12', 'description task 12', '2019-03-29 07:30:00'
+-- , '2019-03-29 07:30:00', '2019-03-29 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+-- ('title task 12b', 'summary task 12b', 'description task 12b', '2019-03-29 07:30:00'
+-- , '2019-03-29 07:30:00', '2019-03-29 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+-- ('title task 12c', 'summary task 12c', 'description task 12c', '2019-03-29 07:30:00'
+-- , '2019-03-29 07:30:00', '2019-03-29 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+-- ('title task 12d', 'summary task 12d', 'description task 12d', '2019-03-29 07:30:00'
+-- , '2019-03-29 07:30:00', '2019-03-29 23:59:59', 1, 'Working', 1, 2, 1, 1, true);
 
 
 -- INSERT TASK-RELATIVES MAPPING
