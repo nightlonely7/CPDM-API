@@ -1,5 +1,8 @@
 package com.fpt.cpdm.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.PolicyForFree;
 import com.fpt.cpdm.models.leaveRequests.Leave;
@@ -16,6 +19,8 @@ import com.fpt.cpdm.utils.ConstantManager;
 import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import jdk.internal.org.objectweb.asm.TypeReference;
+import org.apache.tomcat.jni.Local;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +38,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.FileSystems;
@@ -42,7 +48,10 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 import static com.fpt.cpdm.utils.ConstantManager.defaultNumberOfDayOffFreeCheck;
@@ -96,6 +105,10 @@ public class LeaveRequestController {
     @PostMapping
     public ResponseEntity<LeaveRequest> create(@Valid @RequestBody LeaveRequest leaveRequest,
                                                BindingResult result, Principal principal) {
+        //validate to date >= from date
+        if(leaveRequest.getToDate().isBefore(leaveRequest.getFromDate())){
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        }
 
         //Get number of day off requested
         int diff = (int) DAYS.between(leaveRequest.getFromDate(), leaveRequest.getToDate()) + 1;
@@ -105,11 +118,11 @@ public class LeaveRequestController {
         //Get number of day off free check in json file default 3
         Integer numberOfDateFreeCheck = ConstantManager.defaultNumberOfDayOffFreeCheck;
         try {
-            FileReader fr = new FileReader(ConstantManager.policyForLeavePath);
-            JSONParser parser = new JSONParser(fr);
-            List list = parser.list();
-            if (list.size() > 0) {
-                List<PolicyForFree> policyForFreeList = (List<PolicyForFree>) list;
+            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            File file = new File(classLoader.getResource(ConstantManager.policyForLeaveConfigFileName).getFile());
+            ObjectMapper mapper = new ObjectMapper().registerModule( new JavaTimeModule());
+            List<PolicyForFree> policyForFreeList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class,PolicyForFree.class));
+            if (policyForFreeList.size() > 0) {
                 policyForFreeList.sort((o1, o2) -> o1.getValidFromDate().compareTo(o2.getValidFromDate()));
                 LocalDate fromDate = leaveRequest.getFromDate();
                 for (PolicyForFree item : policyForFreeList) {
@@ -121,8 +134,6 @@ public class LeaveRequestController {
                 }
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
