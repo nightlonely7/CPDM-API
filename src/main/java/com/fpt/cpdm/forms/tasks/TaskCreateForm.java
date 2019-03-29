@@ -24,18 +24,14 @@ public class TaskCreateForm {
 
     @NotNull
     @FutureOrPresent
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime;
 
     @NotNull
     @FutureOrPresent
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime endTime;
 
     @NotNull

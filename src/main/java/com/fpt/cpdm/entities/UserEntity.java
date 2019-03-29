@@ -110,7 +110,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     @PrePersist
     public void prePersist() {
-        this.setEnabled(true);
-        this.setCreatedTime(LocalDateTime.now());
+        this.enabled = true;
+        this.createdTime = LocalDateTime.now();
     }
 }

@@ -26,7 +26,7 @@ public class TaskEntity extends BaseEntity {
     private String summary;
 
     @Lob
-    @Basic
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "description")
     private String description;
 
@@ -95,15 +95,15 @@ public class TaskEntity extends BaseEntity {
     private List<DocumentEntity> documents;
 
     @PrePersist
-    public void onCreated() {
-        this.setCreatedTime(LocalDateTime.now());
-        this.setLastModifiedTime(LocalDateTime.now());
-        this.setStatus("Working");
-        this.setAvailable(Boolean.TRUE);
+    public void onPersist() {
+        this.createdTime = LocalDateTime.now();
+        this.lastModifiedTime = LocalDateTime.now();
+        this.status = "Working";
+        this.available = Boolean.TRUE;
     }
 
     @PreUpdate
     public void onUpdate() {
-        this.setLastModifiedTime(LocalDateTime.now());
+        this.lastModifiedTime = LocalDateTime.now();
     }
 }

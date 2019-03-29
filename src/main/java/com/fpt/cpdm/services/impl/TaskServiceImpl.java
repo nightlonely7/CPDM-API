@@ -5,6 +5,7 @@ import com.fpt.cpdm.entities.ProjectEntity;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.TaskFilesEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.exceptions.BadRequestException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
@@ -25,6 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +81,6 @@ public class TaskServiceImpl implements TaskService {
 
         return taskDetail;
     }
-
 
 
     @Override
@@ -236,7 +237,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByExecutor(String title, String summary, Integer projectId, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByExecutor(
+            String title, String summary, LocalDateTime startTimeFrom, LocalDateTime startTimeTo, Integer projectId, Pageable pageable) {
 
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
@@ -244,11 +246,16 @@ public class TaskServiceImpl implements TaskService {
                 () -> new UsernameNotFoundException(email)
         );
 
-        return taskRepository.advanceSearch(null, executor, null, title, summary, projectId, pageable);
+        if (startTimeFrom != null && startTimeTo != null && startTimeFrom.isAfter(startTimeTo)) {
+            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        }
+
+        return taskRepository.advanceSearch(null, executor, null, title, summary, startTimeFrom, startTimeTo, projectId, pageable);
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByCreator(String title, String summary, Integer projectId, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByCreator(
+            String title, String summary, LocalDateTime startTimeFrom, LocalDateTime startTimeTo, Integer projectId, Pageable pageable) {
 
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
@@ -256,20 +263,29 @@ public class TaskServiceImpl implements TaskService {
                 () -> new UsernameNotFoundException(email)
         );
 
-        return taskRepository.advanceSearch(creator, null, null, title, summary, projectId, pageable);
+        if (startTimeFrom != null && startTimeTo != null && startTimeFrom.isAfter(startTimeTo)) {
+            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        }
+
+        return taskRepository.advanceSearch(creator, null, null, title, summary, startTimeFrom, startTimeTo, projectId, pageable);
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByRelatives(String title, String summary, Integer projectId, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByRelatives(
+            String title, String summary, LocalDateTime startTimeFrom, LocalDateTime startTimeTo, Integer projectId, Pageable pageable) {
 
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity relative = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
-        List<UserEntity> relatives = new ArrayList<>();
-        relatives.add(relative);
-        return taskRepository.advanceSearch(null, null, relative, title, summary, projectId, pageable);
+
+        if (startTimeFrom != null && startTimeTo != null && startTimeFrom.isAfter(startTimeTo)) {
+            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        }
+
+        return taskRepository.advanceSearch(null, null, relative, title, summary,
+                startTimeFrom, startTimeTo, projectId, pageable);
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
@@ -38,7 +39,9 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             "(:relative is null or :relative member of t.relatives) and " +
             "(:title is null or t.title like %:title%) and " +
             "(:summary is null or t.summary like %:summary%) and " +
-            "(:projectId is null or t.project.id = :projectId) and" +
+            "(:startTimeFrom is null or t.startTime >= :startTimeFrom) and " +
+            "(:startTimeTo is null or t.startTime <= :startTimeTo) and " +
+            "(:projectId is null or t.project.id = :projectId) and " +
             "(t.available = true)")
     Page<TaskSummary> advanceSearch(
             @Param("creator") UserEntity creator,
@@ -46,6 +49,8 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             @Param("relative") UserEntity relative,
             @Param("title") String title,
             @Param("summary") String summary,
+            @Param("startTimeFrom") LocalDateTime startTimeFrom,
+            @Param("startTimeTo") LocalDateTime startTimeTo,
             @Param("projectId") Integer projectId,
             Pageable pageable);
 

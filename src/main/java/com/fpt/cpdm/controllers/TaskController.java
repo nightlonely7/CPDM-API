@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -62,12 +64,17 @@ public class TaskController {
 
     @GetMapping("/search/executes")
     public ResponseEntity<Page<TaskSummary>> findByLoggedExecutor(
-            @RequestParam(value = "title", required = false, defaultValue = "") String title,
-            @RequestParam(value = "summary", required = false, defaultValue = "") String summary,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "summary", required = false) String summary,
+            @RequestParam(value = "startTimeFrom", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeFrom,
+            @RequestParam(value = "startTimeTo", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeTo,
             @RequestParam(value = "projectId", required = false) Integer projectId,
             @PageableDefault Pageable pageable) {
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(title, summary, projectId, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(
+                title, summary, startTimeFrom, startTimeTo, projectId, pageable);
 
         return ResponseEntity.ok(taskSummaries);
     }
@@ -75,12 +82,17 @@ public class TaskController {
     @Secured({"ROLE_ADMIN", "ROLE_MANAGER"})
     @GetMapping("/search/creates")
     public ResponseEntity<Page<TaskSummary>> findByCurrentLoggedCreator(
-            @RequestParam(value = "title", required = false, defaultValue = "") String title,
-            @RequestParam(value = "summary", required = false, defaultValue = "") String summary,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "summary", required = false) String summary,
+            @RequestParam(value = "startTimeFrom", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeFrom,
+            @RequestParam(value = "startTimeTo", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeTo,
             @RequestParam(value = "projectId", required = false) Integer projectId,
             @PageableDefault Pageable pageable) {
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(title, summary, projectId, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(
+                title, summary, startTimeFrom, startTimeTo, projectId, pageable);
 
         return ResponseEntity.ok(taskSummaries);
     }
@@ -89,10 +101,15 @@ public class TaskController {
     public ResponseEntity<Page<TaskSummary>> relatives(
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "summary", required = false) String summary,
+            @RequestParam(value = "startTimeFrom", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeFrom,
+            @RequestParam(value = "startTimeTo", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimeTo,
             @RequestParam(value = "projectId", required = false) Integer projectId,
             @PageableDefault Pageable pageable) {
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(title, summary, projectId, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(
+                title, summary, startTimeFrom, startTimeTo, projectId, pageable);
 
         return ResponseEntity.ok(taskSummaries);
     }
@@ -252,12 +269,11 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
+    @Secured("ROLE_MANAGER")
     @GetMapping("/search/basicByExecutes")
     public ResponseEntity getBasicByExecute(@RequestParam("projectId") Integer projectId) {
         List<TaskBasic> taskBasics = taskService.findAllBasicByCurrentExecutorAndProject_Id(projectId);
-        if (taskBasics.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+
         return ResponseEntity.ok(taskBasics);
     }
 
