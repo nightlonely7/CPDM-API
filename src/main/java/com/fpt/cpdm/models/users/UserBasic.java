@@ -5,6 +5,8 @@ import com.fpt.cpdm.models.NameOnly;
 
 public interface UserBasic {
 
+    Integer getId();
+
     String getDisplayName();
 
     NameOnly getRole();

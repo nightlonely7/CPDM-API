@@ -45,7 +45,6 @@ public class UserController {
     public ResponseEntity<Page<UserSummary>> findAllForAdmin(
             @PageableDefault Pageable pageable
     ) {
-
         Page<UserSummary> userSummaries = userService.findAllSummaryForAdmin(pageable);
         if (userSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();

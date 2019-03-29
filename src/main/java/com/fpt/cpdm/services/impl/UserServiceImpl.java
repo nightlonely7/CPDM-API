@@ -117,7 +117,9 @@ public class UserServiceImpl implements UserService {
         );
         userEntity.setRole(roleEntity);
 
+        System.out.println(userEntity.isEnabled());
         UserEntity savedUserEntity = userRepository.save(userEntity);
+
         UserDetail savedUserDetail = userRepository.findDetailById(savedUserEntity.getId()).get();
 
         return savedUserDetail;
@@ -261,5 +263,7 @@ public class UserServiceImpl implements UserService {
     public Boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+
 
 }

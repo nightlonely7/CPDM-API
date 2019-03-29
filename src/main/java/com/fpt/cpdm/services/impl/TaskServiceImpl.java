@@ -221,7 +221,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteById(Integer id) {
-
         TaskEntity taskEntity = taskRepository.findById(id).get();
         taskEntity.setAvailable(false);
         taskRepository.save(taskEntity);

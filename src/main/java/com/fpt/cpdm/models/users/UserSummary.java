@@ -21,4 +21,5 @@ public interface UserSummary {
     NameOnly getDepartment();
 
     NameOnly getRole();
+
 }

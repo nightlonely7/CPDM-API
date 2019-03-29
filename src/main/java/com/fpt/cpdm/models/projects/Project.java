@@ -1,11 +1,11 @@
-package com.fpt.cpdm.models.departments;
+package com.fpt.cpdm.models.projects;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Department {
+public class Project {
 
     @EqualsAndHashCode.Include
     private Integer id;
@@ -13,7 +13,4 @@ public class Department {
     private String name;
 
     private String alias;
-
-    private Boolean isAvailable;
-
 }
