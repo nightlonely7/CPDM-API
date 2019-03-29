@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
@@ -55,7 +56,11 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     List<TaskBasic> findAllBasicByExecutorAndProject_Id(UserEntity executor, Integer projectId);
 
-    boolean existsByExecutorAndStatus(UserEntity userEntity, String status);
+    boolean existsByExecutorAndStatusAndStartTimeIsBetween(UserEntity userEntity, String status, LocalDateTime fromTime, LocalDateTime toTime);
 
-    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeGreaterThanEqualOrExecutorAndStatusAndEndTimeLessThanEqual(UserEntity userEntity, Integer status, LocalDate date, UserEntity userEntity2, Integer status2, LocalDate date2);
+    boolean existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(UserEntity userEntity, String status, LocalDateTime fromTime, LocalDateTime fromTime2);
+
+    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBetween(UserEntity userEntity, String status, LocalDateTime fromTime, LocalDateTime toTime);
+
+    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(UserEntity userEntity, String status, LocalDateTime fromTime, LocalDateTime fromTime2);
 }
