@@ -315,14 +315,27 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public boolean existsByExecutorAndStatus(User user, String status) {
+    public boolean existsByExecutorAndStatusAndStartTimeIsBetween(User user, String status, LocalDateTime fromTime, LocalDateTime toTime) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return taskRepository.existsByExecutorAndStatus(userEntity, status);
+        return taskRepository.existsByExecutorAndStatusAndStartTimeIsBetween(userEntity, status, fromTime, toTime);
     }
 
     @Override
-    public List<TaskSummary> findAllByExecutorAndStatusAndToday(User user, Integer status, LocalDate date) {
-        return null;
+    public boolean existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(User user, String status, LocalDateTime fromTime) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return taskRepository.existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(userEntity, status, fromTime, fromTime);
+    }
+
+    @Override
+    public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBetween(User user, String status, LocalDateTime fromTime, LocalDateTime toTime) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(userEntity,status,fromTime,toTime);
+    }
+
+    @Override
+    public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(User user, String status, LocalDateTime fromTime) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return taskRepository.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(userEntity,status,fromTime,fromTime);
     }
 
 }

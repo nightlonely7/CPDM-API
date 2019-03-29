@@ -45,22 +45,21 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
-    public List<LeaveRequestSummary> findAllSummaryByFromDateGreaterThanEqualOrToDateLessThanEqualAndUser(LocalDate toDate, LocalDate fromDate, User user) {
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestRepository.findAllSummaryByFromDateGreaterThanEqualOrToDateLessThanEqualAndUser(toDate, fromDate, userEntity);
-        return leaveRequestSummaries;
-    }
-
-    @Override
     public boolean existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(LocalDate fromDate, LocalDate toDate, User user, Integer status) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
         return leaveRequestRepository.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(fromDate,toDate,userEntity,status);
     }
 
     @Override
-    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndToday(User user, List<Integer> integerList, LocalDate date) {
+    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBetween(User user, List<Integer> integerList, LocalDate fromDate, LocalDate toDate) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualOrUserAndStatusInAndToDateLessThanEqual(userEntity, integerList, date, userEntity, integerList, date);
+        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateIsBetween(userEntity, integerList, fromDate, toDate);
+    }
+
+    @Override
+    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(User user, List<Integer> integerList, LocalDate fromDate) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(userEntity, integerList, fromDate, fromDate);
     }
 
     @Override

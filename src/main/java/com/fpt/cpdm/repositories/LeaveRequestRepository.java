@@ -17,9 +17,9 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequestEntity
 
     Page<LeaveRequestSummary> findAllSummaryByApproverAndStatus(UserEntity userEntity, Integer status, Pageable pageable);
 
-    List<LeaveRequestSummary> findAllSummaryByFromDateGreaterThanEqualOrToDateLessThanEqualAndUser(LocalDate toDate, LocalDate fromDate, UserEntity user);
-
     boolean existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(LocalDate fromdate, LocalDate toDate, UserEntity userEntity,Integer status);
 
-    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualOrUserAndStatusInAndToDateLessThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate date, UserEntity userEntity2, List<Integer> integerList2, LocalDate date2);
+    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBetween(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
+
+    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate fromDate2);
 }

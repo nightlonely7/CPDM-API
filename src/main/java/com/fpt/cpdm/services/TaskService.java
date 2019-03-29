@@ -44,7 +44,11 @@ public interface TaskService {
 
     List<TaskBasic> findAllBasicByCurrentExecutorAndProject_Id(Integer projectId);
 
-    boolean existsByExecutorAndStatus(User user, String status);
+    boolean existsByExecutorAndStatusAndStartTimeIsBetween(User user, String status, LocalDateTime fromtime, LocalDateTime toTime);
 
-    List<TaskSummary> findAllByExecutorAndStatusAndToday(User user, Integer status, LocalDate date);
+    boolean existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(User user, String status, LocalDateTime fromTime);
+
+    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBetween(User user, String status, LocalDateTime fromTime, LocalDateTime toTime);
+
+    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(User user, String status, LocalDateTime fromTime);
 }
