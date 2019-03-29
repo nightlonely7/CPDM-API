@@ -58,6 +58,12 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
+    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndToday(User user, List<Integer> integerList, LocalDate date) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualOrUserAndStatusInAndToDateLessThanEqual(userEntity, integerList, date, userEntity, integerList, date);
+    }
+
+    @Override
     public LeaveRequest save(LeaveRequest model) {
 
         // check user exists

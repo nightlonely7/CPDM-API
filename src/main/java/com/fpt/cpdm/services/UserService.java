@@ -21,6 +21,8 @@ public interface UserService extends UserDetailsService {
 
     List<UserForSelect> findAllForSelectByEmailContains(String email);
 
+    List<UserSummary> findAllManagerForSelect();
+
     List<UserSummary> findAllSummaryRelatedByTask_Id(Integer id);
 
     User findByEmail(String email);

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,6 +107,15 @@ public class UserController {
         return ResponseEntity.ok(userDisplayNames);
     }
 
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/search/findAllManagerSummary")
+    public ResponseEntity<List<UserSummary>> findAllManagerForSelect() {
+
+        List<UserSummary> managers = userService.findAllManagerForSelect();
+
+        return ResponseEntity.ok(managers);
+    }
+
     @GetMapping("/findAllfDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager")
     public ResponseEntity<List<UserDisplayName>> findAllfDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager(
             @RequestParam("roleName") String roleName, Principal principal) {
@@ -169,6 +179,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
+
         return ResponseEntity.noContent().build();
     }
 

@@ -1,10 +1,8 @@
 package com.fpt.cpdm.repositories;
 
 import com.fpt.cpdm.entities.DepartmentEntity;
-import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
-import com.fpt.cpdm.models.departments.DepartmentDTO;
 import com.fpt.cpdm.models.users.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +26,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     boolean existsByEmail(String email);
 
     UserDisplayName findDisplayNameByEmail(String email);
+
+    List<UserSummary> findAllSummaryByRole_Name(String roleName);
 
     List<UserDisplayName> findDisplayNameByDepartmentAndRole_Name(DepartmentEntity departmentEntity, String roleName);
 

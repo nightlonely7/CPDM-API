@@ -21,6 +21,7 @@ import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -202,6 +203,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserForSelect> findAllForSelectByEmailContains(String email) {
         return userRepository.findAllForSelectByEmailContainsAndEnabledIsTrue(email);
+    }
+
+    @Override
+    @Secured("ROLE_ADMIN")
+    public List<UserSummary> findAllManagerForSelect() {
+        return userRepository.findAllSummaryByRole_Name("ROLE_MANAGER");
     }
 
     @Override
