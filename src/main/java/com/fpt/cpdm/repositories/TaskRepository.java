@@ -26,9 +26,11 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     TaskSummary findSummaryById(Integer id);
 
-    Page<TaskSummary> findAllSummaryByRelatives(UserEntity userEntity, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByCreatorAndAvailableTrue(UserEntity creator, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByExecutorAndAvailableTrue(UserEntity userEntity, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByExecutorAndAvailableTrue(UserEntity executor, Pageable pageable);
+
+    Page<TaskSummary> findAllSummaryByRelativesAndAvailableTrue(UserEntity relative, Pageable pageable);
 
     Page<TaskSummary> findAllSummaryByCreatorAndTitleContainsAndSummaryContainsAndProject_IdAndAvailableTrue
             (UserEntity userEntity, String title, String description, Integer projectId, Pageable pageable);

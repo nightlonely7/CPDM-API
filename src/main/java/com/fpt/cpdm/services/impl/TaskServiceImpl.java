@@ -246,21 +246,25 @@ public class TaskServiceImpl implements TaskService {
                 () -> new UsernameNotFoundException(email)
         );
 
-        if (taskSearchForm.getStartTimeFrom() != null && taskSearchForm.getStartTimeTo() != null
-                && taskSearchForm.getStartTimeFrom().isAfter(taskSearchForm.getStartTimeTo())) {
-            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        if (taskSearchForm != null) {
+            if (taskSearchForm.getStartTimeFrom() != null && taskSearchForm.getStartTimeTo() != null
+                    && taskSearchForm.getStartTimeFrom().isAfter(taskSearchForm.getStartTimeTo())) {
+                throw new BadRequestException("startTimeFrom is after startTimeTo");
+            }
+
+            if (taskSearchForm.getEndTimeFrom() != null && taskSearchForm.getEndTimeTo() != null
+                    && taskSearchForm.getEndTimeFrom().isAfter(taskSearchForm.getEndTimeTo())) {
+                throw new BadRequestException("endTimeFrom is after endTimeTo");
+            }
+
+            return taskRepository.advanceSearch(null, executor, null,
+                    taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                    taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
+                    taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
+                    taskSearchForm.getProjectId(), pageable);
         }
 
-        if (taskSearchForm.getEndTimeFrom() != null && taskSearchForm.getEndTimeTo() != null
-                && taskSearchForm.getEndTimeFrom().isAfter(taskSearchForm.getEndTimeTo())) {
-            throw new BadRequestException("endTimeFrom is after endTimeTo");
-        }
-
-        return taskRepository.advanceSearch(null, executor, null,
-                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
-                taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
-                taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
-                taskSearchForm.getProjectId(), pageable);
+        return taskRepository.findAllSummaryByExecutorAndAvailableTrue(executor, pageable);
     }
 
     @Override
@@ -272,21 +276,25 @@ public class TaskServiceImpl implements TaskService {
                 () -> new UsernameNotFoundException(email)
         );
 
-        if (taskSearchForm.getStartTimeFrom() != null && taskSearchForm.getStartTimeTo() != null
-                && taskSearchForm.getStartTimeFrom().isAfter(taskSearchForm.getStartTimeTo())) {
-            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        if (taskSearchForm != null) {
+            if (taskSearchForm.getStartTimeFrom() != null && taskSearchForm.getStartTimeTo() != null
+                    && taskSearchForm.getStartTimeFrom().isAfter(taskSearchForm.getStartTimeTo())) {
+                throw new BadRequestException("startTimeFrom is after startTimeTo");
+            }
+
+            if (taskSearchForm.getEndTimeFrom() != null && taskSearchForm.getEndTimeTo() != null
+                    && taskSearchForm.getEndTimeFrom().isAfter(taskSearchForm.getEndTimeTo())) {
+                throw new BadRequestException("endTimeFrom is after endTimeTo");
+            }
+
+            return taskRepository.advanceSearch(creator, null, null,
+                    taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                    taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
+                    taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
+                    taskSearchForm.getProjectId(), pageable);
         }
 
-        if (taskSearchForm.getEndTimeFrom() != null && taskSearchForm.getEndTimeTo() != null
-                && taskSearchForm.getEndTimeFrom().isAfter(taskSearchForm.getEndTimeTo())) {
-            throw new BadRequestException("endTimeFrom is after endTimeTo");
-        }
-
-        return taskRepository.advanceSearch(creator, null, null,
-                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
-                taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
-                taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
-                taskSearchForm.getProjectId(), pageable);
+        return taskRepository.findAllSummaryByCreatorAndAvailableTrue(creator, pageable);
     }
 
     @Override
@@ -298,20 +306,24 @@ public class TaskServiceImpl implements TaskService {
                 () -> new UsernameNotFoundException(email)
         );
 
-        if (taskSearchForm.getStartTimeFrom() != null && taskSearchForm.getStartTimeTo() != null
-                && taskSearchForm.getStartTimeFrom().isAfter(taskSearchForm.getStartTimeTo())) {
-            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        if (taskSearchForm != null) {
+            if (taskSearchForm.getStartTimeFrom() != null && taskSearchForm.getStartTimeTo() != null
+                    && taskSearchForm.getStartTimeFrom().isAfter(taskSearchForm.getStartTimeTo())) {
+                throw new BadRequestException("startTimeFrom is after startTimeTo");
+            }
+
+            if (taskSearchForm.getEndTimeFrom() != null && taskSearchForm.getEndTimeTo() != null
+                    && taskSearchForm.getEndTimeFrom().isAfter(taskSearchForm.getEndTimeTo())) {
+                throw new BadRequestException("endTimeFrom is after endTimeTo");
+            }
+
+            return taskRepository.advanceSearch(null, null, relative, taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                    taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
+                    taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
+                    taskSearchForm.getProjectId(), pageable);
         }
 
-        if (taskSearchForm.getEndTimeFrom() != null && taskSearchForm.getEndTimeTo() != null
-                && taskSearchForm.getEndTimeFrom().isAfter(taskSearchForm.getEndTimeTo())) {
-            throw new BadRequestException("endTimeFrom is after endTimeTo");
-        }
-
-        return taskRepository.advanceSearch(null, null, relative, taskSearchForm.getTitle(), taskSearchForm.getSummary(),
-                taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
-                taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
-                taskSearchForm.getProjectId(), pageable);
+        return taskRepository.findAllSummaryByRelativesAndAvailableTrue(relative, pageable);
     }
 
     @Override
