@@ -3,7 +3,7 @@ package com.fpt.cpdm.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
-import com.fpt.cpdm.models.PolicyForFree;
+import com.fpt.cpdm.models.PolicyForLeave;
 import com.fpt.cpdm.models.leaveRequests.Leave;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequestSummary;
@@ -95,7 +95,7 @@ public class LeaveRequestController {
         //Get number of day off requested
         int diff = (int) DAYS.between(leaveRequest.getFromDate(), leaveRequest.getToDate()) + 1;
 
-        ArrayList<PolicyForFree> policyForFrees = new ArrayList<>();
+        ArrayList<PolicyForLeave> policyForFrees = new ArrayList<>();
 
         //Get number of day off free check in json file default 3
         Integer numberOfDateFreeCheck = ConstantManager.defaultNumberOfDayOffFreeCheck;
@@ -103,11 +103,11 @@ public class LeaveRequestController {
             ClassLoader classLoader = ClassLoader.getSystemClassLoader();
             File file = new File(classLoader.getResource(ConstantManager.policyForLeaveConfigFileName).getFile());
             ObjectMapper mapper = new ObjectMapper().registerModule( new JavaTimeModule());
-            List<PolicyForFree> policyForFreeList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class,PolicyForFree.class));
+            List<PolicyForLeave> policyForFreeList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class,PolicyForLeave.class));
             if (policyForFreeList.size() > 0) {
                 policyForFreeList.sort((o1, o2) -> o1.getValidFromDate().compareTo(o2.getValidFromDate()));
                 LocalDate fromDate = leaveRequest.getFromDate();
-                for (PolicyForFree item : policyForFreeList) {
+                for (PolicyForLeave item : policyForFreeList) {
                     if (fromDate.isAfter(item.getValidFromDate())) {
                         if (item.getNumberOfDayOffFreeCheck() != null) {
                             numberOfDateFreeCheck = item.getNumberOfDayOffFreeCheck();

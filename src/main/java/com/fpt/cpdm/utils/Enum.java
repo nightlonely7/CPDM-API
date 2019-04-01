@@ -28,4 +28,18 @@ public class Enum {
             return this.leaveRequestStatusCode;
         }
     }
+
+    public enum AssignRequestStatus{
+        New (0), Approved (1), Declined (2);
+
+        private final int assignRequestStatusCode;
+
+        private AssignRequestStatus(int assignRequestStatusCode) {
+            this.assignRequestStatusCode = assignRequestStatusCode;
+        }
+
+        public int getLeaveRequestStatusCode() {
+            return this.assignRequestStatusCode;
+        }
+    }
 }
