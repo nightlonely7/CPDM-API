@@ -46,6 +46,14 @@ public class DocumentController {
         return ResponseEntity.ok(documentSummaries);
     }
 
+    @GetMapping("/search/relatives")
+    public ResponseEntity<Page<DocumentSummary>> findByRelatives(@PageableDefault Pageable pageable) {
+
+        Page<DocumentSummary> documentSummaries = documentService.findAllSummaryByRelatives(pageable);
+
+        return ResponseEntity.ok(documentSummaries);
+    }
+
 
     @PostMapping
     public ResponseEntity<DocumentSummary> create(@Valid @RequestBody DocumentCreateForm documentCreateForm,

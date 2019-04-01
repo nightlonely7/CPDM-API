@@ -82,8 +82,11 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 -- ('title task 12d', 'summary task 12d', 'description task 12d', '2019-03-29 07:30:00'
 -- , '2019-03-29 07:30:00', '2019-03-29 23:59:59', 1, 'Working', 1, 2, 1, 1, true);
 
+-- INSERT DOCUMENTS-RELATIVES MAPPING
+INSERT INTO documents_relatives(document_id, user_id) VALUES
+(1, 3), (1, 4), (1, 5), (1, 6);
 
--- INSERT TASK-RELATIVES MAPPING
+-- INSERT TASKS-RELATIVES MAPPING
 INSERT INTO tasks_relatives(task_id, user_id) VALUES
 (1, 3), (1, 4), (1, 5), (1, 6);
 

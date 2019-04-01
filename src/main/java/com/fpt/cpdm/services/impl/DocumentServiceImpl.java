@@ -1,5 +1,6 @@
 package com.fpt.cpdm.services.impl;
 
+import com.fpt.cpdm.configurations.AuthenticationFacade;
 import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.ProjectEntity;
 import com.fpt.cpdm.entities.UserEntity;
@@ -9,10 +10,12 @@ import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.repositories.ProjectRepository;
+import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,18 +25,35 @@ import java.util.List;
 public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
+    private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    public DocumentServiceImpl(DocumentRepository documentRepository, ProjectRepository projectRepository) {
+    public DocumentServiceImpl(DocumentRepository documentRepository, UserRepository userRepository, ProjectRepository projectRepository, AuthenticationFacade authenticationFacade) {
         this.documentRepository = documentRepository;
+        this.userRepository = userRepository;
         this.projectRepository = projectRepository;
+        this.authenticationFacade = authenticationFacade;
     }
 
     @Override
     public Page<DocumentSummary> findAllSummary(Pageable pageable) {
 
         Page<DocumentSummary> documentSummaries = documentRepository.findAllSummaryBy(pageable);
+
+        return documentSummaries;
+    }
+
+    @Override
+    public Page<DocumentSummary> findAllSummaryByRelatives(Pageable pageable) {
+
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity relative = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        Page<DocumentSummary> documentSummaries = documentRepository.findAllSummaryByRelatives(relative, pageable);
 
         return documentSummaries;
     }

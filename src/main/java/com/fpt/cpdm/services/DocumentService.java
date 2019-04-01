@@ -9,5 +9,7 @@ public interface DocumentService {
 
     Page<DocumentSummary> findAllSummary(Pageable pageable);
 
+    Page<DocumentSummary> findAllSummaryByRelatives(Pageable pageable);
+
     DocumentSummary create(DocumentCreateForm documentCreateForm);
 }
