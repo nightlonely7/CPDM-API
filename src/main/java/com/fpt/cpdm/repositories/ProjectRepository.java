@@ -17,6 +17,8 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer>
 
     Page<ProjectDTO> findAllDTOByNameContaining(String name, Pageable pageable);
 
+    boolean existsByName(String name);
+
     Page<ProjectDTO> findAllDTOByNameContainingAndAliasContaining(String name, String alias, Pageable pageable);
 
     Optional<ProjectDTO> findDTOById(Integer id);

@@ -12,6 +12,8 @@ public interface UserDetail {
 
     String getDisplayName();
 
+    String getPassword();
+
     String getFullName();
 
     String getEmail();

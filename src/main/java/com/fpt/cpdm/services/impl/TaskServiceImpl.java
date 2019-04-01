@@ -81,8 +81,6 @@ public class TaskServiceImpl implements TaskService {
         return taskDetail;
     }
 
-
-
     @Override
     public TaskSummary changeStatus(Task task) {
 
@@ -171,7 +169,6 @@ public class TaskServiceImpl implements TaskService {
             parentTask.setId(taskCreateForm.getParentTask().getId());
         }
 
-
         List<UserEntity> relatives = new ArrayList<>();
         if (taskCreateForm.getRelatives() != null) {
             for (IdOnlyForm idOnlyForm : taskCreateForm.getRelatives()) {
@@ -244,7 +241,6 @@ public class TaskServiceImpl implements TaskService {
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
-
         return taskRepository.advanceSearch(null, executor, null, title, summary, projectId, pageable);
     }
 
@@ -293,6 +289,7 @@ public class TaskServiceImpl implements TaskService {
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
+        System.out.println(executor.getUsername());
         List<TaskBasic> taskBasics = taskRepository.findAllBasicByExecutorAndProject_Id(executor, projectId);
 
         return taskBasics;

@@ -172,7 +172,6 @@ public class TaskController {
         if (taskIssueDetails.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-
         return ResponseEntity.ok(taskIssueDetails);
     }
 
@@ -219,7 +218,6 @@ public class TaskController {
         return ResponseEntity.ok(taskDetail);
     }
 
-
     @PatchMapping("/{id}/done")
     public ResponseEntity<TaskSummary> taskDone(@PathVariable("id") Integer id, Principal principal) {
 
@@ -254,10 +252,13 @@ public class TaskController {
 
     @GetMapping("/search/basicByExecutes")
     public ResponseEntity getBasicByExecute(@RequestParam("projectId") Integer projectId) {
+        System.out.println(projectId);
         List<TaskBasic> taskBasics = taskService.findAllBasicByCurrentExecutorAndProject_Id(projectId);
         if (taskBasics.isEmpty()) {
+            System.out.println("No Content");
             return ResponseEntity.noContent().build();
         }
+        System.out.println(taskBasics.get(0).getTitle());
         return ResponseEntity.ok(taskBasics);
     }
 

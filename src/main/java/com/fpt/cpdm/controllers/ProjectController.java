@@ -94,4 +94,9 @@ public class ProjectController {
         return ResponseEntity.ok(projectDTOS);
     }
 
+    @GetMapping("/check/existByName")
+    public ResponseEntity<Boolean> existsByName(@RequestParam("name") String name) {
+        return ResponseEntity.ok(projectService.existsByName(name));
+    }
+
 }

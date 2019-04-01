@@ -167,6 +167,7 @@ public class UserController {
 
     private ResponseEntity<UserDetail> save(Integer id, User user, BindingResult result, Principal principal) {
 
+        System.out.println(user.toString());
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
