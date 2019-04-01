@@ -36,11 +36,6 @@ public class TaskEntity extends BaseEntity {
     private LocalDateTime createdTime;
 
     @Basic
-    @Column(name = "last_modified_time")
-    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime lastModifiedTime;
-
-    @Basic
     @Column(name = "start_time")
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime;
@@ -57,6 +52,11 @@ public class TaskEntity extends BaseEntity {
     @Basic
     @Column(name = "status")
     private String status;
+
+    @Basic
+    @Column(name = "last_modified_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime lastModifiedTime;
 
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
@@ -75,7 +75,7 @@ public class TaskEntity extends BaseEntity {
     private UserEntity executor;
 
     @ManyToMany
-    @JoinTable(name = "task_relative",
+    @JoinTable(name = "tasks_relatives",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<UserEntity> relatives;

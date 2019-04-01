@@ -28,10 +28,6 @@ public class DocumentEntity extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @Basic
-    @Column(name = "status")
-    private String status;
-
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private ProjectEntity project;
@@ -42,6 +38,20 @@ public class DocumentEntity extends BaseEntity {
     @Basic
     @Column(name = "created_time")
     private LocalDateTime createdTime;
+
+    @Basic
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
+
+    @Basic
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
+
+    @ManyToMany
+    @JoinTable(name = "documents_relatives",
+            joinColumns = @JoinColumn(name = "document_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private List<UserEntity> relatives;
 
     @Basic
     @Column(name = "last_modified_time")
@@ -55,7 +65,6 @@ public class DocumentEntity extends BaseEntity {
     private void onPersist() {
         this.createdTime = LocalDateTime.now();
         this.lastModifiedTime = LocalDateTime.now();
-        this.status = "created";
         this.available = Boolean.TRUE;
     }
 

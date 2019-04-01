@@ -14,8 +14,6 @@ public interface TaskSummary {
 
     String getSummary();
 
-    String getDescription();
-
     NameIdOnly getProject();
 
     TaskBasic getParentTask();

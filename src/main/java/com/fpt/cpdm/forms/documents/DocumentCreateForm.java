@@ -5,6 +5,8 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class DocumentCreateForm {
@@ -14,6 +16,14 @@ public class DocumentCreateForm {
     private String title;
 
     private String summary;
+
+    private String description;
+
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
+
+    private List<IdOnlyForm> relatives;
 
     @NotNull
     private IdOnlyForm project;

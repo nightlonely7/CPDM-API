@@ -15,6 +15,12 @@ public class TaskSearchForm {
     private String description;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime createdTimeFrom;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime createdTimeTo;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startTimeFrom;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

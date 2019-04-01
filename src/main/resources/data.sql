@@ -34,12 +34,12 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 3, true, '2017-09-20 07:22:11');
 
 -- INSERT DOCUMENT
-INSERT INTO document (title, summary, created_time, project_id, status) VALUES
-('document title 1', 'document summary 1', '2016-05-22 18:30:31', 1, 'created'),
-('document title 2', 'document summary 2', '2016-06-22 18:30:31', 1, 'created'),
-('document title 3', 'document summary 3', '2016-07-22 18:30:31', 1, 'created'),
-('document title 4', 'document summary 4', '2016-08-22 18:30:31', 1, 'created'),
-('document title 5', 'document summary 5', '2016-09-22 18:30:31', 1, 'created');
+INSERT INTO document (title, summary, created_time, start_time, end_time, project_id) VALUES
+('document title 1', 'document summary 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 2', 'document summary 2', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 3', 'document summary 3', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 4', 'document summary 4', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 5', 'document summary 5', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1);
 
 
 -- INSERT TASK
@@ -84,7 +84,7 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 
 
 -- INSERT TASK-RELATIVES MAPPING
-INSERT INTO task_relative(task_id, user_id) VALUES
+INSERT INTO tasks_relatives(task_id, user_id) VALUES
 (1, 3), (1, 4), (1, 5), (1, 6);
 
 -- INSERT TASK_ISSUE

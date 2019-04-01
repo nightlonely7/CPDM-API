@@ -42,9 +42,6 @@ public class DocumentController {
     public ResponseEntity<Page<DocumentSummary>> readAll(@PageableDefault Pageable pageable) {
 
         Page<DocumentSummary> documentSummaries = documentService.findAllSummary(pageable);
-        if (documentSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
 
         return ResponseEntity.ok(documentSummaries);
     }
