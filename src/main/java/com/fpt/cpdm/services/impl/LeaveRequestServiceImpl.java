@@ -69,7 +69,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
         if (userRepository.existsById(model.getUser().getId()) == false) {
             throw new UserNotFoundException(model.getUser().getId());
         }
-        else if (userRepository.existsById(model.getUser().getId()) == false) {
+        else if (userRepository.existsById(model.getApprover().getId()) == false) {
             throw new UserNotFoundException(model.getApprover().getId());
         }
 

@@ -100,7 +100,7 @@ public class ModelConverter {
         return leaveRequestEntity;
     }
 
-    public static AssignRequest AssignRequestEntityToModel(AssignRequestEntity assignRequestEntity) {
+    public static AssignRequest assignRequestEntityToModel(AssignRequestEntity assignRequestEntity) {
         AssignRequest assignRequest = MODEL_MAPPER.map(assignRequestEntity, AssignRequest.class);
         return assignRequest;
     }

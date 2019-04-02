@@ -38,7 +38,7 @@ public class Enum {
             this.assignRequestStatusCode = assignRequestStatusCode;
         }
 
-        public int getLeaveRequestStatusCode() {
+        public int getAssignRequestStatusCode() {
             return this.assignRequestStatusCode;
         }
     }
