@@ -40,6 +40,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -340,7 +341,7 @@ public class LeaveRequestController {
     @GetMapping("/search/policyForLeave")
     public ResponseEntity<Page<PolicyForLeave>> getAllPolicyFroLeave(@PageableDefault Pageable pageable){
         try {
-            //get resource file, create if not exist
+            //get resource file
             File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
             //get data from resource file
             ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -368,7 +369,7 @@ public class LeaveRequestController {
         List<LocalDate> result = new ArrayList<>();
         LocalDate today = LocalDate.now();
         try {
-            //get resource file, create if not exist
+            //get resource file
             File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
             //get data from resource file
             ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -403,7 +404,7 @@ public class LeaveRequestController {
             if(policyForLeave.getValidFromDate().isBefore(today)){
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
             }
-            //get resource file, create if not exist
+            //get resource file
             File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
             //get data from resource file
             ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -433,8 +434,10 @@ public class LeaveRequestController {
     }
 
     @PutMapping("/policyForLeave")
-    public ResponseEntity<PolicyForLeave> EditPolicyFroLeave(@Valid @RequestBody PolicyForLeave oldPolicyForLeave,PolicyForLeave newPolicyForLeave ){
+    public ResponseEntity<PolicyForLeave> EditPolicyFroLeave(@Valid @RequestBody Map<String,PolicyForLeave> data){
         try {
+            PolicyForLeave oldPolicyForLeave = data.get("oldPolicyForLeave");
+            PolicyForLeave newPolicyForLeave = data.get("newPolicyForLeave");
             //Set last modified time
             LocalDate today = LocalDate.now();
             newPolicyForLeave.setLastModifiedDate(today);
@@ -442,7 +445,7 @@ public class LeaveRequestController {
             if(newPolicyForLeave.getValidFromDate().isBefore(today)){
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
             }
-            //get resource file, create if not exist
+            //get resource file
             File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
             //get data from resource file
             ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -481,7 +484,7 @@ public class LeaveRequestController {
             if(!policyForLeave.getValidFromDate().isAfter(today)){
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
             }
-            //get resource file, create if not exist
+            //get resource file
             File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
             //get data from resource file
             ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
