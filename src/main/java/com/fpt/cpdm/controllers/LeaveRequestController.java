@@ -1,5 +1,8 @@
 package com.fpt.cpdm.controllers;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -326,5 +330,174 @@ public class LeaveRequestController {
             }
         }
         return ResponseEntity.ok(result);
+    }
+
+    private static File getResourceFile(String fileName) throws IOException {
+        ClassLoader classloader = ClassLoader.getSystemClassLoader();
+        return new File(classloader.getResource(ConstantManager.policyForLeaveConfigFileName).getFile());
+    }
+
+    @GetMapping("/search/policyForLeave")
+    public ResponseEntity<Page<PolicyForLeave>> getAllPolicyFroLeave(@PageableDefault Pageable pageable){
+        try {
+            //get resource file, create if not exist
+            File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
+            //get data from resource file
+            ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+            mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,true);
+            List<PolicyForLeave> policyForLeaveList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class, PolicyForLeave.class));
+            if (policyForLeaveList.size() > 0) {
+                policyForLeaveList.sort((o1, o2) -> o2.getValidFromDate().compareTo(o1.getValidFromDate()));
+                Page<PolicyForLeave> PageImpl = new PageImpl<PolicyForLeave>(policyForLeaveList, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), policyForLeaveList.size());
+                return ResponseEntity.ok(PageImpl);
+            }
+            return ResponseEntity.noContent().build();
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("search/policyForLeave/notAllowDate")
+    public ResponseEntity<List<LocalDate>> getNotAllowDateForPolicyManager(){
+        List<LocalDate> result = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        try {
+            //get resource file, create if not exist
+            File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
+            //get data from resource file
+            ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+            mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,true);
+            List<PolicyForLeave> policyForLeaveList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class, PolicyForLeave.class));
+            if (policyForLeaveList.size() > 0) {
+                for (PolicyForLeave p : policyForLeaveList) {
+                    if(!p.getValidFromDate().isBefore(today)){
+                        result.add(p.getValidFromDate());
+                    }
+                }
+            }
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/policyForLeave")
+    public ResponseEntity<PolicyForLeave> AddPolicyFroLeave(@Valid @RequestBody PolicyForLeave policyForLeave){
+        try {
+            //Set created and last modified date
+            LocalDate today = LocalDate.now();
+            policyForLeave.setCreatedDate(today);
+            policyForLeave.setLastModifiedDate(today);
+            //Validate date from date must after today
+            if(policyForLeave.getValidFromDate().isBefore(today)){
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+            }
+            //get resource file, create if not exist
+            File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
+            //get data from resource file
+            ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+            mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+            List<PolicyForLeave> policyForLeaveList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class, PolicyForLeave.class));
+            //Check exist date valid from
+            for (PolicyForLeave p : policyForLeaveList) {
+                if(p.getValidFromDate().equals(policyForLeave.getValidFromDate())){
+                    return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+                }
+            }
+            //Add and re sort policy list by valid from date
+            policyForLeaveList.add(policyForLeave);
+            policyForLeaveList.sort((o1, o2) -> o2.getValidFromDate().compareTo(o1.getValidFromDate()));
+            mapper.writeValue(file, policyForLeaveList);
+            return ResponseEntity.ok(policyForLeave);
+
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/policyForLeave")
+    public ResponseEntity<PolicyForLeave> EditPolicyFroLeave(@Valid @RequestBody PolicyForLeave oldPolicyForLeave,PolicyForLeave newPolicyForLeave ){
+        try {
+            //Set last modified time
+            LocalDate today = LocalDate.now();
+            newPolicyForLeave.setLastModifiedDate(today);
+            //Validate date from date must after today
+            if(newPolicyForLeave.getValidFromDate().isBefore(today)){
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+            }
+            //get resource file, create if not exist
+            File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
+            //get data from resource file
+            ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+            mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+            List<PolicyForLeave> policyForLeaveList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class, PolicyForLeave.class));
+            //Check exist date valid from
+            for (PolicyForLeave p : policyForLeaveList) {
+                if(p.getValidFromDate().equals(newPolicyForLeave.getValidFromDate())){
+                    return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+                }
+            }
+            //find index of old and replace by new one
+            int index = policyForLeaveList.indexOf(oldPolicyForLeave);
+            policyForLeaveList.set(index,newPolicyForLeave);
+            //re-sort
+            policyForLeaveList.sort((o1, o2) -> o2.getValidFromDate().compareTo(o1.getValidFromDate()));
+            mapper.writeValue(file, policyForLeaveList);
+            return ResponseEntity.ok(newPolicyForLeave);
+
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/policyForLeave")
+    public ResponseEntity EditPolicyFroLeave(@Valid @RequestBody PolicyForLeave policyForLeave){
+        try {
+            LocalDate today = LocalDate.now();
+            //Validate date from date must after today
+            if(!policyForLeave.getValidFromDate().isAfter(today)){
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+            }
+            //get resource file, create if not exist
+            File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
+            //get data from resource file
+            ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+            mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+            List<PolicyForLeave> policyForLeaveList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class, PolicyForLeave.class));
+            //remove the policy
+            policyForLeaveList.remove(policyForLeave);
+            mapper.writeValue(file, policyForLeaveList);
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }
