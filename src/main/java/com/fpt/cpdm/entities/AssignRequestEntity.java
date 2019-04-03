@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity(name = "assignRequest")
 @Table(name = "assign_request")
@@ -46,9 +47,12 @@ public class AssignRequestEntity extends BaseEntity {
     @JoinColumn(name = "approver_id", referencedColumnName = "id")
     private UserEntity approver;
 
-    @ManyToOne
-    @JoinColumn(name = "task_id", referencedColumnName = "id")
-    private TaskEntity task;
+    @ManyToMany
+    @JoinTable(
+            name = "assignRequests_tasks",
+            joinColumns = @JoinColumn(name = "assign_request_id",referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id",referencedColumnName = "id"))
+    private List<TaskEntity> tasks;
 
     @PrePersist
     public void onCreated(){

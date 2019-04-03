@@ -71,11 +71,7 @@ public class AssignRequestController {
     @PostMapping
     public ResponseEntity<AssignRequest> create(@Valid @RequestBody AssignRequest assignRequest,
                                                BindingResult result, Principal principal) {
-        //validate to date >= from date
-        if(assignRequest.getToDate().isBefore(assignRequest.getFromDate())){
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
-        }
-        //Check number of day of policy rule
+
         User user = userService.findByEmail(principal.getName());
         assignRequest.setUser(user);
 
@@ -85,6 +81,7 @@ public class AssignRequestController {
     @PutMapping("/{id}")
     public ResponseEntity<AssignRequest> edit(@PathVariable(name = "id") Integer id,
                                              @Valid @RequestBody AssignRequest assignRequest, BindingResult result, Principal principal) {
+
         if (assignRequestService.findById(id).getStatus() == Enum.AssignRequestStatus.Approved.getAssignRequestStatusCode()) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }
@@ -93,6 +90,16 @@ public class AssignRequestController {
     }
 
     private ResponseEntity<AssignRequest> save(Integer id, AssignRequest assignRequest, BindingResult result, Principal principal) {
+
+        LocalDate today = LocalDate.now();
+        //Validate date from date must after today
+        if(assignRequest.getFromDate().isBefore(today)){
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        }
+        //validate to date >= from date
+        if(assignRequest.getToDate().isBefore(assignRequest.getFromDate())){
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+        }
 
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
