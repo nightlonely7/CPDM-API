@@ -26,12 +26,11 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     TaskSummary findSummaryById(Integer id);
 
-    Page<TaskSummary> findAllSummaryByRelatives(UserEntity userEntity, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByCreatorAndAvailableTrue(UserEntity creator, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByExecutorAndAvailableTrue(UserEntity userEntity, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByExecutorAndAvailableTrue(UserEntity executor, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByCreatorAndTitleContainsAndSummaryContainsAndProject_IdAndAvailableTrue
-            (UserEntity userEntity, String title, String description, Integer projectId, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByRelativesAndAvailableTrue(UserEntity relative, Pageable pageable);
 
     @Query("select t from TaskEntity t where " +
             "(:creator is null or t.creator = :creator) and " +
@@ -39,7 +38,13 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             "(:relative is null or :relative member of t.relatives) and " +
             "(:title is null or t.title like %:title%) and " +
             "(:summary is null or t.summary like %:summary%) and " +
-            "(:projectId is null or t.project.id = :projectId) and" +
+            "(:createdTimeFrom is null or t.createdTime >= :createdTimeFrom) and " +
+            "(:createdTimeTo is null or t.createdTime <= :createdTimeTo) and " +
+            "(:startTimeFrom is null or t.startTime >= :startTimeFrom) and " +
+            "(:startTimeTo is null or t.startTime <= :startTimeTo) and " +
+            "(:endTimeFrom is null or t.endTime >= :endTimeFrom) and " +
+            "(:endTimeTo is null or t.endTime <= :endTimeTo) and " +
+            "(:projectId is null or t.project.id = :projectId) and " +
             "(t.available = true)")
     Page<TaskSummary> advanceSearch(
             @Param("creator") UserEntity creator,
@@ -47,6 +52,12 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             @Param("relative") UserEntity relative,
             @Param("title") String title,
             @Param("summary") String summary,
+            @Param("createdTimeFrom") LocalDateTime createdTimeFrom,
+            @Param("createdTimeTo") LocalDateTime createdTimeTo,
+            @Param("startTimeFrom") LocalDateTime startTimeFrom,
+            @Param("startTimeTo") LocalDateTime startTimeTo,
+            @Param("endTimeFrom") LocalDateTime endTimeFrom,
+            @Param("endTimeTo") LocalDateTime endTimeTo,
             @Param("projectId") Integer projectId,
             Pageable pageable);
 

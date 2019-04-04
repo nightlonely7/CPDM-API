@@ -116,7 +116,7 @@ public class UserController {
         return ResponseEntity.ok(managers);
     }
 
-    @GetMapping("/findAllfDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager")
+    @GetMapping("/findAllDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager")
     public ResponseEntity<List<UserDisplayName>> findAllfDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager(
             @RequestParam("roleName") String roleName, Principal principal) {
 

@@ -12,5 +12,7 @@ public interface CommentService extends CRUDService<Comment> {
 
     Page<CommentSummary> findAllSummaryByTaskAndStatusNot(Task task, Pageable pageable, Integer status);
 
+    List<CommentSummary> findAllSummaryByTaskAndStatusNot(Task task, Integer status);
+
     List<CommentSummary> findAllSummaryByParentCommentId(Integer parentCommentId);
 }

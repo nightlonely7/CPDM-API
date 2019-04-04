@@ -26,7 +26,7 @@ public class TaskEntity extends BaseEntity {
     private String summary;
 
     @Lob
-    @Basic
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "description")
     private String description;
 
@@ -34,11 +34,6 @@ public class TaskEntity extends BaseEntity {
     @Column(name = "created_time")
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime createdTime;
-
-    @Basic
-    @Column(name = "last_modified_time")
-    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime lastModifiedTime;
 
     @Basic
     @Column(name = "start_time")
@@ -58,6 +53,11 @@ public class TaskEntity extends BaseEntity {
     @Column(name = "status")
     private String status;
 
+    @Basic
+    @Column(name = "last_modified_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime lastModifiedTime;
+
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private ProjectEntity project;
@@ -75,7 +75,7 @@ public class TaskEntity extends BaseEntity {
     private UserEntity executor;
 
     @ManyToMany
-    @JoinTable(name = "task_relative",
+    @JoinTable(name = "tasks_relatives",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<UserEntity> relatives;
@@ -95,15 +95,15 @@ public class TaskEntity extends BaseEntity {
     private List<DocumentEntity> documents;
 
     @PrePersist
-    public void onCreated() {
-        this.setCreatedTime(LocalDateTime.now());
-        this.setLastModifiedTime(LocalDateTime.now());
-        this.setStatus("Working");
-        this.setAvailable(Boolean.TRUE);
+    public void onPersist() {
+        this.createdTime = LocalDateTime.now();
+        this.lastModifiedTime = LocalDateTime.now();
+        this.status = "Working";
+        this.available = Boolean.TRUE;
     }
 
     @PreUpdate
     public void onUpdate() {
-        this.setLastModifiedTime(LocalDateTime.now());
+        this.lastModifiedTime = LocalDateTime.now();
     }
 }

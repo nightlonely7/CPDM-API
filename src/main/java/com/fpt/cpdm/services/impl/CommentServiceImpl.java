@@ -121,6 +121,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public List<CommentSummary> findAllSummaryByTaskAndStatusNot(Task task, Integer status) {
+        TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
+        List<CommentSummary> commentSummaries = commentRepository.findAllSummaryByTaskAndStatusNot(taskEntity, status);
+        return commentSummaries;
+    }
+
+    @Override
     public List<CommentSummary> findAllSummaryByParentCommentId(Integer parentCommentId) {
         List<CommentSummary> commentSummaries = commentRepository.findAllSummaryByParentCommentId(parentCommentId);
 

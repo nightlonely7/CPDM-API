@@ -14,7 +14,9 @@ public interface DocumentSummary {
 
     LocalDateTime getCreatedTime();
 
-    NameIdOnly getProject();
+    LocalDateTime getStartTime();
 
-    String getStatus();
+    LocalDateTime getEndTime();
+
+    NameIdOnly getProject();
 }

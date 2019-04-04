@@ -34,12 +34,12 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 3, true, '2017-09-20 07:22:11');
 
 -- INSERT DOCUMENT
-INSERT INTO document (title, summary, created_time, project_id, status) VALUES
-('document title 1', 'document summary 1', '2016-05-22 18:30:31', 1, 'created'),
-('document title 2', 'document summary 2', '2016-06-22 18:30:31', 1, 'created'),
-('document title 3', 'document summary 3', '2016-07-22 18:30:31', 1, 'created'),
-('document title 4', 'document summary 4', '2016-08-22 18:30:31', 1, 'created'),
-('document title 5', 'document summary 5', '2016-09-22 18:30:31', 1, 'created');
+INSERT INTO document (title, summary, created_time, start_time, end_time, project_id) VALUES
+('document title 1', 'document summary 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 2', 'document summary 2', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 3', 'document summary 3', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 4', 'document summary 4', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 5', 'document summary 5', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1);
 
 
 -- INSERT TASK
@@ -82,9 +82,12 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 -- ('title task 12d', 'summary task 12d', 'description task 12d', '2019-03-29 07:30:00'
 -- , '2019-03-29 07:30:00', '2019-03-29 23:59:59', 1, 'Working', 1, 2, 1, 1, true);
 
+-- INSERT DOCUMENTS-RELATIVES MAPPING
+INSERT INTO documents_relatives(document_id, user_id) VALUES
+(1, 3), (1, 4), (1, 5), (1, 6);
 
--- INSERT TASK-RELATIVES MAPPING
-INSERT INTO task_relative(task_id, user_id) VALUES
+-- INSERT TASKS-RELATIVES MAPPING
+INSERT INTO tasks_relatives(task_id, user_id) VALUES
 (1, 3), (1, 4), (1, 5), (1, 6);
 
 -- INSERT TASK_ISSUE
@@ -123,9 +126,9 @@ INSERT INTO stored_comment (content, created_date, comment_id) VALUES
 -- INSERT LEAVE REQUEST
 
 INSERT INTO leave_request (content, from_date, to_date, created_date, status, user_id, approver_id) VALUES
-('Đơn xin nghỉ phép 2 ngày','2019-03-17', '2019-03-18', '2019-03-16', 0, 2, 1),
-('Đơn xin nghỉ phép 1 ngày','2019-03-15', '2019-03-15', '2019-03-14', 1, 2, 1),
-('Đơn xin nghỉ phép 3 ngày','2019-03-11', '2019-03-13', '2019-03-10', 0, 2, 1),
-('Đơn xin nghỉ phép 1 ngày','2019-03-08', '2019-03-08', '2019-03-07', 1, 2, 1),
-('Đơn xin nghỉ phép 2 ngày','2019-03-06', '2019-03-07', '2019-03-05', 0, 2, 1),
-('Đơn xin nghỉ phép 1 ngày','2019-03-01', '2019-03-01', '2019-02-28', 1, 2, 1);
+('Đơn xin nghỉ phép 2 ngày','2019-03-17', '2019-04-18', '2019-04-16', 0, 2, 1),
+('Đơn xin nghỉ phép 1 ngày','2019-03-15', '2019-04-15', '2019-04-14', 1, 2, 1),
+('Đơn xin nghỉ phép 3 ngày','2019-03-11', '2019-04-13', '2019-04-10', 0, 2, 1),
+('Đơn xin nghỉ phép 1 ngày','2019-03-08', '2019-04-08', '2019-04-07', 1, 2, 1),
+('Đơn xin nghỉ phép 2 ngày','2019-03-06', '2019-04-07', '2019-04-05', 0, 2, 1),
+('Đơn xin nghỉ phép 1 ngày','2019-03-01', '2019-04-01', '2019-03-28', 1, 2, 1);

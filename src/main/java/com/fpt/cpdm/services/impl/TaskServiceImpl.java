@@ -5,9 +5,11 @@ import com.fpt.cpdm.entities.ProjectEntity;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.TaskFilesEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.exceptions.BadRequestException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
+import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.tasks.Task;
@@ -80,6 +82,7 @@ public class TaskServiceImpl implements TaskService {
 
         return taskDetail;
     }
+
 
     @Override
     public TaskSummary changeStatus(Task task) {
@@ -169,6 +172,7 @@ public class TaskServiceImpl implements TaskService {
             parentTask.setId(taskCreateForm.getParentTask().getId());
         }
 
+
         List<UserEntity> relatives = new ArrayList<>();
         if (taskCreateForm.getRelatives() != null) {
             for (IdOnlyForm idOnlyForm : taskCreateForm.getRelatives()) {
@@ -234,18 +238,41 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByExecutor(String title, String summary, Integer projectId, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByExecutor(TaskSearchForm taskSearchForm, Pageable pageable) {
 
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
-        return taskRepository.advanceSearch(null, executor, null, title, summary, projectId, pageable);
+
+
+        if (taskSearchForm.getCreatedTimeFrom() != null && taskSearchForm.getCreatedTimeTo() != null
+                && taskSearchForm.getCreatedTimeFrom().isAfter(taskSearchForm.getCreatedTimeTo())) {
+            throw new BadRequestException("createdTimeFrom is after createdTimeTo");
+        }
+
+        if (taskSearchForm.getStartTimeFrom() != null && taskSearchForm.getStartTimeTo() != null
+                && taskSearchForm.getStartTimeFrom().isAfter(taskSearchForm.getStartTimeTo())) {
+            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        }
+
+        if (taskSearchForm.getEndTimeFrom() != null && taskSearchForm.getEndTimeTo() != null
+                && taskSearchForm.getEndTimeFrom().isAfter(taskSearchForm.getEndTimeTo())) {
+            throw new BadRequestException("endTimeFrom is after endTimeTo");
+        }
+
+        return taskRepository.advanceSearch(null, executor, null,
+                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
+                taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
+                taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
+                taskSearchForm.getProjectId(), pageable);
+
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByCreator(String title, String summary, Integer projectId, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByCreator(TaskSearchForm taskSearchForm, Pageable pageable) {
 
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
@@ -253,24 +280,68 @@ public class TaskServiceImpl implements TaskService {
                 () -> new UsernameNotFoundException(email)
         );
 
-        return taskRepository.advanceSearch(creator, null, null, title, summary, projectId, pageable);
+
+        if (taskSearchForm.getCreatedTimeFrom() != null && taskSearchForm.getCreatedTimeTo() != null
+                && taskSearchForm.getCreatedTimeFrom().isAfter(taskSearchForm.getCreatedTimeTo())) {
+            throw new BadRequestException("createdTimeFrom is after createdTimeTo");
+        }
+
+        if (taskSearchForm.getStartTimeFrom() != null && taskSearchForm.getStartTimeTo() != null
+                && taskSearchForm.getStartTimeFrom().isAfter(taskSearchForm.getStartTimeTo())) {
+            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        }
+
+        if (taskSearchForm.getEndTimeFrom() != null && taskSearchForm.getEndTimeTo() != null
+                && taskSearchForm.getEndTimeFrom().isAfter(taskSearchForm.getEndTimeTo())) {
+            throw new BadRequestException("endTimeFrom is after endTimeTo");
+        }
+
+        return taskRepository.advanceSearch(creator, null, null,
+                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
+                taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
+                taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
+                taskSearchForm.getProjectId(), pageable);
+
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByRelatives(String title, String summary, Integer projectId, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByRelatives(TaskSearchForm taskSearchForm, Pageable pageable) {
 
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity relative = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
-        List<UserEntity> relatives = new ArrayList<>();
-        relatives.add(relative);
-        return taskRepository.advanceSearch(null, null, relative, title, summary, projectId, pageable);
+
+
+        if (taskSearchForm.getCreatedTimeFrom() != null && taskSearchForm.getCreatedTimeTo() != null
+                && taskSearchForm.getCreatedTimeFrom().isAfter(taskSearchForm.getCreatedTimeTo())) {
+            throw new BadRequestException("createdTimeFrom is after createdTimeTo");
+        }
+
+        if (taskSearchForm.getStartTimeFrom() != null && taskSearchForm.getStartTimeTo() != null
+                && taskSearchForm.getStartTimeFrom().isAfter(taskSearchForm.getStartTimeTo())) {
+            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        }
+
+        if (taskSearchForm.getEndTimeFrom() != null && taskSearchForm.getEndTimeTo() != null
+                && taskSearchForm.getEndTimeFrom().isAfter(taskSearchForm.getEndTimeTo())) {
+            throw new BadRequestException("endTimeFrom is after endTimeTo");
+        }
+
+        return taskRepository.advanceSearch(null, null, relative,
+                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
+                taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
+                taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
+                taskSearchForm.getProjectId(), pageable);
+
     }
 
     @Override
     public void deleteById(Integer id) {
+
         TaskEntity taskEntity = taskRepository.findById(id).get();
         taskEntity.setAvailable(false);
         taskRepository.save(taskEntity);
@@ -289,7 +360,6 @@ public class TaskServiceImpl implements TaskService {
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
-        System.out.println(executor.getUsername());
         List<TaskBasic> taskBasics = taskRepository.findAllBasicByExecutorAndProject_Id(executor, projectId);
 
         return taskBasics;
@@ -310,13 +380,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBetween(User user, String status, LocalDateTime fromTime, LocalDateTime toTime) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(userEntity,status,fromTime,toTime);
+        return taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(userEntity, status, fromTime, toTime);
     }
 
     @Override
     public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(User user, String status, LocalDateTime fromTime) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return taskRepository.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(userEntity,status,fromTime,fromTime);
+        return taskRepository.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(userEntity, status, fromTime, fromTime);
     }
 
 }

@@ -3,6 +3,7 @@ package com.fpt.cpdm.utils;
 
 import com.fpt.cpdm.entities.*;
 import com.fpt.cpdm.models.Role;
+import com.fpt.cpdm.models.assignRequests.AssignRequest;
 import com.fpt.cpdm.models.comments.Comment;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
 import com.fpt.cpdm.models.projects.Project;
@@ -108,5 +109,15 @@ public class ModelConverter {
     public static LeaveRequestEntity leaveRequestModelToEntity(LeaveRequest leaveRequest) {
         LeaveRequestEntity leaveRequestEntity = MODEL_MAPPER.map(leaveRequest, LeaveRequestEntity.class);
         return leaveRequestEntity;
+    }
+
+    public static AssignRequest assignRequestEntityToModel(AssignRequestEntity assignRequestEntity) {
+        AssignRequest assignRequest = MODEL_MAPPER.map(assignRequestEntity, AssignRequest.class);
+        return assignRequest;
+    }
+
+    public static AssignRequestEntity assignRequestModelToEntity(AssignRequest assignRequest) {
+        AssignRequestEntity assignRequestEntity = MODEL_MAPPER.map(assignRequest, AssignRequestEntity.class);
+        return assignRequestEntity;
     }
 }

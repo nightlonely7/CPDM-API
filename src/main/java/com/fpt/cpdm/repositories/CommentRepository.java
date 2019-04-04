@@ -14,6 +14,8 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<CommentEntity,Integer> {
 
+    List<CommentSummary> findAllSummaryByTaskAndStatusNot(TaskEntity taskEntity, Integer status);
+
     Page<CommentSummary> findAllSummaryByTaskAndStatusNot(TaskEntity taskEntity, Pageable pageable,Integer status);
 
     List<CommentSummary> findAllSummaryByParentCommentId(Integer parentCommentId);

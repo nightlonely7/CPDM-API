@@ -50,6 +50,21 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
+    @GetMapping("/findAllByTask")
+    public ResponseEntity<List<CommentSummary>> findAllByTask(@RequestParam("id") Integer id){
+        Task task = new Task();
+        task.setId(id);
+
+        Integer deletedStatusCode = Enum.CommentStatus.Deleted.getCommentStatusCode();
+        List<CommentSummary> commentSummaries = commentService.findAllSummaryByTaskAndStatusNot(task, deletedStatusCode);
+
+        if(commentSummaries.isEmpty()){
+            ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(commentSummaries);
+    }
+
     @GetMapping("/findByTask")
     public ResponseEntity<Page<CommentSummary>> findByTask(@RequestParam("id") Integer id,
                                                            @PageableDefault Pageable pageable) {
