@@ -5,6 +5,7 @@ import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.UserDisplayName;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface AssignRequestSummary  {
     Integer getId();
@@ -28,5 +29,5 @@ public interface AssignRequestSummary  {
 
     UserDisplayName getApprover();
 
-    TaskSummary getTask();
+    List<TaskSummary> getTasks();
 }

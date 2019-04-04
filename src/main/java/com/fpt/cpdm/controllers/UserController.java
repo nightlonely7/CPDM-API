@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -106,6 +107,30 @@ public class UserController {
         }
 
         return ResponseEntity.ok(userDisplayNames);
+    }
+
+    @GetMapping("/findAllAssignee")
+    public ResponseEntity<List<UserDisplayName>> findAllOtherStaffDisplayNameByDepartmentOfCurrentLoggedManager(Principal principal) {
+
+        // get current logged manager
+        User user = userService.findByEmail(principal.getName());
+
+        List<UserDisplayName> result = new ArrayList<>();
+        //return admin is only assignee for manager base on company business
+        if(user.getRole().getName().equals("MANAGER")){
+            result = userService.findAllDisplayNameByRole_Name("ROLE_ADMIN");
+        }
+        else{
+            result = userService.findDisplayNameByDepartmentAndRole_Name(user.getDepartment(), "ROLE_MANAGER");
+            result.addAll(userService
+                    .findDisplayNameByDepartmentAndRole_NameAndIdNot(user.getDepartment(), "ROLE_STAFF",user.getId() ));
+        }
+
+        if (result.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(result);
     }
 
     @Secured("ROLE_ADMIN")
