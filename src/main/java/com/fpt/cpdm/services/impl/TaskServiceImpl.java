@@ -19,9 +19,12 @@ import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.*;
 import com.fpt.cpdm.services.TaskService;
+import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -40,19 +43,17 @@ public class TaskServiceImpl implements TaskService {
     private final DepartmentRepository departmentRepository;
     private final TaskFilesRepository taskFilesRepository;
     private final AuthenticationFacade authenticationFacade;
+    private final AssignRequestRepository assignRequestRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository,
-                           UserRepository userRepository,
-                           DocumentRepository documentRepository,
-                           DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository,
-                           AuthenticationFacade authenticationFacade) {
+    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository, DocumentRepository documentRepository, DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository, AuthenticationFacade authenticationFacade, AssignRequestRepository assignRequestRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.documentRepository = documentRepository;
         this.departmentRepository = departmentRepository;
         this.taskFilesRepository = taskFilesRepository;
         this.authenticationFacade = authenticationFacade;
+        this.assignRequestRepository = assignRequestRepository;
     }
 
     @Override
@@ -389,4 +390,66 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(userEntity, status, fromTime, fromTime);
     }
 
+    @Override
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotAssigned(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable) {
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(executor,status,fromTime,toTime);
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(executor,status,fromTime,fromTime));
+
+        List<Integer> integerList = new ArrayList<>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        integerList.add(newCode);
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+        integerList.add(approvedCode);
+
+        for (TaskSummary taskSummary : taskSummaries) {
+            //check exist assign request status new or approved
+            if(assignRequestRepository.existsByUserAndStatusInAndFromDateIsBetween(executor,integerList,taskSummary.getStartTime().toLocalDate(),taskSummary.getEndTime().toLocalDate())){
+                taskSummaries.remove(taskSummary);
+            }
+            if(assignRequestRepository.existsByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(executor,integerList,taskSummary.getStartTime().toLocalDate(),taskSummary.getStartTime().toLocalDate())){
+                taskSummaries.remove(taskSummary);
+            }
+        }
+
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummaries.size());
+        return result;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndAssigned(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable) {
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(executor,status,fromTime,toTime);
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(executor,status,fromTime,fromTime));
+
+        List<Integer> integerList = new ArrayList<>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        integerList.add(newCode);
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+        integerList.add(approvedCode);
+
+        List<TaskSummary> taskSummariesAssigned = new ArrayList<>();
+        for (TaskSummary taskSummary : taskSummaries) {
+            //check exist assign request status new or approved
+            if(assignRequestRepository.existsByUserAndStatusInAndFromDateIsBetween(executor,integerList,taskSummary.getStartTime().toLocalDate(),taskSummary.getEndTime().toLocalDate())){
+                taskSummariesAssigned.add(taskSummary);
+            }
+            if(assignRequestRepository.existsByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(executor,integerList,taskSummary.getStartTime().toLocalDate(),taskSummary.getStartTime().toLocalDate())){
+                taskSummariesAssigned.add(taskSummary);
+            }
+        }
+
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummariesAssigned,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummariesAssigned.size());
+        return result;
+    }
 }

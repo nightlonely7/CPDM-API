@@ -31,6 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -68,6 +69,36 @@ public class TaskController {
                                                             @PageableDefault Pageable pageable) {
 
         Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(taskSearchForm, pageable);
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/search/executes/notAssigned")
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndNotAssigned(String status, LocalDate fromDate, LocalDate toDate,
+                                                                                         @PageableDefault Pageable pageable) {
+        LocalDateTime fromTime = fromDate.atStartOfDay();
+        LocalDateTime toTime = toDate.plusDays(1).atStartOfDay();
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndNotAssigned(status,fromTime,toTime,pageable);
+
+        if(taskSummaries.getContent().isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/search/executes/assigned")
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndAssigned(String status, LocalDate fromDate, LocalDate toDate,
+                                                            @PageableDefault Pageable pageable) {
+        LocalDateTime fromTime = fromDate.atStartOfDay();
+        LocalDateTime toTime = toDate.plusDays(1).atStartOfDay();
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndAssigned(status,fromTime,toTime,pageable);
+
+        if(taskSummaries.getContent().isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
 
         return ResponseEntity.ok(taskSummaries);
     }

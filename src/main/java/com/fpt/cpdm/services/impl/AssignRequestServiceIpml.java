@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -123,7 +124,7 @@ public class AssignRequestServiceIpml implements AssignRequestService {
     @Override
     public Page<AssignRequestSummary> findAllSummaryByApproverAndStatus(User approver, Integer status, Pageable pageable) {
         UserEntity userEntity = ModelConverter.userModelToEntity(approver);
-        Page<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllSummaryByApproverAndStatus(userEntity,status,pageable);
+        Page<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllSummaryByApproverAndStatus(userEntity, status, pageable);
         return assignRequestSummaries;
     }
 }
