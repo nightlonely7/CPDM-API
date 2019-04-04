@@ -64,7 +64,7 @@ public class TaskController {
     }
 
     @GetMapping("/search/executes")
-    public ResponseEntity<Page<TaskSummary>> findByExecutes(TaskSearchForm taskSearchForm,
+    public ResponseEntity<Page<TaskSummary>> readByExecutes(TaskSearchForm taskSearchForm,
                                                             @PageableDefault Pageable pageable) {
 
         Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor(taskSearchForm, pageable);
@@ -74,7 +74,7 @@ public class TaskController {
 
     @Secured({"ROLE_ADMIN", "ROLE_MANAGER"})
     @GetMapping("/search/creates")
-    public ResponseEntity<Page<TaskSummary>> findByCreates(TaskSearchForm taskSearchForm,
+    public ResponseEntity<Page<TaskSummary>> readByCreates(TaskSearchForm taskSearchForm,
                                                            @PageableDefault Pageable pageable) {
 
         Page<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator(taskSearchForm, pageable);
@@ -83,7 +83,7 @@ public class TaskController {
     }
 
     @GetMapping("/search/relatives")
-    public ResponseEntity<Page<TaskSummary>> findByRelatives(TaskSearchForm taskSearchForm,
+    public ResponseEntity<Page<TaskSummary>> readByRelatives(TaskSearchForm taskSearchForm,
                                                              @PageableDefault Pageable pageable) {
 
         Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(taskSearchForm, pageable);
