@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -37,5 +38,5 @@ public class AssignRequest {
 
     private User approver;
 
-    private Task task;
+    private List<Task> tasks;
 }

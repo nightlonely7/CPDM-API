@@ -46,9 +46,11 @@ public class AssignRequestServiceIpml implements AssignRequestService {
         }
 
         //check task exists
-        if(taskRepository.existsById(model.getTask().getId()) == false){
-            throw new TaskNotFoundException(model.getTask().getId());
-        }
+        model.getTasks().forEach(task -> {
+            if(taskRepository.existsById(task.getId()) == false){
+                throw new TaskNotFoundException(task.getId());
+            }
+        });
 
         AssignRequestEntity assignRequestEntity = ModelConverter.assignRequestModelToEntity(model);
         AssignRequestEntity savedAssignRequestEntity = assignRequestRepository.save(assignRequestEntity);
@@ -64,7 +66,11 @@ public class AssignRequestServiceIpml implements AssignRequestService {
 
     @Override
     public AssignRequest findById(Integer id) {
-        return null;
+        AssignRequestEntity assignRequestEntity = assignRequestRepository.findById(id).orElseThrow(
+                () -> new TaskNotFoundException(id)
+        );
+
+        return ModelConverter.assignRequestEntityToModel(assignRequestEntity);
     }
 
     @Override
@@ -117,7 +123,7 @@ public class AssignRequestServiceIpml implements AssignRequestService {
     @Override
     public Page<AssignRequestSummary> findAllSummaryByApproverAndStatus(User approver, Integer status, Pageable pageable) {
         UserEntity userEntity = ModelConverter.userModelToEntity(approver);
-        Page<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllSummaryByUserAndStatus(userEntity,status,pageable);
+        Page<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllSummaryByApproverAndStatus(userEntity,status,pageable);
         return assignRequestSummaries;
     }
 }

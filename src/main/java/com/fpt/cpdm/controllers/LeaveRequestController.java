@@ -21,6 +21,7 @@ import com.fpt.cpdm.utils.ConstantManager;
 import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -100,13 +101,10 @@ public class LeaveRequestController {
         //Get number of day off requested
         int diff = (int) DAYS.between(leaveRequest.getFromDate(), leaveRequest.getToDate()) + 1;
 
-        ArrayList<PolicyForLeave> policyForFrees = new ArrayList<>();
-
         //Get number of day off free check in json file default 3
         Integer numberOfDateFreeCheck = ConstantManager.defaultNumberOfDayOffFreeCheck;
         try {
-            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-            File file = new File(classLoader.getResource(ConstantManager.policyForLeaveConfigFileName).getFile());
+            File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
             ObjectMapper mapper = new ObjectMapper().registerModule( new JavaTimeModule());
             List<PolicyForLeave> policyForFreeList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class,PolicyForLeave.class));
             if (policyForFreeList.size() > 0) {
@@ -334,8 +332,9 @@ public class LeaveRequestController {
     }
 
     private static File getResourceFile(String fileName) throws IOException {
-        ClassLoader classloader = ClassLoader.getSystemClassLoader();
-        return new File(classloader.getResource(ConstantManager.policyForLeaveConfigFileName).getFile());
+//        ClassLoader classloader = ClassLoader.getSystemClassLoader();
+//        return new File(classloader.getResource(fileName).getFile());
+        return new ClassPathResource(fileName).getFile();
     }
 
     @GetMapping("/search/policyForLeave")
