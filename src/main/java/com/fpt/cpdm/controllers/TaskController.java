@@ -74,7 +74,9 @@ public class TaskController {
     }
 
     @GetMapping("/search/executes/notAssigned")
-    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndNotAssigned(String status, LocalDate fromDate, LocalDate toDate,
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndNotAssigned(@RequestParam(name = "status") String status,
+                                                                                         @RequestParam(name = "fromDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                                                                         @RequestParam(name = "toDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate toDate,
                                                                                          @PageableDefault Pageable pageable) {
         LocalDateTime fromTime = fromDate.atStartOfDay();
         LocalDateTime toTime = toDate.plusDays(1).atStartOfDay();
@@ -89,8 +91,10 @@ public class TaskController {
     }
 
     @GetMapping("/search/executes/assigned")
-    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndAssigned(String status, LocalDate fromDate, LocalDate toDate,
-                                                            @PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndAssigned(@RequestParam(name = "status") String status,
+                                                                                      @RequestParam(name = "fromDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                                                                      @RequestParam(name = "toDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate toDate,
+                                                                                      @PageableDefault Pageable pageable) {
         LocalDateTime fromTime = fromDate.atStartOfDay();
         LocalDateTime toTime = toDate.plusDays(1).atStartOfDay();
 

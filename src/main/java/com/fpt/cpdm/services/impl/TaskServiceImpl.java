@@ -399,7 +399,7 @@ public class TaskServiceImpl implements TaskService {
         );
 
         List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(executor,status,fromTime,toTime);
-        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(executor,status,fromTime,fromTime));
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(executor,status,fromTime,fromTime));
 
         List<Integer> integerList = new ArrayList<>();
         Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
@@ -430,7 +430,7 @@ public class TaskServiceImpl implements TaskService {
         );
 
         List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(executor,status,fromTime,toTime);
-        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(executor,status,fromTime,fromTime));
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(executor,status,fromTime,fromTime));
 
         List<Integer> integerList = new ArrayList<>();
         Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
