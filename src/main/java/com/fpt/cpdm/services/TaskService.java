@@ -21,7 +21,7 @@ public interface TaskService {
 
     TaskDetail findDetailById(Integer id);
 
-    TaskSummary changeStatus(Task task);
+    TaskSummary complete(Integer id);
 
     TaskDetail create(TaskCreateForm taskCreateForm);
 

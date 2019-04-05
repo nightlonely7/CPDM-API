@@ -10,7 +10,7 @@ public interface TaskIssueDetail {
 
     String getDetail();
 
-    String getStatus();
+    Boolean getCompleted();
 
     LocalDateTime getCreatedTime();
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/taskIssues")
+@RequestMapping("/task-issues")
 public class TaskIssueController {
 
     private final TaskIssueService taskIssueService;
@@ -44,5 +44,13 @@ public class TaskIssueController {
         taskIssueService.delete(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<TaskIssueDetail> complete(@PathVariable("id") Integer id) {
+
+        TaskIssueDetail taskIssueDetail = taskIssueService.complete(id);
+
+        return ResponseEntity.ok(taskIssueDetail);
     }
 }

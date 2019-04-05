@@ -14,4 +14,6 @@ public interface TaskIssueService {
     TaskIssueDetail update(Integer id, TaskIssueForm taskIssueForm);
 
     void delete(Integer id);
+
+    TaskIssueDetail complete(Integer id);
 }

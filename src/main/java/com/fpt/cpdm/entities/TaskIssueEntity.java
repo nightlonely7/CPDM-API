@@ -28,20 +28,31 @@ public class TaskIssueEntity extends BaseEntity {
     private String detail;
 
     @Basic
-    @Column(name = "status")
-    private String status;
+    @Column(name = "completed")
+    private Boolean completed;
 
     @Basic
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
     @Basic
+    @Column(name = "last_modified_time")
+    private LocalDateTime lastModifiedTime;
+
+    @Basic
     @Column(name = "available")
     private Boolean available;
 
     @PrePersist
-    private void onCreate() {
+    private void prePersist() {
         this.createdTime = LocalDateTime.now();
+        this.lastModifiedTime = LocalDateTime.now();
         this.available = Boolean.TRUE;
+        this.completed = Boolean.FALSE;
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        this.lastModifiedTime = LocalDateTime.now();
     }
 }

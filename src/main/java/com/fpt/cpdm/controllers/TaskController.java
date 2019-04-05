@@ -249,19 +249,10 @@ public class TaskController {
     }
 
 
-    @PatchMapping("/{id}/done")
-    public ResponseEntity<TaskSummary> taskDone(@PathVariable("id") Integer id, Principal principal) {
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<TaskSummary> complete(@PathVariable("id") Integer id) {
 
-        // get current logged executor
-        User executor = userService.findByEmail(principal.getName());
-
-        // create [id, executor, and status only] task for updating
-        Task task = new Task();
-        task.setId(id);
-        task.setExecutor(executor);
-        task.setStatus("Done");
-
-        TaskSummary savedTaskSummary = taskService.changeStatus(task);
+        TaskSummary savedTaskSummary = taskService.complete(id);
 
         return ResponseEntity.ok(savedTaskSummary);
     }
