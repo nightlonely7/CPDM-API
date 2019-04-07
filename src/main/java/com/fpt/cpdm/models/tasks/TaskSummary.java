@@ -31,6 +31,9 @@ public interface TaskSummary {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime getEndTime();
 
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    LocalDateTime getCompletedTime();
+
     Integer getPriority();
 
     String getStatus();

@@ -12,5 +12,5 @@ public class TaskIssueForm {
     @Size(min = 4, max = 50)
     private String summary;
 
-    private String detail;
+    private String description;
 }

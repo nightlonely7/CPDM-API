@@ -27,10 +27,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +111,12 @@ public class TaskServiceImpl implements TaskService {
             throw new ConflictException("All issues must be completed first to complete this task!");
         }
 
-        taskEntity.setStatus("Completed");
+        if (taskEntity.getEndTime().isBefore(LocalDateTime.now())) {
+            taskEntity.setStatus("Complete outdated");
+        } else {
+            taskEntity.setStatus("Completed");
+        }
+        taskEntity.setCompletedTime(LocalDateTime.now());
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
         TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
 
@@ -282,7 +289,7 @@ public class TaskServiceImpl implements TaskService {
                 taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
                 taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
-                taskSearchForm.getProjectId(), pageable);
+                taskSearchForm.getProjectId(), taskSearchForm.getStatus(), pageable);
 
     }
 
@@ -311,12 +318,14 @@ public class TaskServiceImpl implements TaskService {
             throw new BadRequestException("endTimeFrom is after endTimeTo");
         }
 
+        System.out.println(taskSearchForm.getStatus());
+
         return taskRepository.advanceSearch(creator, null, null,
                 taskSearchForm.getTitle(), taskSearchForm.getSummary(),
                 taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
                 taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
-                taskSearchForm.getProjectId(), pageable);
+                taskSearchForm.getProjectId(), taskSearchForm.getStatus(), pageable);
 
     }
 
@@ -350,8 +359,44 @@ public class TaskServiceImpl implements TaskService {
                 taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
                 taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
-                taskSearchForm.getProjectId(), pageable);
+                taskSearchForm.getProjectId(), taskSearchForm.getStatus(), pageable);
 
+    }
+
+    @Scheduled(fixedRate = 30000)
+    public void manageStatus() {
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("manage status " + System.currentTimeMillis());
+        List<TaskEntity> taskEntities = taskRepository.findAll();
+        for (TaskEntity taskEntity : taskEntities) {
+            boolean changed = false;
+            if (taskEntity.getStatus().equals("Created")
+                    && now.isAfter(taskEntity.getStartTime())) {
+                taskEntity.setStatus("Working");
+                changed = true;
+            }
+            if (!changed
+                    && taskEntity.getStatus().equals("Working")
+                    && now.isAfter(taskEntity.getEndTime())) {
+                taskEntity.setStatus("Outdated");
+                changed = true;
+            }
+            if (!changed
+                    && taskEntity.getStatus().equals("Working")
+                    && now.isBefore(taskEntity.getEndTime())) {
+                long duration = ChronoUnit.MINUTES.between(taskEntity.getStartTime(), taskEntity.getEndTime());
+                LocalDateTime warningSpot = taskEntity.getEndTime().minus(duration / 10, ChronoUnit.MINUTES);
+                if (now.isAfter(warningSpot)) {
+                    taskEntity.setStatus("Near deadline");
+                    changed = true;
+                }
+            }
+            if (changed) {
+                System.out.println("changed");
+                taskRepository.save(taskEntity);
+            }
+        }
+        System.out.println("manage status done " + System.currentTimeMillis());
     }
 
     @Override

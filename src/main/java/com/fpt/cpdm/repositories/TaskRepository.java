@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,6 +44,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             "(:endTimeFrom is null or t.endTime >= :endTimeFrom) and " +
             "(:endTimeTo is null or t.endTime <= :endTimeTo) and " +
             "(:projectId is null or t.project.id = :projectId) and " +
+            "((:status) is null or t.status in (:status)) and " +
             "(t.available = true)")
     Page<TaskSummary> advanceSearch(
             @Param("creator") UserEntity creator,
@@ -59,6 +59,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             @Param("endTimeFrom") LocalDateTime endTimeFrom,
             @Param("endTimeTo") LocalDateTime endTimeTo,
             @Param("projectId") Integer projectId,
+            @Param("status") List<String> status,
             Pageable pageable);
 
     Boolean existsByCreatorOrExecutorOrRelatives(UserEntity creator, UserEntity executor, UserEntity relative);

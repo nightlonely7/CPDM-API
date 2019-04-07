@@ -8,7 +8,7 @@ public interface TaskIssueDetail {
 
     String getSummary();
 
-    String getDetail();
+    String getDescription();
 
     Boolean getCompleted();
 

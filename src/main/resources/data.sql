@@ -56,7 +56,7 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 ('title task 05', 'summary task 05', 'description task 05', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-03-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 06', 'summary task 06', 'description task 06', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-06-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+, '2019-01-28 16:30:00', '2019-04-08 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 07', 'summary task 07', 'description task 07', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 08', 'summary task 08', 'description task 08', '2019-01-28 16:30:00'
@@ -91,7 +91,7 @@ INSERT INTO tasks_relatives(task_id, user_id) VALUES
 (1, 3), (1, 4), (1, 5), (1, 6);
 
 -- INSERT TASK_ISSUE
-INSERT INTO task_issue(task_id, summary, detail, completed, created_time, last_modified_time, available) VALUES
+INSERT INTO task_issue(task_id, summary, description, completed, created_time, last_modified_time, available) VALUES
 (1, 'issue 1', 'detail 1', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
 (1, 'issue 2', 'detail 2', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
 (1, 'issue 3', 'detail 3', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),

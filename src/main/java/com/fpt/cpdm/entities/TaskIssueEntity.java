@@ -24,8 +24,8 @@ public class TaskIssueEntity extends BaseEntity {
     private String summary;
 
     @Basic
-    @Column(name = "detail")
-    private String detail;
+    @Column(name = "description")
+    private String description;
 
     @Basic
     @Column(name = "completed")

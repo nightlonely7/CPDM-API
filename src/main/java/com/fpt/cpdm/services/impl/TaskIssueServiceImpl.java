@@ -53,7 +53,7 @@ public class TaskIssueServiceImpl implements TaskIssueService {
         // building entity
         TaskIssueEntity taskIssueEntity = TaskIssueEntity.builder()
                 .summary(taskIssueForm.getSummary())
-                .detail(taskIssueForm.getDetail())
+                .description(taskIssueForm.getDescription())
                 .completed(Boolean.FALSE)
                 .task(taskEntity)
                 .build();
@@ -74,7 +74,7 @@ public class TaskIssueServiceImpl implements TaskIssueService {
                 () -> new TaskIssueNotFoundException(id)
         );
 
-        taskIssueEntity.setDetail(taskIssueForm.getDetail());
+        taskIssueEntity.setDescription(taskIssueForm.getDescription());
         taskIssueEntity.setSummary(taskIssueForm.getSummary());
 
         taskIssueRepository.save(taskIssueEntity);
