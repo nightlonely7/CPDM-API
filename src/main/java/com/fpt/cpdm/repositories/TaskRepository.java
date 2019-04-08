@@ -1,5 +1,6 @@
 package com.fpt.cpdm.repositories;
 
+import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.models.tasks.TaskBasic;
@@ -65,6 +66,10 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
     Boolean existsByCreatorOrExecutorOrRelatives(UserEntity creator, UserEntity executor, UserEntity relative);
 
     Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable);
+
+    List<TaskSummary> findAllSummaryByDocuments(DocumentEntity documentEntity);
+
+    List<TaskEntity> findAllByDocuments(DocumentEntity documentEntity);
 
     List<TaskBasic> findAllBasicByExecutorAndProject_Id(UserEntity executor, Integer projectId);
 

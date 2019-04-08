@@ -39,7 +39,12 @@ INSERT INTO document (title, summary, created_time, start_time, end_time, projec
 ('document title 2', 'document summary 2', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
 ('document title 3', 'document summary 3', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
 ('document title 4', 'document summary 4', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
-('document title 5', 'document summary 5', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1);
+('document title 5', 'document summary 5', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 6', 'document summary 6', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 7', 'document summary 7', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 8', 'document summary 8', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 9', 'document summary 9', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 10', 'document summary 10', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1);
 
 
 -- INSERT TASK
@@ -100,7 +105,7 @@ INSERT INTO task_issue(task_id, summary, description, completed, created_time, l
 
 -- INSERT TASK-DOCUMENT MAPPING
 INSERT INTO tasks_documents(task_id, document_id) VALUES
-(1, 1), (1, 2), (1, 3);
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5);
 
 -- INSERT COMMENT
 INSERT INTO comment (content, created_date, last_modified_date, status, user_id, task_id,parent_comment_id) VALUES

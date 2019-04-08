@@ -7,6 +7,7 @@ import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.UploadFileResponse;
+import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
@@ -31,6 +32,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
@@ -42,15 +44,22 @@ public class TaskController {
     private final TaskFilesService taskFilesService;
     private final TaskIssueService taskIssueService;
     private final TaskRelativeService taskRelativeService;
+    private final TaskDocumentService taskDocumentService;
 
     @Autowired
-    public TaskController(TaskService taskService, UserService userService, FileStorageService fileStorageService, TaskFilesService taskFilesService, TaskIssueService taskIssueService, TaskRelativeService taskRelativeService) {
+    public TaskController(TaskService taskService, UserService userService,
+                          FileStorageService fileStorageService,
+                          TaskFilesService taskFilesService,
+                          TaskIssueService taskIssueService,
+                          TaskRelativeService taskRelativeService,
+                          TaskDocumentService taskDocumentService) {
         this.taskService = taskService;
         this.userService = userService;
         this.fileStorageService = fileStorageService;
         this.taskFilesService = taskFilesService;
         this.taskIssueService = taskIssueService;
         this.taskRelativeService = taskRelativeService;
+        this.taskDocumentService = taskDocumentService;
     }
 
     @GetMapping("/{id}")
@@ -156,6 +165,35 @@ public class TaskController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/documents")
+    public ResponseEntity<List<DocumentSummary>> readAllDocuments(@PathVariable("id") Integer id) {
+
+        List<DocumentSummary> documentSummaries = taskDocumentService.readAllDocumentsByTask_Id(id);
+
+        return ResponseEntity.ok(documentSummaries);
+    }
+
+    @PostMapping("/{id}/documents")
+    public ResponseEntity<List<DocumentSummary>> addDocuments(@PathVariable("id") Integer taskId,
+                                                          @RequestBody List<IdOnlyForm> documents) {
+
+        List<Integer> documentIds = documents.stream().map(IdOnlyForm::getId).collect(Collectors.toList());
+        List<DocumentSummary> documentSummaries = taskDocumentService.addDocumentsToTask(documentIds, taskId);
+
+        return ResponseEntity.ok(documentSummaries);
+    }
+
+    @DeleteMapping("/{id}/documents")
+    public ResponseEntity<List<DocumentSummary>> deleteDocuments(@PathVariable("id") Integer taskId,
+                                                             @RequestBody List<IdOnlyForm> documents) {
+
+        List<Integer> documentIds = documents.stream().map(IdOnlyForm::getId).collect(Collectors.toList());
+        List<DocumentSummary> documentSummaries = taskDocumentService.deleteDocumentsFromTask(documentIds, taskId);
+
+        return ResponseEntity.ok(documentSummaries);
+    }
+
 
     @GetMapping("/{id}/files")
     public ResponseEntity<List<TaskFilesSummary>> loadFiles(@PathVariable("id") Integer id) {

@@ -2,9 +2,12 @@ package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
+import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentSummary;
+import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.services.DocumentService;
+import com.fpt.cpdm.services.TaskDocumentService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,16 +18,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/documents")
 public class DocumentController {
 
     private final DocumentService documentService;
+    private final TaskDocumentService taskDocumentService;
 
     @Autowired
-    public DocumentController(DocumentService documentService) {
+    public DocumentController(DocumentService documentService, TaskDocumentService taskDocumentService) {
         this.documentService = documentService;
+        this.taskDocumentService = taskDocumentService;
     }
 
 //    @GetMapping
@@ -44,6 +51,35 @@ public class DocumentController {
         Page<DocumentSummary> documentSummaries = documentService.findAllSummary(pageable);
 
         return ResponseEntity.ok(documentSummaries);
+    }
+
+
+    @GetMapping("/{id}/tasks")
+    public ResponseEntity<List<TaskSummary>> readAllTasks(@PathVariable("id") Integer id) {
+
+        List<TaskSummary> taskSummaries = taskDocumentService.readAllTasksByDocument_Id(id);
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @PostMapping("/{id}/tasks")
+    public ResponseEntity<List<TaskSummary>> addTasks(@PathVariable("id") Integer documentId,
+                                                      @RequestBody List<IdOnlyForm> tasks) {
+
+        List<Integer> taskIds = tasks.stream().map(IdOnlyForm::getId).collect(Collectors.toList());
+        List<TaskSummary> taskSummaries = taskDocumentService.addTasksToDocument(taskIds, documentId);
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @DeleteMapping("/{id}/tasks")
+    public ResponseEntity<List<TaskSummary>> deleteTasks(@PathVariable("id") Integer documentId,
+                                                         @RequestBody List<IdOnlyForm> tasks) {
+
+        List<Integer> taskIds = tasks.stream().map(IdOnlyForm::getId).collect(Collectors.toList());
+        List<TaskSummary> taskSummaries = taskDocumentService.deleteTasksFromDocument(taskIds, documentId);
+
+        return ResponseEntity.ok(taskSummaries);
     }
 
     @GetMapping("/search/relatives")
