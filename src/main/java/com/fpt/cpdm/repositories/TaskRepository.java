@@ -38,6 +38,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             "(:relative is null or :relative member of t.relatives) and " +
             "(:title is null or t.title like %:title%) and " +
             "(:summary is null or t.summary like %:summary%) and " +
+            "(:description is null or t.description like %:description%) and " +
             "(:createdTimeFrom is null or t.createdTime >= :createdTimeFrom) and " +
             "(:createdTimeTo is null or t.createdTime <= :createdTimeTo) and " +
             "(:startTimeFrom is null or t.startTime >= :startTimeFrom) and " +
@@ -53,6 +54,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             @Param("relative") UserEntity relative,
             @Param("title") String title,
             @Param("summary") String summary,
+            @Param("description") String description,
             @Param("createdTimeFrom") LocalDateTime createdTimeFrom,
             @Param("createdTimeTo") LocalDateTime createdTimeTo,
             @Param("startTimeFrom") LocalDateTime startTimeFrom,

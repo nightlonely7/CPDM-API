@@ -285,7 +285,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return taskRepository.advanceSearch(null, executor, null,
-                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                taskSearchForm.getTitle(), taskSearchForm.getSummary(), taskSearchForm.getDescription(),
                 taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
                 taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
@@ -318,10 +318,8 @@ public class TaskServiceImpl implements TaskService {
             throw new BadRequestException("endTimeFrom is after endTimeTo");
         }
 
-        System.out.println(taskSearchForm.getStatus());
-
         return taskRepository.advanceSearch(creator, null, null,
-                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                taskSearchForm.getTitle(), taskSearchForm.getSummary(), taskSearchForm.getDescription(),
                 taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
                 taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
@@ -355,7 +353,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return taskRepository.advanceSearch(null, null, relative,
-                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                taskSearchForm.getTitle(), taskSearchForm.getSummary(), taskSearchForm.getDescription(),
                 taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
                 taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
@@ -366,7 +364,7 @@ public class TaskServiceImpl implements TaskService {
     @Scheduled(fixedRate = 30000)
     public void manageStatus() {
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("manage status " + System.currentTimeMillis());
+        System.out.println("manage task status " + System.currentTimeMillis());
         List<TaskEntity> taskEntities = taskRepository.findAll();
         for (TaskEntity taskEntity : taskEntities) {
             boolean changed = false;
@@ -396,7 +394,7 @@ public class TaskServiceImpl implements TaskService {
                 taskRepository.save(taskEntity);
             }
         }
-        System.out.println("manage status done " + System.currentTimeMillis());
+        System.out.println("manage task status done " + System.currentTimeMillis());
     }
 
     @Override
