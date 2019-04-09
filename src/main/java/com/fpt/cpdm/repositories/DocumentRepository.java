@@ -15,11 +15,15 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
 
     Page<DocumentSummary> findAllSummaryBy(Pageable pageable);
 
+    List<DocumentSummary> findAllSummaryByProject_Id(Integer projectId);
+
     List<DocumentSummary> findAllSummaryByTasks(TaskEntity taskEntity);
 
     List<DocumentEntity> findAllByTasks(TaskEntity taskEntity);
 
     Page<DocumentSummary> findAllSummaryByRelatives(UserEntity relative, Pageable pageable);
+
+    List<DocumentSummary> findAllSummaryByProject_IdAndRelatives(Integer projectId, UserEntity relative);
 
     Optional<DocumentSummary> findSummaryById(Integer id);
 }

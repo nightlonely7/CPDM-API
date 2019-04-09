@@ -34,17 +34,6 @@ public class DocumentController {
         this.taskDocumentService = taskDocumentService;
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<Document>> readAll() {
-//
-//        List<Document> documents = documentService.findAll();
-//        if (documents.isEmpty()) {
-//            return ResponseEntity.noContent().build(); //phản hồi trạng thái noContent
-//        }
-//
-//        return ResponseEntity.ok(documents);
-//    }
-
     @GetMapping
     public ResponseEntity<Page<DocumentSummary>> readAll(@PageableDefault Pageable pageable) {
 
@@ -53,6 +42,13 @@ public class DocumentController {
         return ResponseEntity.ok(documentSummaries);
     }
 
+    @GetMapping("/search/all")
+    public ResponseEntity<List<DocumentSummary>> readAll(@RequestParam("projectId") Integer projectId) {
+
+        List<DocumentSummary> documentSummaries = documentService.findAllSummaryByProjectId(projectId);
+
+        return ResponseEntity.ok(documentSummaries);
+    }
 
     @GetMapping("/{id}/tasks")
     public ResponseEntity<List<TaskSummary>> readAllTasks(@PathVariable("id") Integer id) {
