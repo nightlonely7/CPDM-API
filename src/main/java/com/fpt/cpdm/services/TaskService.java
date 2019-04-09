@@ -39,15 +39,19 @@ public interface TaskService {
 
     List<TaskBasic> findAllBasicByCurrentExecutorAndProject_Id(Integer projectId);
 
-    boolean existsByExecutorAndStatusAndStartTimeIsBetween(User user, String status, LocalDateTime fromtime, LocalDateTime toTime);
+    boolean existsByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime, LocalDateTime toTime);
 
-    boolean existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(User user, String status, LocalDateTime fromTime);
+    boolean existsByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime);
 
-    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBetween(User user, String status, LocalDateTime fromTime, LocalDateTime toTime);
+    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime, LocalDateTime toTime);
 
-    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(User user, String status, LocalDateTime fromTime);
+    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime);
 
     Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotAssigned(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndAssigned(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndFullAssigned(String status, LocalDate fromDate, LocalDate toDate, Pageable pageable);
+
+    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndPartAssigned(String status, LocalDate fromDate, LocalDate toDate, Pageable pageable);
+
+    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndStatus(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable);
 }

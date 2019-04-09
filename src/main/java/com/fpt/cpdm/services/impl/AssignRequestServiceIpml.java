@@ -2,6 +2,7 @@ package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.AssignRequestEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.exceptions.assignRequests.AssignRequestNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.assignRequests.AssignRequest;
@@ -68,7 +69,7 @@ public class AssignRequestServiceIpml implements AssignRequestService {
     @Override
     public AssignRequest findById(Integer id) {
         AssignRequestEntity assignRequestEntity = assignRequestRepository.findById(id).orElseThrow(
-                () -> new TaskNotFoundException(id)
+                () -> new AssignRequestNotFoundException(id)
         );
 
         return ModelConverter.assignRequestEntityToModel(assignRequestEntity);

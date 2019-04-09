@@ -51,15 +51,15 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
-    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBetween(User user, List<Integer> integerList, LocalDate fromDate, LocalDate toDate) {
+    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(User user, List<Integer> integerList, LocalDate fromDate, LocalDate toDate) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateIsBetween(userEntity, integerList, fromDate, toDate);
+        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(userEntity, integerList, fromDate, toDate);
     }
 
     @Override
-    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(User user, List<Integer> integerList, LocalDate fromDate) {
+    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(User user, List<Integer> integerList, LocalDate fromDate) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(userEntity, integerList, fromDate, fromDate);
+        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(userEntity, integerList, fromDate, fromDate);
     }
 
     @Override

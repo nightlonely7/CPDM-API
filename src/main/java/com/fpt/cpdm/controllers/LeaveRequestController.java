@@ -129,11 +129,11 @@ public class LeaveRequestController {
         //Deny if exist working task if request days greater than policy free check days
         if (diff > numberOfDateFreeCheck) {
             //check task start in date range request
-            if (taskService.existsByExecutorAndStatusAndStartTimeIsBetween(user, "Working", leaveRequest.getFromDate().atStartOfDay(), leaveRequest.getToDate().plusDays(1).atStartOfDay())) {
+            if (taskService.existsByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(user, "Working", leaveRequest.getFromDate().atStartOfDay(), leaveRequest.getToDate().plusDays(1).atStartOfDay())) {
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
             }
             //check task strat before but still not end
-            if (taskService.existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(user, "Working", leaveRequest.getFromDate().atStartOfDay())) {
+            if (taskService.existsByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(user, "Working", leaveRequest.getFromDate().atStartOfDay())) {
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
             }
         }
@@ -192,8 +192,8 @@ public class LeaveRequestController {
         integerList.add(approvedCode);
 
         //Get all leave request waiting or approved by user
-        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBetween(user, integerList, from, to);
-        leaveRequestSummaries.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(user, integerList, from));
+        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(user, integerList, from, to);
+        leaveRequestSummaries.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(user, integerList, from));
 
         if (leaveRequestSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -265,8 +265,8 @@ public class LeaveRequestController {
         integerList.add(approvedCode);
 
         //Get all leave request waiting or approved by user
-        List<LeaveRequestSummary> leaveRequests = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBetween(user, integerList, today, limitDay);
-        leaveRequests.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(user, integerList, today));
+        List<LeaveRequestSummary> leaveRequests = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(user, integerList, today, limitDay);
+        leaveRequests.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(user, integerList, today));
 
         //Make date list from leave request from - to date
         List<LocalDate> result = new ArrayList<>();
@@ -291,8 +291,8 @@ public class LeaveRequestController {
         LocalDateTime limitDay = LocalDate.now().plusDays(366).atStartOfDay();
 
         //Get all working task by executor
-        List<TaskSummary> taskSummaries = taskService.findAllByExecutorAndStatusAndStartTimeIsBetween(user, "Working", today, limitDay);
-        taskSummaries.addAll(taskService.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(user, "Working", today));
+        List<TaskSummary> taskSummaries = taskService.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(user, "Working", today, limitDay);
+        taskSummaries.addAll(taskService.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(user, "Working", today));
         //Sort by start time
         taskSummaries.sort((o1, o2) -> o1.getStartTime().compareTo(o2.getStartTime()));
 
