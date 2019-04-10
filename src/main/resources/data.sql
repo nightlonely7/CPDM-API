@@ -89,7 +89,8 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 
 -- INSERT DOCUMENTS-RELATIVES MAPPING
 INSERT INTO documents_relatives(document_id, user_id) VALUES
-(1, 3), (1, 4), (1, 5), (1, 6), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1);
+(1, 3), (1, 4), (1, 5), (1, 6),
+(1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1);
 
 -- INSERT TASKS-RELATIVES MAPPING
 INSERT INTO tasks_relatives(task_id, user_id) VALUES
