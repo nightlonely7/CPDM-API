@@ -20,6 +20,8 @@ public interface ProjectService {
 
     boolean existsByName(String name);
 
+    boolean existsByAlias(String alias);
+
     Page<ProjectDTO> findAllDTOByNameAndAlias(String name, String alias, Pageable pageable);
 
     Project save(Project project);

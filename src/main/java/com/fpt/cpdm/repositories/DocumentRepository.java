@@ -2,6 +2,7 @@ package com.fpt.cpdm.repositories;
 
 import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,8 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
     Page<DocumentSummary> findAllSummaryByRelatives(UserEntity relative, Pageable pageable);
 
     Optional<DocumentSummary> findSummaryById(Integer id);
+
+    Optional<DocumentDetail> findDetailByIdAndAvailableTrue(Integer id);
+
+    Boolean existsByIdAndRelativesAndAvailableTrue(Integer id, UserEntity relative);
 }

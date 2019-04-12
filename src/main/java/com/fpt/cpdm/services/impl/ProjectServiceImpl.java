@@ -52,6 +52,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public boolean existsByAlias(String alias) {
+        return projectRepository.existsByAlias(alias);
+    }
+
+    @Override
     public Page<ProjectDTO> findAllDTOByNameAndAlias(String name, String alias, Pageable pageable) {
         Page<ProjectDTO> projectDTOS = projectRepository
                 .findAllDTOByNameContainingAndAliasContaining(name, alias, pageable);

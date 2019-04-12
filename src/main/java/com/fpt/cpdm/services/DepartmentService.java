@@ -26,4 +26,6 @@ public interface DepartmentService {
     Department deleteById(Integer id);
 
     boolean existsByName(String name);
+
+    boolean existsByAlias(String alias);
 }

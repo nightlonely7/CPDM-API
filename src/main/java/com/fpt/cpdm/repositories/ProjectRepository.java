@@ -19,6 +19,8 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer>
 
     boolean existsByName(String name);
 
+    boolean existsByAlias(String alias);
+
     Page<ProjectDTO> findAllDTOByNameContainingAndAliasContaining(String name, String alias, Pageable pageable);
 
     Optional<ProjectDTO> findDTOById(Integer id);

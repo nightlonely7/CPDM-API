@@ -99,4 +99,9 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.existsByName(name));
     }
 
+    @GetMapping("/check/existByAlias")
+    public ResponseEntity<Boolean> existsByAlias(@RequestParam("alias") String alias) {
+        return ResponseEntity.ok(projectService.existsByName(alias));
+    }
+
 }

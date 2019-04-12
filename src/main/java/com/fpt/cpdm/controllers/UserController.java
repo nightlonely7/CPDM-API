@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -117,7 +119,7 @@ public class UserController {
     }
 
     @GetMapping("/findAllDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager")
-    public ResponseEntity<List<UserDisplayName>> findAllfDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager(
+    public ResponseEntity<List<UserDisplayName>> findAllDisplayNameByDepartmentAndRoleNameOfCurrentLoggedManager(
             @RequestParam("roleName") String roleName, Principal principal) {
 
         // get current logged manager
@@ -149,12 +151,69 @@ public class UserController {
         return ResponseEntity.ok(userSummaries);
     }
 
+    @GetMapping("/search/email")
+    public ResponseEntity<Page<UserSummary>> findAllSummaryByEmail(@RequestParam("searchValue") String email,
+                                                                   @RequestParam("departmentId") String depId,
+                                                                   @RequestParam("gender") String gender,
+                                                                   @PageableDefault Pageable pageable){
+        Boolean isGender = gender.equals("null") ? null : (gender.equals("true") ? true: false);
+        Integer departmentId = Integer.parseInt(depId);
+        Page<UserSummary> userSummaries = userService.findAllSummaryByEmail(email, departmentId, isGender, pageable);
+        return ResponseEntity.ok(userSummaries);
+    }
+
+    @GetMapping("/search/displayName")
+    public ResponseEntity<Page<UserSummary>> findAllSummaryByDisplayName(@RequestParam("searchValue") String displayName,
+                                                                         @RequestParam("departmentId") String depId,
+                                                                         @RequestParam("gender") String gender,
+                                                                         @PageableDefault Pageable pageable){
+        Boolean isGender = gender.equals("null") ? null : (gender.equals("true") ? true: false);
+        Integer departmentId = Integer.parseInt(depId);
+        Page<UserSummary> userSummaries = userService.findAllSummaryByDisplayName(displayName, departmentId, isGender, pageable);
+        return ResponseEntity.ok(userSummaries);
+    }
+
+    @GetMapping("/search/fullName")
+    public ResponseEntity<Page<UserSummary>> findAllSummaryByFullName(@RequestParam("searchValue") String fullName,
+                                                                      @RequestParam("departmentId") String depId,
+                                                                      @RequestParam("gender") String gender,
+                                                                      @PageableDefault Pageable pageable){
+        Boolean isGender = gender.equals("null") ? null : (gender.equals("true") ? true : false);
+        Integer departmentId = Integer.parseInt(depId);
+        Page<UserSummary> userSummaries = userService.findAllSummaryByFullName(fullName, departmentId, isGender, pageable);
+        return ResponseEntity.ok(userSummaries);
+    }
+
+    @GetMapping("/search/age")
+    public ResponseEntity<Page<UserSummary>> findAllSummaryByAge(@RequestParam("birthDateFrom") String birthDateFrom,
+                                                                      @RequestParam("birthDateTo") String birthDateTo,
+                                                                      @RequestParam("gender") String gender,
+                                                                      @PageableDefault Pageable pageable){
+        LocalDate dateFrom = LocalDate.parse(birthDateFrom);
+        LocalDate dateTo = LocalDate.parse(birthDateTo);
+        Boolean isGender = gender.equals("null") ? null : (gender.equals("true") ? true : false);
+        Page<UserSummary> userSummaries = userService.findAllSummaryByAge(dateFrom, dateTo, isGender, pageable);
+        return ResponseEntity.ok(userSummaries);
+    }
+
+    @GetMapping("/search/maxMinAge")
+    public ResponseEntity<List<UserBirthDate>> findMaxAndMinAge(){
+        System.out.println(userService.findMaxAndMinAge());
+        return ResponseEntity.ok(userService.findMaxAndMinAge());
+    }
+
     @PostMapping
     public ResponseEntity<UserDetail> create(@Valid @RequestBody User user,
                                              BindingResult result,
                                              Principal principal) {
+        if (result.hasErrors()) {
+            String message = ModelErrorMessage.build(result);
+            throw new ModelNotValidException(message);
+        }
+        user.setId(null);
+        UserDetail savedUserDetail = userService.create(user, principal);
 
-        return save(null, user, result, principal);
+        return ResponseEntity.ok(savedUserDetail);
     }
 
     @PutMapping("/{id}")
@@ -162,18 +221,29 @@ public class UserController {
                                              @Valid @RequestBody User user,
                                              BindingResult result,
                                              Principal principal) {
-        return save(id, user, result, principal);
-    }
-
-    private ResponseEntity<UserDetail> save(Integer id, User user, BindingResult result, Principal principal) {
-
         System.out.println(user.toString());
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
         user.setId(id);
-        UserDetail savedUserDetail = userService.save(user, principal);
+        System.out.println("Update user: " + user.toString());
+        UserDetail savedUserDetail = userService.update(user, principal);
+
+        return ResponseEntity.ok(savedUserDetail);
+    }
+
+    @PutMapping("/personalUpdate/{id}")
+    public ResponseEntity<UserDetail> personalUpdate(@PathVariable(name = "id") Integer id,
+                                             @Valid @RequestBody User user,
+                                             BindingResult result,
+                                             Principal principal) {
+        if (result.hasErrors()) {
+            String message = ModelErrorMessage.build(result);
+            throw new ModelNotValidException(message);
+        }
+        user.setId(id);
+        UserDetail savedUserDetail = userService.personalUpdate(user, principal);
 
         return ResponseEntity.ok(savedUserDetail);
     }

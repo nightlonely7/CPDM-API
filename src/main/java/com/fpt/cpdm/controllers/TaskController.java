@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
@@ -31,7 +30,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -250,7 +248,6 @@ public class TaskController {
     @GetMapping("/search/basicByExecutes")
     public ResponseEntity getBasicByExecute(@RequestParam("projectId") Integer projectId) {
         List<TaskBasic> taskBasics = taskService.findAllBasicByCurrentExecutorAndProject_Id(projectId);
-
         return ResponseEntity.ok(taskBasics);
     }
 

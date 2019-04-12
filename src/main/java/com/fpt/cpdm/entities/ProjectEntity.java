@@ -19,6 +19,6 @@ public class ProjectEntity {
     private String name;
 
     @Basic
-    @Column(name = "alias")
+    @Column(name = "alias", nullable = false, length = 50)
     private String alias;
 }

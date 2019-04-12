@@ -3,6 +3,7 @@ package com.fpt.cpdm.controllers;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
 import com.fpt.cpdm.models.documents.Document;
+import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/documents")
@@ -46,6 +48,15 @@ public class DocumentController {
         return ResponseEntity.ok(documentSummaries);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<DocumentDetail> readById(@PathVariable("id") Integer id) {
+
+        DocumentDetail documentDetail = documentService.findDetailById(id);
+
+        return ResponseEntity.ok(documentDetail);
+    }
+
+
     @GetMapping("/search/relatives")
     public ResponseEntity<Page<DocumentSummary>> findByRelatives(@PageableDefault Pageable pageable) {
 
@@ -53,7 +64,6 @@ public class DocumentController {
 
         return ResponseEntity.ok(documentSummaries);
     }
-
 
     @PostMapping
     public ResponseEntity<DocumentSummary> create(@Valid @RequestBody DocumentCreateForm documentCreateForm,

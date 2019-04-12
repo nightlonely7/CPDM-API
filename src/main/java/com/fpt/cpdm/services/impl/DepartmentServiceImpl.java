@@ -86,4 +86,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentRepository.existsByNameAndIsAvailableTrue(name);
     }
 
+    @Override
+    public boolean existsByAlias(String alias) {
+        return departmentRepository.existsByAliasAndIsAvailableTrue(alias);
+    }
+
 }

@@ -8,6 +8,7 @@ import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,8 @@ public class DepartmentController {
     }
 
     @GetMapping("/search/name")
-    public ResponseEntity<Page<DepartmentDTO>> findByName(@RequestParam("name") String name, Pageable pageable) {
+    public ResponseEntity<Page<DepartmentDTO>> findByName(@RequestParam("name") String name,
+                                                          @PageableDefault Pageable pageable) {
         Page<DepartmentDTO> departmentDTOs = departmentService.findByName(name, pageable);
         if (departmentDTOs.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -48,7 +50,7 @@ public class DepartmentController {
     @GetMapping("/search/nameAndAlias")
     public ResponseEntity<Page<DepartmentDTO>> findByNameAndAlias(@RequestParam("name") String name,
                                                                   @RequestParam("alias") String alias,
-                                                                  Pageable pageable) {
+                                                                  @PageableDefault Pageable pageable) {
         Page<DepartmentDTO> departmentDTOs = departmentService.findByNameAndAlias(name, alias, pageable);
         if (departmentDTOs.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -105,6 +107,11 @@ public class DepartmentController {
     @GetMapping("/check/existByName")
     public ResponseEntity<Boolean> existByName(@RequestParam("name") String name){
         return ResponseEntity.ok(departmentService.existsByName(name));
+    }
+
+    @GetMapping("/check/existByAlias")
+    public ResponseEntity<Boolean> existByAlias(@RequestParam("alias") String alias){
+        return ResponseEntity.ok(departmentService.existsByAlias(alias));
     }
 
 }

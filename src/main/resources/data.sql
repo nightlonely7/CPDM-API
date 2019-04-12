@@ -28,19 +28,18 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
 ('staff4', 'Nguyễn Phú Staff', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff4@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
-('staff5', 'Nguyễn Phú Staff', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff5@gmail.com'
-, '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
+('staff5', 'Nguyễn Phú Staff', false, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff5@gmail.com'
+, '0123456789', 'abcxyz tphcm', '2000-01-30', 1, 1, true, '2017-09-20 07:22:11'),
 ('admin', 'Nguyễn Phú Admin', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'admin@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 3, true, '2017-09-20 07:22:11');
 
 -- INSERT DOCUMENT
-INSERT INTO document (title, summary, created_time, start_time, end_time, project_id) VALUES
-('document title 1', 'document summary 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
-('document title 2', 'document summary 2', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
-('document title 3', 'document summary 3', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
-('document title 4', 'document summary 4', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
-('document title 5', 'document summary 5', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1);
-
+INSERT INTO document (title, summary, description, created_time, start_time, end_time, project_id, available) VALUES
+('document title 1', 'document summary 1', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
+('document title 2', 'document summary 2', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
+('document title 3', 'document summary 3', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
+('document title 4', 'document summary 4', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
+('document title 5', 'document summary 5', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true);
 
 -- INSERT TASK
 INSERT INTO task (title, summary, description, created_time,

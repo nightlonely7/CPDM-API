@@ -16,6 +16,8 @@ public interface UserSummary {
 
     String getFullName();
 
+    Boolean getGender();
+
     String getEmail();
 
     NameOnly getDepartment();
