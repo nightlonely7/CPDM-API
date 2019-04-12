@@ -12,7 +12,7 @@ public class MyBootStrap implements ApplicationListener<ApplicationReadyEvent> {
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
-        log.info("ApplicationReadyEvent");
+        log.info("Application is now ready!!!!");
 
     }
 }

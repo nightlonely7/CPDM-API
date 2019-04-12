@@ -7,7 +7,7 @@ import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.UploadFileResponse;
-import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
@@ -29,8 +30,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
@@ -42,15 +45,22 @@ public class TaskController {
     private final TaskFilesService taskFilesService;
     private final TaskIssueService taskIssueService;
     private final TaskRelativeService taskRelativeService;
+    private final TaskDocumentService taskDocumentService;
 
     @Autowired
-    public TaskController(TaskService taskService, UserService userService, FileStorageService fileStorageService, TaskFilesService taskFilesService, TaskIssueService taskIssueService, TaskRelativeService taskRelativeService) {
+    public TaskController(TaskService taskService, UserService userService,
+                          FileStorageService fileStorageService,
+                          TaskFilesService taskFilesService,
+                          TaskIssueService taskIssueService,
+                          TaskRelativeService taskRelativeService,
+                          TaskDocumentService taskDocumentService) {
         this.taskService = taskService;
         this.userService = userService;
         this.fileStorageService = fileStorageService;
         this.taskFilesService = taskFilesService;
         this.taskIssueService = taskIssueService;
         this.taskRelativeService = taskRelativeService;
+        this.taskDocumentService = taskDocumentService;
     }
 
     @GetMapping("/{id}")
@@ -69,6 +79,72 @@ public class TaskController {
 
         return ResponseEntity.ok(taskSummaries);
     }
+
+    @GetMapping("search/executes/{status}")
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndStatus(@PathVariable(name = "status") String status,
+                                                                                           @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                                                                           @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+                                                                                           @PageableDefault Pageable pageable) {
+        LocalDateTime fromTime = fromDate.atStartOfDay();
+        LocalDateTime toTime = toDate.atTime(23, 59, 59);
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndStatus(status, fromTime, toTime, pageable);
+
+        if (taskSummaries.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+
+    }
+
+    @GetMapping("/search/executes/notAssigned")
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndNotAssigned(@RequestParam(name = "status") String status,
+                                                                                         @RequestParam(name = "fromDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                                                                         @RequestParam(name = "toDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate toDate,
+                                                                                         @PageableDefault Pageable pageable) {
+        LocalDateTime fromTime = fromDate.atStartOfDay();
+        LocalDateTime toTime = toDate.atTime(23, 59, 59);
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndNotAssigned(status,fromTime,toTime,pageable);
+
+        if(taskSummaries.getContent().isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/search/executes/fullAssigned")
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndFullAssigned(@RequestParam(name = "status") String status,
+                                                                                          @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                                                                          @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+                                                                                          @PageableDefault Pageable pageable) {
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndFullAssigned(status, fromDate, toDate, pageable);
+
+        if (taskSummaries.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/search/executes/partAssigned")
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndPartAssigned(@RequestParam(name = "status") String status,
+                                                                                          @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                                                                          @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+                                                                                          @PageableDefault Pageable pageable) {
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndPartAssigned(status, fromDate, toDate, pageable);
+
+        if (taskSummaries.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
 
     @Secured({"ROLE_ADMIN", "ROLE_MANAGER"})
     @GetMapping("/search/creates")
@@ -123,6 +199,33 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}/documents")
+    public ResponseEntity<List<DocumentSummary>> readAllDocuments(@PathVariable("id") Integer id) {
+
+        List<DocumentSummary> documentSummaries = taskDocumentService.readAllDocumentsByTask_Id(id);
+
+        return ResponseEntity.ok(documentSummaries);
+    }
+
+    @PutMapping("/{id}/documents/{documentIds}")
+    public ResponseEntity<List<DocumentSummary>> addDocuments(@PathVariable("id") Integer taskId,
+                                                              @PathVariable("documentIds") List<Integer> documentIds) {
+
+        List<DocumentSummary> documentSummaries = taskDocumentService.addDocumentsToTask(documentIds, taskId);
+
+        return ResponseEntity.ok(documentSummaries);
+    }
+
+    @DeleteMapping("/{id}/documents/{documentIds}")
+    public ResponseEntity<List<DocumentSummary>> deleteDocuments(@PathVariable("id") Integer taskId,
+                                                                 @PathVariable("documentIds") List<Integer> documentIds) {
+
+        List<DocumentSummary> documentSummaries = taskDocumentService.deleteDocumentsFromTask(documentIds, taskId);
+
+        return ResponseEntity.ok(documentSummaries);
+    }
+
+
     @GetMapping("/{id}/files")
     public ResponseEntity<List<TaskFilesSummary>> loadFiles(@PathVariable("id") Integer id) {
 
@@ -157,8 +260,8 @@ public class TaskController {
         return ResponseEntity.ok(uploadFileResponse);
     }
 
-    @GetMapping("/{taskId}/issues")
-    public ResponseEntity<List<TaskIssueDetail>> readAllIssue(@PathVariable("taskId") Integer taskId) {
+    @GetMapping("/{id}/issues")
+    public ResponseEntity<List<TaskIssueDetail>> readAllIssue(@PathVariable("id") Integer taskId) {
 
         List<TaskIssueDetail> taskIssueDetails = taskIssueService.readAll(taskId);
         if (taskIssueDetails.isEmpty()) {
@@ -168,8 +271,8 @@ public class TaskController {
         return ResponseEntity.ok(taskIssueDetails);
     }
 
-    @PostMapping("/{taskId}/issues")
-    public ResponseEntity<TaskIssueDetail> createIssue(@PathVariable("taskId") Integer taskId,
+    @PostMapping("/{id}/issues")
+    public ResponseEntity<TaskIssueDetail> createIssue(@PathVariable("id") Integer taskId,
                                                        @Valid @RequestBody TaskIssueForm taskIssueForm,
                                                        BindingResult result) {
         if (result.hasErrors()) {
@@ -212,19 +315,10 @@ public class TaskController {
     }
 
 
-    @PatchMapping("/{id}/done")
-    public ResponseEntity<TaskSummary> taskDone(@PathVariable("id") Integer id, Principal principal) {
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<TaskSummary> complete(@PathVariable("id") Integer id) {
 
-        // get current logged executor
-        User executor = userService.findByEmail(principal.getName());
-
-        // create [id, executor, and status only] task for updating
-        Task task = new Task();
-        task.setId(id);
-        task.setExecutor(executor);
-        task.setStatus("Done");
-
-        TaskSummary savedTaskSummary = taskService.changeStatus(task);
+        TaskSummary savedTaskSummary = taskService.complete(id);
 
         return ResponseEntity.ok(savedTaskSummary);
     }
@@ -248,6 +342,7 @@ public class TaskController {
     @GetMapping("/search/basicByExecutes")
     public ResponseEntity getBasicByExecute(@RequestParam("projectId") Integer projectId) {
         List<TaskBasic> taskBasics = taskService.findAllBasicByCurrentExecutorAndProject_Id(projectId);
+
         return ResponseEntity.ok(taskBasics);
     }
 

@@ -1,4 +1,4 @@
-package com.fpt.cpdm.models.assignRequests;
+package com.fpt.cpdm.models.askingRequests;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fpt.cpdm.models.tasks.Task;
@@ -12,19 +12,13 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class AssignRequest {
+public class AskingRequest {
     @EqualsAndHashCode.Include
     private Integer id;
 
     private String content;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate fromDate;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate toDate;
+    private String response;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -34,9 +28,7 @@ public class AssignRequest {
 
     private User user;
 
-    private User assignee;
-
-    private User approver;
+    private User receiver;
 
     private List<Task> tasks;
 }

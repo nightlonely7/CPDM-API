@@ -9,7 +9,10 @@ import java.util.Optional;
 
 public interface TaskIssueRepository extends JpaRepository<TaskIssueEntity, Integer> {
 
-    List<TaskIssueDetail> findAllDetailByTask_IdAndAndAvailableTrue(Integer taskId);
+    List<TaskIssueDetail> findAllDetailByTask_IdAndAvailableTrue(Integer taskId);
 
     Optional<TaskIssueDetail> findDetailByIdAndAvailableTrue(Integer id);
+
+    Boolean existsByTask_IdAndCompletedFalseAndAvailableTrue(Integer taskId);
+
 }

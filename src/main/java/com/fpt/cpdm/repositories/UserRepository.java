@@ -77,4 +77,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserBirthDate> findFirstBirthDateByBirthdayNotNullOrderByBirthdayAsc();
 
     Boolean existsByDepartment_Id(Integer id);
+
+    List<UserDisplayName> findAllDisplayNameByDepartmentAndRole_NameAndIdNot(DepartmentEntity departmentEntity, String roleName, Integer id);
+
+    List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName);
 }

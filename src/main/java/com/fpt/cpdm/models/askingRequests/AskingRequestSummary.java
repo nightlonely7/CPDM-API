@@ -1,4 +1,4 @@
-package com.fpt.cpdm.models.assignRequests;
+package com.fpt.cpdm.models.askingRequests;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fpt.cpdm.models.tasks.TaskSummary;
@@ -7,16 +7,12 @@ import com.fpt.cpdm.models.users.UserDisplayName;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface AssignRequestSummary  {
+public interface AskingRequestSummary {
     Integer getId();
 
     String getContent();
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    LocalDate getFromDate();
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    LocalDate getToDate();
+    String getResponse();
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate getCreatedDate();
@@ -25,9 +21,7 @@ public interface AssignRequestSummary  {
 
     UserDisplayName getUser();
 
-    UserDisplayName getAssignee();
-
-    UserDisplayName getApprover();
+    UserDisplayName getReceiver();
 
     List<TaskSummary> getTasks();
 }

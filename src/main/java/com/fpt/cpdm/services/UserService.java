@@ -57,4 +57,8 @@ public interface UserService extends UserDetailsService {
     List<UserBirthDate> findMaxAndMinAge();
 
     Boolean existsByEmail(String email);
+
+    List<UserDisplayName> findDisplayNameByDepartmentAndRole_NameAndIdNot(Department department, String roleName, Integer id);
+
+    List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName);
 }

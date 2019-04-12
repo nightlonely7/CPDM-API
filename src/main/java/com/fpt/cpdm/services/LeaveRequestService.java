@@ -17,7 +17,9 @@ public interface LeaveRequestService extends CRUDService<LeaveRequest> {
 
     boolean existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(LocalDate fromDate, LocalDate toDate, User user,Integer status);
 
-    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBetween(User user, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
+    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(User user, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
 
-    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(User userEntity, List<Integer> integerList, LocalDate fromDate);
+    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(User userEntity, List<Integer> integerList, LocalDate fromDate);
+
+    boolean validateNewLeaveRequest(User user, LeaveRequest leaveRequest);
 }

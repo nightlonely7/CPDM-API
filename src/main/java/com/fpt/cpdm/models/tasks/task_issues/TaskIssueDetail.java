@@ -8,9 +8,9 @@ public interface TaskIssueDetail {
 
     String getSummary();
 
-    String getDetail();
+    String getDescription();
 
-    String getStatus();
+    Boolean getCompleted();
 
     LocalDateTime getCreatedTime();
 }

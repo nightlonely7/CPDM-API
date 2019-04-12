@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Entity(name = "TaskEntity")
@@ -44,6 +45,11 @@ public class TaskEntity extends BaseEntity {
     @Column(name = "end_time")
     @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime endTime;
+
+    @Basic
+    @Column(name = "completed_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime completedTime;
 
     @Basic
     @Column(name = "priority")
@@ -98,7 +104,11 @@ public class TaskEntity extends BaseEntity {
     public void onPersist() {
         this.createdTime = LocalDateTime.now();
         this.lastModifiedTime = LocalDateTime.now();
-        this.status = "Working";
+        if (this.createdTime.plus(30, ChronoUnit.SECONDS).isAfter(this.startTime)) {
+            this.status = "Working";
+        } else {
+            this.status = "Waiting";
+        }
         this.available = Boolean.TRUE;
     }
 

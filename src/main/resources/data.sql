@@ -34,12 +34,18 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 3, true, '2017-09-20 07:22:11');
 
 -- INSERT DOCUMENT
-INSERT INTO document (title, summary, description, created_time, start_time, end_time, project_id, available) VALUES
-('document title 1', 'document summary 1', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 2', 'document summary 2', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 3', 'document summary 3', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 4', 'document summary 4', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 5', 'document summary 5', 'document description 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true);
+INSERT INTO document (title, summary, created_time, start_time, end_time, project_id) VALUES
+('document title 1', 'document summary 1', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 2', 'document summary 2', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 3', 'document summary 3', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 4', 'document summary 4', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 5', 'document summary 5', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 6', 'document summary 6', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 7', 'document summary 7', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 8', 'document summary 8', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 9', 'document summary 9', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1),
+('document title 10', 'document summary 10', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1);
+
 
 -- INSERT TASK
 INSERT INTO task (title, summary, description, created_time,
@@ -55,7 +61,7 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 ('title task 05', 'summary task 05', 'description task 05', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-03-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 06', 'summary task 06', 'description task 06', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-06-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+, '2019-01-28 16:30:00', '2019-04-08 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 07', 'summary task 07', 'description task 07', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 08', 'summary task 08', 'description task 08', '2019-01-28 16:30:00'
@@ -83,23 +89,24 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 
 -- INSERT DOCUMENTS-RELATIVES MAPPING
 INSERT INTO documents_relatives(document_id, user_id) VALUES
-(1, 3), (1, 4), (1, 5), (1, 6);
+(1, 3), (1, 4), (1, 5), (1, 6),
+(1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1);
 
 -- INSERT TASKS-RELATIVES MAPPING
 INSERT INTO tasks_relatives(task_id, user_id) VALUES
 (1, 3), (1, 4), (1, 5), (1, 6);
 
 -- INSERT TASK_ISSUE
-INSERT INTO task_issue(task_id, summary, detail, status, created_time, available) VALUES
-(1, 'issue 1', 'detail 1', 'working', '2019-02-28 23:59:59', true),
-(1, 'issue 2', 'detail 2', 'working', '2019-02-28 23:59:59', true),
-(1, 'issue 3', 'detail 3', 'working', '2019-02-28 23:59:59', true),
-(1, 'issue 4', 'detail 4', 'working', '2019-02-28 23:59:59', true),
-(1, 'issue 5', 'detail 5', 'completed', '2019-02-28 23:59:59', true);
+INSERT INTO task_issue(task_id, summary, description, completed, created_time, last_modified_time, available) VALUES
+(1, 'issue 1', 'detail 1', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
+(1, 'issue 2', 'detail 2', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
+(1, 'issue 3', 'detail 3', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
+(1, 'issue 4', 'detail 4', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
+(1, 'issue 5', 'detail 5', true, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true);
 
 -- INSERT TASK-DOCUMENT MAPPING
 INSERT INTO tasks_documents(task_id, document_id) VALUES
-(1, 1), (1, 2), (1, 3);
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5);
 
 -- INSERT COMMENT
 INSERT INTO comment (content, created_date, last_modified_date, status, user_id, task_id,parent_comment_id) VALUES

@@ -6,12 +6,15 @@ import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.TaskFilesEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.BadRequestException;
+import com.fpt.cpdm.exceptions.ConflictException;
+import com.fpt.cpdm.exceptions.EntityNotFoundException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
 import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
+import com.fpt.cpdm.models.assignRequests.AssignRequestSummary;
 import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
@@ -19,15 +22,21 @@ import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.*;
 import com.fpt.cpdm.services.TaskService;
+import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,24 +44,24 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final TaskIssueRepository taskIssueRepository;
     private final UserRepository userRepository;
     private final DocumentRepository documentRepository;
     private final DepartmentRepository departmentRepository;
     private final TaskFilesRepository taskFilesRepository;
     private final AuthenticationFacade authenticationFacade;
+    private final AssignRequestRepository assignRequestRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository,
-                           UserRepository userRepository,
-                           DocumentRepository documentRepository,
-                           DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository,
-                           AuthenticationFacade authenticationFacade) {
+    public TaskServiceImpl(TaskRepository taskRepository, TaskIssueRepository taskIssueRepository, UserRepository userRepository, DocumentRepository documentRepository, DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository, AuthenticationFacade authenticationFacade, AssignRequestRepository assignRequestRepository) {
         this.taskRepository = taskRepository;
+        this.taskIssueRepository = taskIssueRepository;
         this.userRepository = userRepository;
         this.documentRepository = documentRepository;
         this.departmentRepository = departmentRepository;
         this.taskFilesRepository = taskFilesRepository;
         this.authenticationFacade = authenticationFacade;
+        this.assignRequestRepository = assignRequestRepository;
     }
 
     @Override
@@ -85,18 +94,33 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public TaskSummary changeStatus(Task task) {
+    public TaskSummary complete(Integer id) {
 
-        TaskEntity taskEntity = taskRepository.findById(task.getId()).orElseThrow(
-                () -> new TaskNotFoundException(task.getId())
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity current = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(
+                () -> new TaskNotFoundException(id)
         );
 
         // check if executor related to task
-        if (task.getExecutor().getId().equals(taskEntity.getExecutor().getId()) == false) {
+        if (taskEntity.getExecutor().equals(current) == false) {
             throw new UnauthorizedException();
         }
 
-        taskEntity.setStatus(task.getStatus());
+        // check all issues is completed
+        if (taskIssueRepository.existsByTask_IdAndCompletedFalseAndAvailableTrue(id)) {
+            throw new ConflictException("All issues must be completed first to complete this task!");
+        }
+
+        if (taskEntity.getEndTime().isBefore(LocalDateTime.now())) {
+            taskEntity.setStatus("Complete outdated");
+        } else {
+            taskEntity.setStatus("Completed");
+        }
+        taskEntity.setCompletedTime(LocalDateTime.now());
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
         TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
 
@@ -168,8 +192,9 @@ public class TaskServiceImpl implements TaskService {
 
         TaskEntity parentTask = null;
         if (taskCreateForm.getParentTask() != null) {
-            parentTask = new TaskEntity();
-            parentTask.setId(taskCreateForm.getParentTask().getId());
+            parentTask = taskRepository.findById(taskCreateForm.getParentTask().getId()).orElseThrow(
+                    () -> new EntityNotFoundException(taskCreateForm.getParentTask().getId(), "Task")
+            );
         }
 
 
@@ -196,6 +221,7 @@ public class TaskServiceImpl implements TaskService {
                 .build();
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+
         TaskDetail taskDetail = taskRepository.findDetailById(savedTaskEntity.getId());
 
         return taskDetail;
@@ -263,11 +289,11 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return taskRepository.advanceSearch(null, executor, null,
-                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                taskSearchForm.getTitle(), taskSearchForm.getSummary(), taskSearchForm.getDescription(),
                 taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
                 taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
-                taskSearchForm.getProjectId(), pageable);
+                taskSearchForm.getProjectId(), taskSearchForm.getStatus(), pageable);
 
     }
 
@@ -297,11 +323,11 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return taskRepository.advanceSearch(creator, null, null,
-                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                taskSearchForm.getTitle(), taskSearchForm.getSummary(), taskSearchForm.getDescription(),
                 taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
                 taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
-                taskSearchForm.getProjectId(), pageable);
+                taskSearchForm.getProjectId(), taskSearchForm.getStatus(), pageable);
 
     }
 
@@ -331,12 +357,48 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return taskRepository.advanceSearch(null, null, relative,
-                taskSearchForm.getTitle(), taskSearchForm.getSummary(),
+                taskSearchForm.getTitle(), taskSearchForm.getSummary(), taskSearchForm.getDescription(),
                 taskSearchForm.getStartTimeFrom(), taskSearchForm.getStartTimeTo(),
                 taskSearchForm.getCreatedTimeFrom(), taskSearchForm.getCreatedTimeTo(),
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
-                taskSearchForm.getProjectId(), pageable);
+                taskSearchForm.getProjectId(), taskSearchForm.getStatus(), pageable);
 
+    }
+
+    @Scheduled(fixedRate = 30000)
+    public void manageStatus() {
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("manage task status " + System.currentTimeMillis());
+        List<TaskEntity> taskEntities = taskRepository.findAll();
+        for (TaskEntity taskEntity : taskEntities) {
+            boolean changed = false;
+            if (taskEntity.getStatus().equals("Created")
+                    && now.isAfter(taskEntity.getStartTime())) {
+                taskEntity.setStatus("Working");
+                changed = true;
+            }
+            if (!changed
+                    && taskEntity.getStatus().equals("Working")
+                    && now.isAfter(taskEntity.getEndTime())) {
+                taskEntity.setStatus("Outdated");
+                changed = true;
+            }
+            if (!changed
+                    && taskEntity.getStatus().equals("Working")
+                    && now.isBefore(taskEntity.getEndTime())) {
+                long duration = ChronoUnit.MINUTES.between(taskEntity.getStartTime(), taskEntity.getEndTime());
+                LocalDateTime warningSpot = taskEntity.getEndTime().minus(duration / 10, ChronoUnit.MINUTES);
+                if (now.isAfter(warningSpot)) {
+                    taskEntity.setStatus("Near deadline");
+                    changed = true;
+                }
+            }
+            if (changed) {
+                System.out.println("changed");
+                taskRepository.save(taskEntity);
+            }
+        }
+        System.out.println("manage task status done " + System.currentTimeMillis());
     }
 
     @Override
@@ -366,27 +428,129 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public boolean existsByExecutorAndStatusAndStartTimeIsBetween(User user, String status, LocalDateTime fromTime, LocalDateTime toTime) {
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return taskRepository.existsByExecutorAndStatusAndStartTimeIsBetween(userEntity, status, fromTime, toTime);
+    public boolean existsByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime, LocalDateTime toTime) {
+        UserEntity executor = ModelConverter.userModelToEntity(user);
+        return taskRepository.existsByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor,status,fromTime,toTime);
     }
 
     @Override
-    public boolean existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(User user, String status, LocalDateTime fromTime) {
-        UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return taskRepository.existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(userEntity, status, fromTime, fromTime);
+    public boolean existsByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime) {
+        UserEntity executor = ModelConverter.userModelToEntity(user);
+        return taskRepository.existsByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor,status,fromTime,fromTime);
     }
 
     @Override
-    public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBetween(User user, String status, LocalDateTime fromTime, LocalDateTime toTime) {
+    public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime, LocalDateTime toTime) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return taskRepository.findAllByExecutorAndStatusAndStartTimeIsBetween(userEntity, status, fromTime, toTime);
+        return taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(userEntity, status, fromTime, toTime);
     }
 
     @Override
-    public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(User user, String status, LocalDateTime fromTime) {
+    public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return taskRepository.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(userEntity, status, fromTime, fromTime);
+        return taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(userEntity, status, fromTime, fromTime);
     }
 
+    @Override
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotAssigned(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable) {
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor,status,fromTime,toTime);
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor,status,fromTime,fromTime));
+
+        LocalDate fromDate = fromTime.toLocalDate();
+        LocalDate toDate = toTime.toLocalDate();
+
+        List<Integer> integerList = new ArrayList<>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        integerList.add(newCode);
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+        integerList.add(approvedCode);
+
+        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateAfterAndFromDateLessThanEqual(executor,integerList,fromDate,toDate);
+        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndToDateGreaterThanEqualAndToDateBefore(executor,integerList,fromDate,toDate));
+        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(executor,integerList,fromDate,toDate));
+        List<Integer> assignedTaskSummaryIds = new ArrayList<>();
+        for (AssignRequestSummary assignRequestSummary : assignRequestSummaries) {
+            assignRequestSummary.getTasks().forEach(o -> assignedTaskSummaryIds.add(o.getId()));
+        }
+        taskSummaries.removeIf(taskSummary -> assignedTaskSummaryIds.contains(taskSummary.getId()));
+
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummaries.size());
+        return result;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndFullAssigned(String status, LocalDate fromDate, LocalDate toDate, Pageable pageable) {
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        List<Integer> integerList = new ArrayList<>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        integerList.add(newCode);
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+        integerList.add(approvedCode);
+
+        List<TaskSummary> taskSummaries = new ArrayList<>();
+
+        //check exist assign request status new or approved which fromDate <= startTime and toDate >= EndTime
+        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(executor,integerList,fromDate,toDate);
+        for (AssignRequestSummary assignRequestSummary : assignRequestSummaries) {
+            taskSummaries.addAll(assignRequestSummary.getTasks());
+        }
+
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummaries.size());
+        return result;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndPartAssigned(String status, LocalDate fromDate, LocalDate toDate, Pageable pageable) {
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        List<Integer> integerList = new ArrayList<>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        integerList.add(newCode);
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+        integerList.add(approvedCode);
+
+        List<TaskSummary> taskSummaries = new ArrayList<>();
+
+        //check exist assign request status new or approved which have only some part lane on date range
+        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateAfterAndFromDateLessThanEqual(executor,integerList,fromDate,toDate);
+        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndToDateGreaterThanEqualAndToDateBefore(executor,integerList,fromDate,toDate));
+        for (AssignRequestSummary assignRequestSummary : assignRequestSummaries) {
+            for (TaskSummary taskSummary : assignRequestSummary.getTasks()) {
+                if(!taskSummaries.contains(taskSummary)) taskSummaries.add(taskSummary);
+            }
+        }
+
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummaries.size());
+        return result;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndStatus(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable) {
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor,status,fromTime,toTime);
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor,status,fromTime,fromTime));
+
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummaries.size());
+        return result;
+    }
 }

@@ -19,7 +19,7 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequestEntity
 
     boolean existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(LocalDate fromdate, LocalDate toDate, UserEntity userEntity,Integer status);
 
-    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBetween(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
+    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
 
-    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate fromDate2);
+    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate fromDate2);
 }

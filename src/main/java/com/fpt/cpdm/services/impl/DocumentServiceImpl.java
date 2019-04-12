@@ -42,6 +42,24 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    public List<DocumentSummary> findAllSummaryByProjectId(Integer projectId) {
+
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity relative = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        List<DocumentSummary> documentSummaries;
+        if (relative.getRole().getName().equals("ROLE_ADMIN")) {
+            documentSummaries = documentRepository.findAllSummaryByProject_Id(projectId);
+        } else {
+            documentSummaries = documentRepository.findAllSummaryByProject_IdAndRelatives(projectId, relative);
+        }
+
+        return documentSummaries;
+    }
+
+    @Override
     public Page<DocumentSummary> findAllSummary(Pageable pageable) {
 
         Page<DocumentSummary> documentSummaries = documentRepository.findAllSummaryBy(pageable);

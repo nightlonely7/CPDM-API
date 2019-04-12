@@ -1,22 +1,29 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.entities.AssignRequestEntity;
+import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.exceptions.assignRequests.AssignRequestNotFoundException;
 import com.fpt.cpdm.exceptions.tasks.TaskNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.models.assignRequests.AssignRequest;
 import com.fpt.cpdm.models.assignRequests.AssignRequestSummary;
+import com.fpt.cpdm.models.tasks.Task;
+import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.AssignRequestRepository;
 import com.fpt.cpdm.repositories.TaskRepository;
 import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.AssignRequestService;
+import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,9 +53,11 @@ public class AssignRequestServiceIpml implements AssignRequestService {
         }
 
         //check task exists
-        if(taskRepository.existsById(model.getTask().getId()) == false){
-            throw new TaskNotFoundException(model.getTask().getId());
-        }
+        model.getTasks().forEach(task -> {
+            if(taskRepository.existsById(task.getId()) == false){
+                throw new TaskNotFoundException(task.getId());
+            }
+        });
 
         AssignRequestEntity assignRequestEntity = ModelConverter.assignRequestModelToEntity(model);
         AssignRequestEntity savedAssignRequestEntity = assignRequestRepository.save(assignRequestEntity);
@@ -64,7 +73,11 @@ public class AssignRequestServiceIpml implements AssignRequestService {
 
     @Override
     public AssignRequest findById(Integer id) {
-        return null;
+        AssignRequestEntity assignRequestEntity = assignRequestRepository.findById(id).orElseThrow(
+                () -> new AssignRequestNotFoundException(id)
+        );
+
+        return ModelConverter.assignRequestEntityToModel(assignRequestEntity);
     }
 
     @Override
@@ -117,7 +130,25 @@ public class AssignRequestServiceIpml implements AssignRequestService {
     @Override
     public Page<AssignRequestSummary> findAllSummaryByApproverAndStatus(User approver, Integer status, Pageable pageable) {
         UserEntity userEntity = ModelConverter.userModelToEntity(approver);
-        Page<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllSummaryByUserAndStatus(userEntity,status,pageable);
+        Page<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllSummaryByApproverAndStatus(userEntity, status, pageable);
         return assignRequestSummaries;
+    }
+
+    @Override
+    public List<AssignRequestSummary> findAllSummaryByTaskAndDateRange(User user, Integer taskId, LocalDate fromDate, LocalDate toDate, List<Integer> statusList) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+
+        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateAfterAndFromDateLessThanEqual(userEntity,  statusList, fromDate, toDate);
+        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndToDateGreaterThanEqualAndToDateBefore(userEntity,  statusList, fromDate, toDate));
+
+        List<AssignRequestSummary> result = new ArrayList<>();
+        for (AssignRequestSummary assignRequestSummary : assignRequestSummaries) {
+            for (TaskSummary taskSummary : assignRequestSummary.getTasks()) {
+                if(taskSummary.getId() == taskId) {
+                    result.add(assignRequestSummary);
+                    break;                }
+            }
+        }
+        return result;
     }
 }

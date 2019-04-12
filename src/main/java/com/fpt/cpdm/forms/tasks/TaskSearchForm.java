@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class TaskSearchForm {
@@ -33,5 +34,7 @@ public class TaskSearchForm {
     private LocalDateTime endTimeTo;
 
     private Integer projectId;
+
+    private List<String> status;
 
 }

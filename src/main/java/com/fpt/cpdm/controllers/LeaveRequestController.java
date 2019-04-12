@@ -14,6 +14,7 @@ import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.models.users.UserLeaves;
 import com.fpt.cpdm.models.users.UserSummary;
+import com.fpt.cpdm.services.AssignRequestService;
 import com.fpt.cpdm.services.LeaveRequestService;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.services.UserService;
@@ -21,6 +22,7 @@ import com.fpt.cpdm.utils.ConstantManager;
 import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -92,54 +94,11 @@ public class LeaveRequestController {
     @PostMapping
     public ResponseEntity<LeaveRequest> create(@Valid @RequestBody LeaveRequest leaveRequest,
                                                BindingResult result, Principal principal) {
-        //validate to date >= from date
-        if(leaveRequest.getToDate().isBefore(leaveRequest.getFromDate())){
+        User user = userService.findByEmail(principal.getName());
+
+        if(!leaveRequestService.validateNewLeaveRequest(user,leaveRequest)){
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }
-
-        //Get number of day off requested
-        int diff = (int) DAYS.between(leaveRequest.getFromDate(), leaveRequest.getToDate()) + 1;
-
-        ArrayList<PolicyForLeave> policyForFrees = new ArrayList<>();
-
-        //Get number of day off free check in json file default 3
-        Integer numberOfDateFreeCheck = ConstantManager.defaultNumberOfDayOffFreeCheck;
-        try {
-            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-            File file = new File(classLoader.getResource(ConstantManager.policyForLeaveConfigFileName).getFile());
-            ObjectMapper mapper = new ObjectMapper().registerModule( new JavaTimeModule());
-            List<PolicyForLeave> policyForFreeList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class,PolicyForLeave.class));
-            if (policyForFreeList.size() > 0) {
-                policyForFreeList.sort((o1, o2) -> o1.getValidFromDate().compareTo(o2.getValidFromDate()));
-                LocalDate fromDate = leaveRequest.getFromDate();
-                for (PolicyForLeave item : policyForFreeList) {
-                    if (fromDate.isAfter(item.getValidFromDate())) {
-                        if (item.getNumberOfDayOffFreeCheck() != null) {
-                            numberOfDateFreeCheck = item.getNumberOfDayOffFreeCheck();
-                        }
-                    }
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //Check number of day of policy rule
-        User user = userService.findByEmail(principal.getName());
-        //Deny if exist working task if request days greater than policy free check days
-        if (diff > numberOfDateFreeCheck) {
-            //check task start in date range request
-            if (taskService.existsByExecutorAndStatusAndStartTimeIsBetween(user, "Working", leaveRequest.getFromDate().atStartOfDay(), leaveRequest.getToDate().plusDays(1).atStartOfDay())) {
-                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
-            }
-            //check task strat before but still not end
-            if (taskService.existsByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(user, "Working", leaveRequest.getFromDate().atStartOfDay())) {
-                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
-            }
-        }
-        leaveRequest.setUser(user);
 
         return save(null, leaveRequest, result, principal);
     }
@@ -194,8 +153,8 @@ public class LeaveRequestController {
         integerList.add(approvedCode);
 
         //Get all leave request waiting or approved by user
-        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBetween(user, integerList, from, to);
-        leaveRequestSummaries.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(user, integerList, from));
+        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(user, integerList, from, to);
+        leaveRequestSummaries.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(user, integerList, from));
 
         if (leaveRequestSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -267,8 +226,8 @@ public class LeaveRequestController {
         integerList.add(approvedCode);
 
         //Get all leave request waiting or approved by user
-        List<LeaveRequestSummary> leaveRequests = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBetween(user, integerList, today, limitDay);
-        leaveRequests.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(user, integerList, today));
+        List<LeaveRequestSummary> leaveRequests = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(user, integerList, today, limitDay);
+        leaveRequests.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(user, integerList, today));
 
         //Make date list from leave request from - to date
         List<LocalDate> result = new ArrayList<>();
@@ -293,8 +252,8 @@ public class LeaveRequestController {
         LocalDateTime limitDay = LocalDate.now().plusDays(366).atStartOfDay();
 
         //Get all working task by executor
-        List<TaskSummary> taskSummaries = taskService.findAllByExecutorAndStatusAndStartTimeIsBetween(user, "Working", today, limitDay);
-        taskSummaries.addAll(taskService.findAllByExecutorAndStatusAndStartTimeIsBeforeAndEndTimeIsAfter(user, "Working", today));
+        List<TaskSummary> taskSummaries = taskService.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(user, "Working", today, limitDay);
+        taskSummaries.addAll(taskService.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(user, "Working", today));
         //Sort by start time
         taskSummaries.sort((o1, o2) -> o1.getStartTime().compareTo(o2.getStartTime()));
 
@@ -334,8 +293,9 @@ public class LeaveRequestController {
     }
 
     private static File getResourceFile(String fileName) throws IOException {
-        ClassLoader classloader = ClassLoader.getSystemClassLoader();
-        return new File(classloader.getResource(ConstantManager.policyForLeaveConfigFileName).getFile());
+//        ClassLoader classloader = ClassLoader.getSystemClassLoader();
+//        return new File(classloader.getResource(fileName).getFile());
+        return new ClassPathResource(fileName).getFile();
     }
 
     @GetMapping("/search/policyForLeave")

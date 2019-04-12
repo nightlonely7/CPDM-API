@@ -558,4 +558,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
+    @Override
+    public List<UserDisplayName> findDisplayNameByDepartmentAndRole_NameAndIdNot(Department department, String roleName, Integer id) {
+        DepartmentEntity departmentEntity = ModelConverter.departmentModelToEntity(department);
+        List<UserDisplayName> userDisplayNames = userRepository.findAllDisplayNameByDepartmentAndRole_NameAndIdNot(departmentEntity, roleName,id);
+        return userDisplayNames;
+    }
+
+    @Override
+    public List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName) {
+        return userRepository.findAllDisplayNameByRole_Name(roleName);
+    }
+
 }
