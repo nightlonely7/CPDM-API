@@ -1,16 +1,16 @@
--- INSERT ROLE
-INSERT INTO role (name) VALUES
-('ROLE_STAFF'), ('ROLE_MANAGER'), ('ROLE_ADMIN');
-
--- INSERT DEPARTMENT
-INSERT INTO department (name, alias, is_available) VALUES
-('New Department 1', 'NEW1', true),
-('New Department 2', 'NEW2', true);
-
---INSERT PROJECT
-INSERT INTO project(name, alias) values
-('Dự án 1', 'DA1'),
-('Dự án 2', 'DA2');
+-- -- INSERT ROLE
+-- INSERT INTO role (name) VALUES
+-- ('ROLE_STAFF'), ('ROLE_MANAGER'), ('ROLE_ADMIN');
+--
+-- -- INSERT DEPARTMENT
+-- INSERT INTO department (name, alias, is_available) VALUES
+-- ('New Department 1', 'NEW1', true),
+-- ('New Department 2', 'NEW2', true);
+--
+-- --INSERT PROJECT
+-- INSERT INTO project(name, alias) values
+-- ('Du an 1', 'DA1'),
+-- (n'Dự án 2', 'DA2');
 
 -- INSERT USER
 INSERT INTO user (display_name, full_name, gender, password, email, phone, address, birthday, department_id, role_id, is_enabled, created_time) VALUES
