@@ -16,7 +16,13 @@ public interface AssignRequestRepository extends JpaRepository<AssignRequestEnti
 
     Page<AssignRequestSummary> findAllSummaryByApproverAndStatus(UserEntity userEntity, Integer status, Pageable pageable);
 
-    boolean existsByUserAndStatusInAndFromDateIsBetween(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
+    boolean existsByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
 
-    boolean existsByUserAndStatusInAndFromDateIsBeforeAndToDateIsAfter(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate fromDate2);
+    boolean existsByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate fromDate2);
+
+    List<AssignRequestSummary> findAllByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
+
+    List<AssignRequestSummary> findAllByUserAndStatusInAndFromDateAfterAndFromDateLessThanEqual (UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
+
+    List<AssignRequestSummary> findAllByUserAndStatusInAndToDateGreaterThanEqualAndToDateBefore (UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
 }

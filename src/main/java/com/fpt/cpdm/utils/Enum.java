@@ -42,4 +42,17 @@ public class Enum {
             return this.assignRequestStatusCode;
         }
     }
+    public enum AskingRequestStatus{
+        Waiting (0), Replied (1);
+
+        private final int askingRequestStatusCode;
+
+        private AskingRequestStatus(int askingRequestStatusCode) {
+            this.askingRequestStatusCode = askingRequestStatusCode;
+        }
+
+        public int getAskingRequestStatusCode() {
+            return this.askingRequestStatusCode;
+        }
+    }
 }
