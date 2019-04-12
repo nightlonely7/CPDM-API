@@ -12,6 +12,8 @@ public interface UserDetail {
 
     String getDisplayName();
 
+    String getPassword();
+
     String getFullName();
 
     String getEmail();
@@ -30,4 +32,6 @@ public interface UserDetail {
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime getCreatedTime();
+
+    boolean isEnabled();
 }

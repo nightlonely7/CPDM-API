@@ -7,4 +7,6 @@ public interface DepartmentDTO {
     String getName();
 
     String getAlias();
+
+    Boolean getIsAvailable();
 }

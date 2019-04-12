@@ -5,8 +5,11 @@ import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.ProjectEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.EntityNotFoundException;
+import com.fpt.cpdm.exceptions.UnauthorizedException;
+import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
+import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.repositories.ProjectRepository;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -61,6 +65,26 @@ public class DocumentServiceImpl implements DocumentService {
         Page<DocumentSummary> documentSummaries = documentRepository.findAllSummaryBy(pageable);
 
         return documentSummaries;
+    }
+
+    @Override
+    public DocumentDetail findDetailById(Integer id) {
+
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity relative = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        DocumentDetail documentDetail = documentRepository.findDetailByIdAndAvailableTrue(id).orElseThrow(
+                () -> new DocumentNotFoundException(id)
+        );
+
+        if (relative.getRole().getName().equals("ROLE_ADMIN") == false &&
+                documentRepository.existsByIdAndRelativesAndAvailableTrue(id, relative) == false) {
+            throw new UnauthorizedException();
+        }
+
+        return documentDetail;
     }
 
     @Override

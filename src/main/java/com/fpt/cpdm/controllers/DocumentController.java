@@ -4,7 +4,9 @@ import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
+import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
+import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.services.TaskDocumentService;
@@ -34,12 +36,31 @@ public class DocumentController {
         this.taskDocumentService = taskDocumentService;
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<Document>> readAll() {
+//
+//        List<Document> documents = documentService.findAll();
+//        if (documents.isEmpty()) {
+//            return ResponseEntity.noContent().build(); //phản hồi trạng thái noContent
+//        }
+//
+//        return ResponseEntity.ok(documents);
+//    }
+
     @GetMapping
     public ResponseEntity<Page<DocumentSummary>> readAll(@PageableDefault Pageable pageable) {
 
         Page<DocumentSummary> documentSummaries = documentService.findAllSummary(pageable);
 
         return ResponseEntity.ok(documentSummaries);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DocumentDetail> readById(@PathVariable("id") Integer id) {
+
+        DocumentDetail documentDetail = documentService.findDetailById(id);
+
+        return ResponseEntity.ok(documentDetail);
     }
 
     @GetMapping("/search/all")

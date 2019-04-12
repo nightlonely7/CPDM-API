@@ -1,17 +1,27 @@
 package com.fpt.cpdm.services;
 
+import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.models.departments.Department;
 import com.fpt.cpdm.models.users.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import javax.jws.soap.SOAPBinding;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
     UserDetail save(User user, Principal principal);
+
+    UserDetail create(User user, Principal principal);
+
+    UserDetail personalUpdate(User user, Principal principal);
+
+    UserDetail update(User user, Principal principal);
 
     UserDetail findDetailById(Integer id, Principal principal);
 
@@ -34,6 +44,17 @@ public interface UserService extends UserDetailsService {
     Page<UserSummary> findSummaryByDepartmentAndRole_Name(Department department, String roleName, Pageable pageable);
 
     Page<UserSummary> findAllSummaryForAdmin(Pageable pageable);
+
+    Page<UserSummary> findAllSummaryByEmail(String email, Integer depId, Boolean gender, Pageable pageable);
+
+    Page<UserSummary> findAllSummaryByDisplayName(String displayName, Integer depId, Boolean gender, Pageable pageable);
+
+    Page<UserSummary> findAllSummaryByFullName(String fullName, Integer depId, Boolean gender, Pageable pageable);
+
+    Page<UserSummary> findAllSummaryByAge(LocalDate birthDate, LocalDate currentDate, Boolean gender,
+                                          Pageable pageable);
+
+    List<UserBirthDate> findMaxAndMinAge();
 
     Boolean existsByEmail(String email);
 

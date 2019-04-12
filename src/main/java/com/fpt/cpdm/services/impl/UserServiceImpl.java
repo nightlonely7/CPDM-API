@@ -28,6 +28,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +103,7 @@ public class UserServiceImpl implements UserService {
 //        if (userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
 //            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
 //        }
-        if (user.getRole().getId() == 1 // 1 for "ROLE_STAFF"
+        if (user.getRole().getId() == 2 // 1 for "ROLE_STAFF"
                 && userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
             throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
         }
@@ -118,7 +120,232 @@ public class UserServiceImpl implements UserService {
         );
         userEntity.setRole(roleEntity);
 
+        System.out.println(userEntity.isEnabled());
         UserEntity savedUserEntity = userRepository.save(userEntity);
+
+        UserDetail savedUserDetail = userRepository.findDetailById(savedUserEntity.getId()).get();
+
+        return savedUserDetail;
+    }
+
+    @Override
+    public UserDetail create(User user, Principal principal) {
+// check id exist (no need for create)
+        if (user.getId() != null && userRepository.existsById(user.getId()) == false) {
+            throw new UserNotFoundException(user.getId());
+        }
+
+        // get creator/editor
+        UserEntity creator = userRepository.findByEmail(principal.getName()).orElseThrow(
+                () -> new UsernameNotFoundException(principal.getName())
+        );
+
+        // check creator not staff
+        if (user.getId() == null && creator.getRole().getName().equals("ROLE_STAFF")) {
+            throw new UnauthorizedException();
+        }
+
+        // check email duplicate
+        if (user.getId() == null && userRepository.existsByEmail(user.getEmail())) {
+            throw new UserEmailDuplicateException(user.getEmail());
+        }
+
+        // for creating
+        if (user.getId() == null) {
+            user.setDisplayName(user.getEmail());
+        }
+
+        // set department and role if creator is manager (no need for admin)
+        if (creator.getRole().getName().equals("ROLE_MANAGER")) {
+
+            Department department = new Department();
+            department.setId(creator.getDepartment().getId());
+            user.setDepartment(department);
+
+            Role role = new Role();
+            role.setId(1); // id 1 for STAFF
+            user.setRole(role);
+        }
+
+        // check department is already have a manager
+//        if (userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+//            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
+//        }
+        if (user.getRole().getId() == 2 // 1 for "ROLE_STAFF", 2 1 for "ROLE_MANAGER"
+                && userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
+        }
+
+        // encode password
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+
+        // set role
+        RoleEntity roleEntity = roleRepository.findById(userEntity.getRole().getId()).orElseThrow(
+                () -> new RoleNotFoundException(userEntity.getRole().getId())
+        );
+        userEntity.setRole(roleEntity);
+
+        System.out.println(userEntity.isEnabled());
+        UserEntity savedUserEntity = userRepository.save(userEntity);
+
+        UserDetail savedUserDetail = userRepository.findDetailById(savedUserEntity.getId()).get();
+
+        return savedUserDetail;
+    }
+
+    @Override
+    public UserDetail personalUpdate(User user, Principal principal) {
+
+        // check id exist (no need for create)
+        if (user.getId() != null && userRepository.existsById(user.getId()) == false) {
+            throw new UserNotFoundException(user.getId());
+        }
+
+        // get creator/editor
+        UserEntity creator = userRepository.findByEmail(principal.getName()).orElseThrow(
+                () -> new UsernameNotFoundException(principal.getName())
+        );
+
+        // check creator not staff
+        if (user.getId() == null && creator.getRole().getName().equals("ROLE_STAFF")) {
+            throw new UnauthorizedException();
+        }
+
+        // check email duplicate
+        if (user.getId() == null && userRepository.existsByEmail(user.getEmail())) {
+            throw new UserEmailDuplicateException(user.getEmail());
+        }
+
+        // for creating
+        if (user.getId() == null) {
+            user.setDisplayName(user.getEmail());
+        }
+
+        // set department and role if creator is manager (no need for admin)
+        if (creator.getRole().getName().equals("ROLE_MANAGER")) {
+
+            Department department = new Department();
+            department.setId(creator.getDepartment().getId());
+            user.setDepartment(department);
+
+            Role role = new Role();
+            role.setId(1); // id 1 for STAFF
+            user.setRole(role);
+        }
+
+        // check department is already have a manager
+//        if (userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+//            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
+//        }
+//        if (user.getRole().getId() == 1 // 1 for "ROLE_STAFF"
+//                && userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+//            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
+//        }
+
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+
+        // set role
+        RoleEntity roleEntity = roleRepository.findById(userEntity.getRole().getId()).orElseThrow(
+                () -> new RoleNotFoundException(userEntity.getRole().getId())
+        );
+        userEntity.setRole(roleEntity);
+
+        System.out.println("password: " + userEntity.getPassword());
+
+        userEntity.setDisplayName(user.getDisplayName());
+        userEntity.setAddress(user.getAddress());
+        userEntity.setBirthday(user.getBirthday());
+        userEntity.setEmail(user.getEmail());
+        userEntity.setGender(user.getGender());
+        userEntity.setPhone(user.getPhone());
+
+        // encode password
+        String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
+        System.out.println("password: " + encodedPassword);
+        userEntity.setPassword(encodedPassword);
+
+        UserEntity savedUserEntity = userRepository.save(userEntity);
+
+        UserDetail savedUserDetail = userRepository.findDetailById(savedUserEntity.getId()).get();
+
+        return savedUserDetail;
+    }
+
+    @Override
+    public UserDetail update(User user, Principal principal) {
+
+        // check id exist (no need for create)
+        if (user.getId() != null && userRepository.existsById(user.getId()) == false) {
+            throw new UserNotFoundException(user.getId());
+        }
+
+        // get creator/editor
+        UserEntity creator = userRepository.findByEmail(principal.getName()).orElseThrow(
+                () -> new UsernameNotFoundException(principal.getName())
+        );
+
+        // check creator not staff
+        if (user.getId() == null && creator.getRole().getName().equals("ROLE_STAFF")) {
+            throw new UnauthorizedException();
+        }
+
+        // check email duplicate
+        if (user.getId() == null && userRepository.existsByEmail(user.getEmail())) {
+            throw new UserEmailDuplicateException(user.getEmail());
+        }
+
+        // for creating
+//        if (user.getId() == null) {
+//            user.setDisplayName(user.getEmail());
+//        }
+
+        // set department and role if creator is manager (no need for admin)
+//        if (creator.getRole().getName().equals("ROLE_MANAGER")) {
+//
+//            Department department = new Department();
+//            department.setId(creator.getDepartment().getId());
+//            user.setDepartment(department);
+//
+//            Role role = new Role();
+//            role.setId(1); // id 1 for STAFF
+//            user.setRole(role);
+//        }
+
+        // check department is already have a manager
+//        if (userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+//            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
+//        }
+//        if (user.getRole().getId() == 1 // 1 for "ROLE_STAFF"
+//                && userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+//            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
+//        }
+
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+
+        // set role
+        RoleEntity roleEntity = roleRepository.findById(userEntity.getRole().getId()).orElseThrow(
+                () -> new RoleNotFoundException(userEntity.getRole().getId())
+        );
+//        userEntity.setRole(roleEntity);
+
+        creator.setRole(roleEntity);
+
+        creator.setEmail(user.getEmail());
+
+        System.out.println("User Entity value: " + creator.toString());
+
+        // encode password
+//        String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
+//        System.out.println("password: " + encodedPassword);
+//        userEntity.setPassword(encodedPassword);
+
+//      UserEntity savedUserEntity = userRepository.save(userEntity);
+
+        UserEntity savedUserEntity = userRepository.save(creator);
+
         UserDetail savedUserDetail = userRepository.findDetailById(savedUserEntity.getId()).get();
 
         return savedUserDetail;
@@ -262,6 +489,68 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserSummary> findAllSummaryForAdmin(Pageable pageable) {
         return userRepository.findAllSummaryBy(pageable);
+    }
+
+    @Override
+    public Page<UserSummary> findAllSummaryByEmail(String email, Integer depId, Boolean gender, Pageable pageable) {
+        Page<UserSummary> userSummaries;
+        if (gender == null) {
+            userSummaries = userRepository.findAllSummaryByEmailContainingAndDepartment_Id(email, depId, pageable);
+        } else {
+            userSummaries = userRepository.findAllSummaryByEmailContainingAndDepartment_IdAndGender(email, depId, gender, pageable);
+        }
+        return userSummaries;
+    }
+
+    @Override
+    public Page<UserSummary> findAllSummaryByDisplayName(String displayName, Integer depId, Boolean gender, Pageable pageable) {
+        Page<UserSummary> userSummaries;
+        if (gender == null) {
+            userSummaries = userRepository.findAllSummaryByDisplayNameContainingAndDepartment_Id(displayName, depId, pageable);
+        } else {
+            userSummaries = userRepository.findAllSummaryByDisplayNameContainingAndDepartment_IdAndGender(displayName, depId, gender, pageable);
+        }
+        return userSummaries;
+    }
+
+    @Override
+    public Page<UserSummary> findAllSummaryByFullName(String fullName, Integer depId, Boolean gender, Pageable pageable) {
+        Page<UserSummary> userSummaries;
+        if (gender == null) {
+            userSummaries = userRepository.findAllSummaryByFullNameContainingAndDepartment_Id(fullName, depId, pageable);
+        } else {
+            userSummaries = userRepository.findAllSummaryByFullNameContainingAndDepartment_IdAndGender(fullName, depId, gender, pageable);
+        }
+        return userSummaries;
+    }
+
+    @Override
+    public Page<UserSummary> findAllSummaryByAge(LocalDate birthDateFrom, LocalDate birthDateTo, Boolean gender, Pageable pageable) {
+        Page<UserSummary> userSummaries;
+        if (gender == null) {
+            userSummaries = userRepository.findAllSummaryByAge(birthDateFrom, birthDateTo, pageable);
+        } else {
+            userSummaries = userRepository.findAllSummaryByAgeAndGender(birthDateFrom, birthDateTo, gender, pageable);
+        }
+        return userSummaries;
+    }
+
+    @Override
+    public List<UserBirthDate> findMaxAndMinAge() {
+        Optional<UserBirthDate> minAgeResult = userRepository.findFirstBirthDateByBirthdayNotNullOrderByBirthdayAsc();
+        Optional<UserBirthDate> maxAgeResult = userRepository.findFirstBirthDateByBirthdayNotNullOrderByBirthdayDesc();
+        UserBirthDate maxAge = null;
+        UserBirthDate minAge = null;
+        if (maxAgeResult.isPresent()) {
+            maxAge = maxAgeResult.get();
+        }
+        if (minAgeResult.isPresent()) {
+            minAge = minAgeResult.get();
+        }
+        List<UserBirthDate> userBirthDates = new ArrayList<>();
+        userBirthDates.add(minAge);
+        userBirthDates.add(maxAge);
+        return userBirthDates;
     }
 
     @Override

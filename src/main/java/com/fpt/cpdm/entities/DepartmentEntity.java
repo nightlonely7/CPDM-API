@@ -21,6 +21,10 @@ public class DepartmentEntity extends BaseEntity {
     private String name;
 
     @Basic
-    @Column(name = "alias")
+    @Column(name = "alias", nullable = false, length = 30)
     private String alias;
+
+    @Basic
+    @Column(name = "is_available", nullable = false)
+    private Boolean isAvailable;
 }

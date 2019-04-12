@@ -7,6 +7,7 @@ import com.fpt.cpdm.models.askingRequests.AskingRequest;
 import com.fpt.cpdm.models.assignRequests.AssignRequest;
 import com.fpt.cpdm.models.comments.Comment;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
+import com.fpt.cpdm.models.projects.Project;
 import com.fpt.cpdm.models.storedComments.StoredComment;
 import com.fpt.cpdm.models.departments.Department;
 import com.fpt.cpdm.models.documents.Document;
@@ -89,6 +90,16 @@ public class ModelConverter {
     public static DepartmentEntity departmentModelToEntity(Department department) {
         DepartmentEntity departmentEntity = MODEL_MAPPER.map(department, DepartmentEntity.class);
         return departmentEntity;
+    }
+
+    public static Project projectEntityToModel(ProjectEntity projectEntity) {
+        Project project = MODEL_MAPPER.map(projectEntity, Project.class);
+        return project;
+    }
+
+    public static ProjectEntity projectModelToEntity(Project project) {
+        ProjectEntity projectEntity = MODEL_MAPPER.map(project, ProjectEntity.class);
+        return projectEntity;
     }
 
     public static LeaveRequest leaveRequestEntityToModel(LeaveRequestEntity leaveRequestEntity) {

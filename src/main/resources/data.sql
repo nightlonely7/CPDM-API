@@ -3,9 +3,9 @@ INSERT INTO role (name) VALUES
 ('ROLE_STAFF'), ('ROLE_MANAGER'), ('ROLE_ADMIN');
 
 -- INSERT DEPARTMENT
-INSERT INTO department (name, alias) VALUES
-('New Department 1', 'NEW1'),
-('New Department 2', 'NEW2');
+INSERT INTO department (name, alias, is_available) VALUES
+('New Department 1', 'NEW1', true),
+('New Department 2', 'NEW2', true);
 
 --INSERT PROJECT
 INSERT INTO project(name, alias) values
@@ -28,8 +28,8 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
 ('staff4', 'Nguyễn Phú Staff', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff4@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
-('staff5', 'Nguyễn Phú Staff', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff5@gmail.com'
-, '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
+('staff5', 'Nguyễn Phú Staff', false, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff5@gmail.com'
+, '0123456789', 'abcxyz tphcm', '2000-01-30', 1, 1, true, '2017-09-20 07:22:11'),
 ('admin', 'Nguyễn Phú Admin', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'admin@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 3, true, '2017-09-20 07:22:11');
 
