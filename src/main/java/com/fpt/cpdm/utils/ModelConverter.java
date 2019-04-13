@@ -7,6 +7,7 @@ import com.fpt.cpdm.models.askingRequests.AskingRequest;
 import com.fpt.cpdm.models.assignRequests.AssignRequest;
 import com.fpt.cpdm.models.comments.Comment;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
+import com.fpt.cpdm.models.notifications.Notification;
 import com.fpt.cpdm.models.storedComments.StoredComment;
 import com.fpt.cpdm.models.departments.Department;
 import com.fpt.cpdm.models.documents.Document;
@@ -118,5 +119,13 @@ public class ModelConverter {
     public static AskingRequestEntity askingRequestModelToEntity(AskingRequest askingRequest) {
         AskingRequestEntity askingRequestEntity = MODEL_MAPPER.map(askingRequest, AskingRequestEntity.class);
         return askingRequestEntity;
+    }
+    public static Notification notificationEntityToModel(NotificationEntity notificationEntity){
+        Notification notification = MODEL_MAPPER.map(notificationEntity,Notification.class);
+        return notification;
+    }
+    public static NotificationEntity notificationModelToEntity(Notification notification){
+        NotificationEntity notificationEntity = MODEL_MAPPER.map(notification,NotificationEntity.class);
+        return notificationEntity;
     }
 }
