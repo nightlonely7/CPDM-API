@@ -15,4 +15,8 @@ public interface TaskIssueRepository extends JpaRepository<TaskIssueEntity, Inte
 
     Boolean existsByTask_IdAndCompletedFalseAndAvailableTrue(Integer taskId);
 
+    Integer countAllByTask_IdAndAvailableTrue(Integer taskId);
+    
+    Integer countAllByTask_IdAndCompletedTrueAndAvailableTrue(Integer taskId);
+
 }

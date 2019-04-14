@@ -18,6 +18,7 @@ import com.fpt.cpdm.models.assignRequests.AssignRequestSummary;
 import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
+import com.fpt.cpdm.models.tasks.task_issues.TaskIssueStatus;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.*;
 import com.fpt.cpdm.services.TaskService;
@@ -88,6 +89,16 @@ public class TaskServiceImpl implements TaskService {
         TaskDetail taskDetail = taskRepository.findDetailById(id);
 
         return taskDetail;
+    }
+
+    @Override
+    public TaskIssueStatus findIssueStatusById(Integer id) {
+
+        Integer total = taskIssueRepository.countAllByTask_IdAndAvailableTrue(id);
+        Integer completed = taskIssueRepository.countAllByTask_IdAndCompletedTrueAndAvailableTrue(id);
+        TaskIssueStatus taskIssueStatus = new TaskIssueStatus(total, completed);
+
+        return taskIssueStatus;
     }
 
 

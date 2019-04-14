@@ -7,6 +7,7 @@ import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
+import com.fpt.cpdm.models.tasks.task_issues.TaskIssueStatus;
 import com.fpt.cpdm.models.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,8 @@ public interface TaskService {
     void uploadFile(Integer id, String filename);
 
     TaskDetail findDetailById(Integer id);
+
+    TaskIssueStatus findIssueStatusById(Integer id);
 
     TaskSummary complete(Integer id);
 
