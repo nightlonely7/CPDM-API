@@ -22,16 +22,12 @@ public interface TaskSummary {
 
     UserDisplayName getCreator();
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime getCreatedTime();
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime getStartTime();
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime getEndTime();
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime getCompletedTime();
 
     Integer getPriority();
