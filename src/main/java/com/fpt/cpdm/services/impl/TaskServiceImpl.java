@@ -15,7 +15,6 @@ import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.assignRequests.AssignRequestSummary;
-import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
@@ -32,7 +31,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -108,6 +106,13 @@ public class TaskServiceImpl implements TaskService {
         // check if executor related to task
         if (taskEntity.getExecutor().equals(current) == false) {
             throw new UnauthorizedException();
+        }
+
+        // check if task is not currently running
+        if (taskEntity.getStatus().equals("Working") == false
+                && taskEntity.getStatus().equals("Outdated") == false
+                && taskEntity.getStatus().equals("Near deadline") == false) {
+            throw new ConflictException("This task is not currently running");
         }
 
         // check all issues is completed
@@ -458,13 +463,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public boolean existsByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime, LocalDateTime toTime) {
         UserEntity executor = ModelConverter.userModelToEntity(user);
-        return taskRepository.existsByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor,status,fromTime,toTime);
+        return taskRepository.existsByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor, status, fromTime, toTime);
     }
 
     @Override
     public boolean existsByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime) {
         UserEntity executor = ModelConverter.userModelToEntity(user);
-        return taskRepository.existsByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor,status,fromTime,fromTime);
+        return taskRepository.existsByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor, status, fromTime, fromTime);
     }
 
     @Override
@@ -487,8 +492,8 @@ public class TaskServiceImpl implements TaskService {
                 () -> new UsernameNotFoundException(email)
         );
 
-        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor,status,fromTime,toTime);
-        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor,status,fromTime,fromTime));
+        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor, status, fromTime, toTime);
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor, status, fromTime, fromTime));
 
         LocalDate fromDate = fromTime.toLocalDate();
         LocalDate toDate = toTime.toLocalDate();
@@ -499,16 +504,16 @@ public class TaskServiceImpl implements TaskService {
         Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
         integerList.add(approvedCode);
 
-        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateAfterAndFromDateLessThanEqual(executor,integerList,fromDate,toDate);
-        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndToDateGreaterThanEqualAndToDateBefore(executor,integerList,fromDate,toDate));
-        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(executor,integerList,fromDate,toDate));
+        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateAfterAndFromDateLessThanEqual(executor, integerList, fromDate, toDate);
+        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndToDateGreaterThanEqualAndToDateBefore(executor, integerList, fromDate, toDate));
+        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(executor, integerList, fromDate, toDate));
         List<Integer> assignedTaskSummaryIds = new ArrayList<>();
         for (AssignRequestSummary assignRequestSummary : assignRequestSummaries) {
             assignRequestSummary.getTasks().forEach(o -> assignedTaskSummaryIds.add(o.getId()));
         }
         taskSummaries.removeIf(taskSummary -> assignedTaskSummaryIds.contains(taskSummary.getId()));
 
-        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummaries.size());
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), taskSummaries.size());
         return result;
     }
 
@@ -529,12 +534,12 @@ public class TaskServiceImpl implements TaskService {
         List<TaskSummary> taskSummaries = new ArrayList<>();
 
         //check exist assign request status new or approved which fromDate <= startTime and toDate >= EndTime
-        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(executor,integerList,fromDate,toDate);
+        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(executor, integerList, fromDate, toDate);
         for (AssignRequestSummary assignRequestSummary : assignRequestSummaries) {
             taskSummaries.addAll(assignRequestSummary.getTasks());
         }
 
-        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummaries.size());
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), taskSummaries.size());
         return result;
     }
 
@@ -555,15 +560,15 @@ public class TaskServiceImpl implements TaskService {
         List<TaskSummary> taskSummaries = new ArrayList<>();
 
         //check exist assign request status new or approved which have only some part lane on date range
-        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateAfterAndFromDateLessThanEqual(executor,integerList,fromDate,toDate);
-        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndToDateGreaterThanEqualAndToDateBefore(executor,integerList,fromDate,toDate));
+        List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateAfterAndFromDateLessThanEqual(executor, integerList, fromDate, toDate);
+        assignRequestSummaries.addAll(assignRequestRepository.findAllByUserAndStatusInAndToDateGreaterThanEqualAndToDateBefore(executor, integerList, fromDate, toDate));
         for (AssignRequestSummary assignRequestSummary : assignRequestSummaries) {
             for (TaskSummary taskSummary : assignRequestSummary.getTasks()) {
-                if(!taskSummaries.contains(taskSummary)) taskSummaries.add(taskSummary);
+                if (!taskSummaries.contains(taskSummary)) taskSummaries.add(taskSummary);
             }
         }
 
-        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummaries.size());
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), taskSummaries.size());
         return result;
     }
 
@@ -575,10 +580,10 @@ public class TaskServiceImpl implements TaskService {
                 () -> new UsernameNotFoundException(email)
         );
 
-        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor,status,fromTime,toTime);
-        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor,status,fromTime,fromTime));
+        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor, status, fromTime, toTime);
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor, status, fromTime, fromTime));
 
-        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries,new PageRequest(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort()),taskSummaries.size());
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), taskSummaries.size());
         return result;
     }
 }

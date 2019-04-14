@@ -138,10 +138,11 @@ public class TaskController {
     }
 
     @GetMapping("/search/executes/partAssigned")
-    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndPartAssigned(@RequestParam(name = "status") String status,
-                                                                                          @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-                                                                                          @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-                                                                                          @PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndPartAssigned(
+            @RequestParam(name = "status") String status,
+            @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @PageableDefault Pageable pageable) {
 
         Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndPartAssigned(status, fromDate, toDate, pageable);
 

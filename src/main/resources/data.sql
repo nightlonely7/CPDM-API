@@ -3,7 +3,7 @@ INSERT INTO role (name) VALUES
 ('ROLE_STAFF'), ('ROLE_MANAGER'), ('ROLE_ADMIN');
 
 -- INSERT DEPARTMENT
-INSERT INTO department (name, alias, is_available) VALUES
+INSERT INTO department (name, alias, available) VALUES
 ('New Department 1', 'NEW1', true),
 ('New Department 2', 'NEW2', true);
 
