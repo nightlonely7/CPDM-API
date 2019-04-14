@@ -28,9 +28,15 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     Page<TaskSummary> findAllSummaryByCreatorAndAvailableTrue(UserEntity creator, Pageable pageable);
 
+    List<TaskSummary> findAllSummaryByCreatorAndAvailableTrue(UserEntity creator);
+
     Page<TaskSummary> findAllSummaryByExecutorAndAvailableTrue(UserEntity executor, Pageable pageable);
 
+    List<TaskSummary> findAllSummaryByExecutorAndAvailableTrue(UserEntity executor);
+
     Page<TaskSummary> findAllSummaryByRelativesAndAvailableTrue(UserEntity relative, Pageable pageable);
+
+    List<TaskSummary> findAllSummaryByRelativesAndAvailableTrue(UserEntity relative);
 
     @Query("select t from TaskEntity t where " +
             "(:creator is null or t.creator = :creator) and " +

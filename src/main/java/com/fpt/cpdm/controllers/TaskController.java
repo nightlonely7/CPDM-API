@@ -80,6 +80,13 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
+    @GetMapping("/search/all/executes")
+    public ResponseEntity<List<TaskSummary>> readAllByExecutes(){
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor();
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
     @GetMapping("search/executes/{status}")
     public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndStatus(@PathVariable(name = "status") String status,
                                                                                            @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
@@ -156,11 +163,25 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
+    @GetMapping("/search/all/creates")
+    public ResponseEntity<List<TaskSummary>> readAllByCreates(){
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator();
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
     @GetMapping("/search/relatives")
     public ResponseEntity<Page<TaskSummary>> readByRelatives(TaskSearchForm taskSearchForm,
                                                              @PageableDefault Pageable pageable) {
 
         Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(taskSearchForm, pageable);
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/search/all/relatives")
+    public ResponseEntity<List<TaskSummary>> readAllByRelatives(){
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives();
 
         return ResponseEntity.ok(taskSummaries);
     }

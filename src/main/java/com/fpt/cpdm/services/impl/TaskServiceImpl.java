@@ -298,6 +298,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskSummary> findAllSummaryByExecutor() {
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+        return taskRepository.findAllSummaryByExecutorAndAvailableTrue(executor);
+    }
+
+    @Override
     public Page<TaskSummary> findAllSummaryByCreator(TaskSearchForm taskSearchForm, Pageable pageable) {
 
         // get current logged user
@@ -332,6 +341,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskSummary> findAllSummaryByCreator() {
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity creator = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+        return taskRepository.findAllSummaryByCreatorAndAvailableTrue(creator);
+    }
+
+    @Override
     public Page<TaskSummary> findAllSummaryByRelatives(TaskSearchForm taskSearchForm, Pageable pageable) {
 
         // get current logged user
@@ -363,6 +381,16 @@ public class TaskServiceImpl implements TaskService {
                 taskSearchForm.getEndTimeFrom(), taskSearchForm.getEndTimeTo(),
                 taskSearchForm.getProjectId(), taskSearchForm.getStatus(), pageable);
 
+    }
+
+    @Override
+    public List<TaskSummary> findAllSummaryByRelatives() {
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity relative = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        return taskRepository.findAllSummaryByRelativesAndAvailableTrue(relative);
     }
 
     @Scheduled(fixedRate = 30000)

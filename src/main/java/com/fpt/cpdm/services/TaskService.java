@@ -29,9 +29,15 @@ public interface TaskService {
 
     Page<TaskSummary> findAllSummaryByExecutor(TaskSearchForm taskSearchForm, Pageable pageable);
 
+    List<TaskSummary> findAllSummaryByExecutor();
+
     Page<TaskSummary> findAllSummaryByCreator(TaskSearchForm taskSearchForm, Pageable pageable);
 
+    List<TaskSummary> findAllSummaryByCreator();
+
     Page<TaskSummary> findAllSummaryByRelatives(TaskSearchForm taskSearchForm, Pageable pageable);
+
+    List<TaskSummary> findAllSummaryByRelatives();
 
     void deleteById(Integer id);
 
