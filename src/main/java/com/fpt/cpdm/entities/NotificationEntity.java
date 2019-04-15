@@ -7,7 +7,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "notification")
+@Entity(name = "Notification")
 @Table(name = "notification")
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
