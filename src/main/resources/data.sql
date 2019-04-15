@@ -69,9 +69,9 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 ('title task 09', 'summary task 09', 'description task 09', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 10', 'summary task 10', 'description task 10', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true);
--- ('title task 11', 'summary task 11', 'description task 11', '2019-03-28 16:30:00'
--- , '2019-03-27 16:30:00', '2019-03-29 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+('title task 11', 'summary task 11', 'description task 11', '2019-03-28 16:30:00'
+, '2019-05-27 16:30:00', '2019-05-29 23:59:59', 1, 'Waiting', 1, 2, 1, 1, true);
 -- ('title task 11b', 'summary task 11b', 'description task 11b', '2019-03-28 16:30:00'
 -- , '2019-03-29 16:30:00', '2019-03-30 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 -- ('title task 11c', 'summary task 11c', 'description task 11c', '2019-03-28 16:30:00'

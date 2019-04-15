@@ -76,6 +76,20 @@ public class LeaveRequestController {
         return ResponseEntity.ok(leaveRequestSummaries);
     }
 
+    @GetMapping("/search/findAllByUser")
+    public ResponseEntity<List<LeaveRequestSummary>> findbyUser(@RequestParam Integer status,
+                                                                Principal principal) {
+        // get current logged user
+        User user = userService.findByEmail(principal.getName());
+
+        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByUserAndStatus(user, status);
+        if (leaveRequestSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(leaveRequestSummaries);
+    }
+
     @GetMapping("/search/findByApprover")
     public ResponseEntity<Page<LeaveRequestSummary>> findByApprover(@RequestParam Integer status,
                                                                     @PageableDefault Pageable pageable,
@@ -84,6 +98,20 @@ public class LeaveRequestController {
         User approver = userService.findByEmail(principal.getName());
 
         Page<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByApproverAndStatus(approver, status, pageable);
+        if (leaveRequestSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(leaveRequestSummaries);
+    }
+
+    @GetMapping("/search/findAllByApprover")
+    public ResponseEntity<List<LeaveRequestSummary>> findByApprover(@RequestParam Integer status,
+                                                                    Principal principal) {
+        // get current logged user
+        User approver = userService.findByEmail(principal.getName());
+
+        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByApproverAndStatus(approver, status);
         if (leaveRequestSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
