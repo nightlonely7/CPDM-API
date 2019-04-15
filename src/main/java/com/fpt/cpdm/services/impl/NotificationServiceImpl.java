@@ -47,6 +47,7 @@ public class NotificationServiceImpl implements NotificationService {
         JSONObject msg = new JSONObject();
         msg.put("title", pushNotification.getTitle());
         msg.put("body", pushNotification.getDetail());
+        msg.put("url", pushNotification.getUrl());
 
         pushNotification.getKeys().forEach(key -> {
             try {

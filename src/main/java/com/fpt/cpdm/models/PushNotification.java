@@ -13,4 +13,5 @@ public class PushNotification {
     private List<String> keys;
     private String title;
     private String detail;
+    private String url;
 }

@@ -21,8 +21,11 @@ public class NotificationEntity extends BaseEntity{
     @Column(name = "detail")
     private String detail;
     @Basic
-    @Column(name="is_hidden")
-    private boolean isHidden;
+    @Column(name="hidden")
+    private boolean hidden;
+    @Basic
+    @Column(name="read")
+    private boolean read;
     @Basic
     @Column(name="url")
     private String url;
@@ -40,5 +43,6 @@ public class NotificationEntity extends BaseEntity{
     public void onCreated(){
         this.setCreatedTime(LocalDateTime.now());
         this.setHidden(false);
+        this.setRead(false);
     }
 }

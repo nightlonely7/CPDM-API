@@ -12,7 +12,9 @@ public interface NotificationSummary {
 
     String getDetail();
 
-    String getHidden();
+    boolean getHidden();
+
+    boolean getRead();
 
     String getUrl();
 

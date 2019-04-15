@@ -15,7 +15,8 @@ public class Notification {
     private Integer id;
     private String title;
     private String detail;
-    private boolean isHidden;
+    private boolean hidden;
+    private boolean read;
     private String url;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
