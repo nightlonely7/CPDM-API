@@ -359,7 +359,6 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    @Secured("ROLE_ADMIN")
     @GetMapping("/{id}/childs")
     public ResponseEntity childTask(@PathVariable(name = "id") Integer id,
                                     @PageableDefault Pageable pageable) {
