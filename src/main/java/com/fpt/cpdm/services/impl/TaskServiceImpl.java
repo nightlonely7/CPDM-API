@@ -78,11 +78,13 @@ public class TaskServiceImpl implements TaskService {
     public TaskDetail findDetailById(Integer id) {
 
         String email = authenticationFacade.getAuthentication().getName();
-        UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(
+        UserEntity current = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
 
-        if (taskRepository.existsByCreatorOrExecutorOrRelatives(userEntity, userEntity, userEntity) == false) {
+        if (current.getRole().getName().equals("ROLE_ADMIN") == false
+                && taskRepository.existsByCreatorAndIdOrExecutorAndIdOrRelativesAndId(
+                current, id, current, id, current, id) == false) {
             throw new UnauthorizedException();
         }
 

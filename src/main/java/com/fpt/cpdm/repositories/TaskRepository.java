@@ -71,7 +71,9 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             @Param("status") List<String> status,
             Pageable pageable);
 
-    Boolean existsByCreatorOrExecutorOrRelatives(UserEntity creator, UserEntity executor, UserEntity relative);
+    Boolean existsByCreatorAndIdOrExecutorAndIdOrRelativesAndId(UserEntity creator, Integer id1,
+                                                                UserEntity executor, Integer id2,
+                                                                UserEntity relative, Integer id3);
 
     Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable);
 
