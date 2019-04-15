@@ -28,7 +28,7 @@ public class NotificationEntity extends BaseEntity {
     private boolean hidden;
 
     @Basic
-    @Column(name = "read")
+    @Column(name = "`read`")
     private boolean read;
 
     @Basic
