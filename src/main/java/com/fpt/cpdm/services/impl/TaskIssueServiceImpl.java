@@ -54,7 +54,8 @@ public class TaskIssueServiceImpl implements TaskIssueService {
         // check if issue's task is not currently running
         if (taskEntity.getStatus().equals("Working") == false
                 && taskEntity.getStatus().equals("Outdated") == false
-                && taskEntity.getStatus().equals("Near deadline") == false) {
+                && taskEntity.getStatus().equals("Near deadline") == false
+                && taskEntity.getStatus().equals("Waiting") == false) {
             throw new ConflictException("This issue's task is not currently running");
         }
 

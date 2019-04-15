@@ -42,10 +42,6 @@ public class NotificationController {
         User user = userService.findByEmail(principal.getName());
         Page<NotificationSummary> notificationSummaries = notificationService.findAllByUserOrderByCreatedTimeDesc(user, pageable);
 
-        if (notificationSummaries.getContent().isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
         return ResponseEntity.ok(notificationSummaries);
     }
 
