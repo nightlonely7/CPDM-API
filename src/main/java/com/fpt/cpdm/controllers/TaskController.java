@@ -13,7 +13,6 @@ import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 import com.fpt.cpdm.models.tasks.task_issues.TaskIssueDetail;
-import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.models.users.UserSummary;
 import com.fpt.cpdm.services.*;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -33,7 +32,6 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
