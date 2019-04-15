@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
-    TaskDetail findDetailById(Integer id);
+    TaskDetail findDetailByIdAndAvailableTrue(Integer id);
 
     Page<TaskSummary> findSummaryByTitleContaining(String title, Pageable pageable);
 

@@ -88,7 +88,7 @@ public class TaskServiceImpl implements TaskService {
             throw new UnauthorizedException();
         }
 
-        TaskDetail taskDetail = taskRepository.findDetailById(id);
+        TaskDetail taskDetail = taskRepository.findDetailByIdAndAvailableTrue(id);
 
         return taskDetail;
     }
@@ -240,7 +240,7 @@ public class TaskServiceImpl implements TaskService {
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
 
-        TaskDetail taskDetail = taskRepository.findDetailById(savedTaskEntity.getId());
+        TaskDetail taskDetail = taskRepository.findDetailByIdAndAvailableTrue(savedTaskEntity.getId());
 
         return taskDetail;
     }
@@ -276,7 +276,7 @@ public class TaskServiceImpl implements TaskService {
 
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-        TaskDetail taskDetail = taskRepository.findDetailById(savedTaskEntity.getId());
+        TaskDetail taskDetail = taskRepository.findDetailByIdAndAvailableTrue(savedTaskEntity.getId());
 
         return taskDetail;
     }
