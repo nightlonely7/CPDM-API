@@ -12,15 +12,15 @@ import java.util.Optional;
 
 public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Integer> {
 
-    Page<DepartmentDTO> findAllDTOByIsAvailableTrue(Pageable pageable);
+    Page<DepartmentDTO> findAllDTOByAvailableTrue(Pageable pageable);
 
-    Page<DepartmentDTO> findAllDTOByNameContainingAndIsAvailableTrue(String name, Pageable pageable);
+    Page<DepartmentDTO> findAllDTOByNameContainingAndAvailableTrue(String name, Pageable pageable);
 
-    Page<DepartmentDTO> findAllDTOByNameContainingAndAliasContainingAndIsAvailableTrue(String name, String alias, Pageable pageable);
+    Page<DepartmentDTO> findAllDTOByNameContainingAndAliasContainingAndAvailableTrue(String name, String alias, Pageable pageable);
 
-    boolean existsByNameAndIsAvailableTrue(String name);
+    boolean existsByNameAndAvailableTrue(String name);
 
-    boolean existsByAliasAndIsAvailableTrue(String alias);
+    boolean existsByAliasAndAvailableTrue(String alias);
     
     Optional<DepartmentDTO> findDTOById(Integer id);
 

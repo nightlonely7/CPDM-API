@@ -13,6 +13,8 @@ import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
 import com.fpt.cpdm.models.tasks.task_issues.TaskIssueDetail;
+import com.fpt.cpdm.models.tasks.task_issues.TaskIssueStatus;
+import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.models.users.UserSummary;
 import com.fpt.cpdm.services.*;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -32,6 +34,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
@@ -78,11 +81,18 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
+    @GetMapping("/search/all/executes")
+    public ResponseEntity<List<TaskSummary>> readAllByExecutes() {
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutor();
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
     @GetMapping("search/executes/{status}")
     public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndStatus(@PathVariable(name = "status") String status,
-                                                                                           @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-                                                                                           @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-                                                                                           @PageableDefault Pageable pageable) {
+                                                                                    @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                                                                    @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+                                                                                    @PageableDefault Pageable pageable) {
         LocalDateTime fromTime = fromDate.atStartOfDay();
         LocalDateTime toTime = toDate.atTime(23, 59, 59);
 
@@ -98,15 +108,15 @@ public class TaskController {
 
     @GetMapping("/search/executes/notAssigned")
     public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndNotAssigned(@RequestParam(name = "status") String status,
-                                                                                         @RequestParam(name = "fromDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate fromDate,
-                                                                                         @RequestParam(name = "toDate") @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate toDate,
+                                                                                         @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                                                                         @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
                                                                                          @PageableDefault Pageable pageable) {
         LocalDateTime fromTime = fromDate.atStartOfDay();
         LocalDateTime toTime = toDate.atTime(23, 59, 59);
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndNotAssigned(status,fromTime,toTime,pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndNotAssigned(status, fromTime, toTime, pageable);
 
-        if(taskSummaries.getContent().isEmpty()){
+        if (taskSummaries.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
@@ -129,10 +139,11 @@ public class TaskController {
     }
 
     @GetMapping("/search/executes/partAssigned")
-    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndPartAssigned(@RequestParam(name = "status") String status,
-                                                                                          @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-                                                                                          @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-                                                                                          @PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndPartAssigned(
+            @RequestParam(name = "status") String status,
+            @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @PageableDefault Pageable pageable) {
 
         Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndPartAssigned(status, fromDate, toDate, pageable);
 
@@ -154,11 +165,25 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
+    @GetMapping("/search/all/creates")
+    public ResponseEntity<List<TaskSummary>> readAllByCreates() {
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByCreator();
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
     @GetMapping("/search/relatives")
     public ResponseEntity<Page<TaskSummary>> readByRelatives(TaskSearchForm taskSearchForm,
                                                              @PageableDefault Pageable pageable) {
 
         Page<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives(taskSearchForm, pageable);
+
+        return ResponseEntity.ok(taskSummaries);
+    }
+
+    @GetMapping("/search/all/relatives")
+    public ResponseEntity<List<TaskSummary>> readAllByRelatives() {
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByRelatives();
 
         return ResponseEntity.ok(taskSummaries);
     }
@@ -236,9 +261,8 @@ public class TaskController {
     }
 
     @PostMapping("/{id}/files")
-    public ResponseEntity<UploadFileResponse> uploadFile(
-            @PathVariable("id") Integer id,
-            @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<UploadFileResponse> uploadFile(@PathVariable("id") Integer id,
+                                                         @RequestParam("file") MultipartFile file) {
 
         // store the file
         String filename = fileStorageService.store(file);
@@ -267,6 +291,14 @@ public class TaskController {
         }
 
         return ResponseEntity.ok(taskIssueDetails);
+    }
+
+    @GetMapping("/{id}/issues/status")
+    public ResponseEntity<TaskIssueStatus> readIssueStatus(@PathVariable("id") Integer id) {
+
+        TaskIssueStatus taskIssueStatus = taskService.findIssueStatusById(id);
+
+        return ResponseEntity.ok(taskIssueStatus);
     }
 
     @PostMapping("/{id}/issues")
@@ -327,7 +359,6 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    @Secured("ROLE_ADMIN")
     @GetMapping("/{id}/childs")
     public ResponseEntity childTask(@PathVariable(name = "id") Integer id,
                                     @PageableDefault Pageable pageable) {

@@ -4,6 +4,7 @@ import com.fpt.cpdm.configurations.AuthenticationFacade;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.TaskIssueEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.exceptions.ConflictException;
 import com.fpt.cpdm.exceptions.EntityNotFoundException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.tasks.TaskIssueNotFoundException;
@@ -49,6 +50,14 @@ public class TaskIssueServiceImpl implements TaskIssueService {
         TaskEntity taskEntity = taskRepository.findById(taskId).orElseThrow(
                 () -> new TaskNotFoundException(taskId)
         );
+
+        // check if issue's task is not currently running
+        if (taskEntity.getStatus().equals("Working") == false
+                && taskEntity.getStatus().equals("Outdated") == false
+                && taskEntity.getStatus().equals("Near deadline") == false
+                && taskEntity.getStatus().equals("Waiting") == false) {
+            throw new ConflictException("This issue's task is not currently running");
+        }
 
         // building entity
         TaskIssueEntity taskIssueEntity = TaskIssueEntity.builder()

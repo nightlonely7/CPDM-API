@@ -14,6 +14,5 @@ public class Department {
 
     private String alias;
 
-    private Boolean isAvailable;
 
 }

@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
-    TaskDetail findDetailById(Integer id);
+    TaskDetail findDetailByIdAndAvailableTrue(Integer id);
 
     Page<TaskSummary> findSummaryByTitleContaining(String title, Pageable pageable);
 
@@ -28,9 +28,15 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     Page<TaskSummary> findAllSummaryByCreatorAndAvailableTrue(UserEntity creator, Pageable pageable);
 
+    List<TaskSummary> findAllSummaryByCreatorAndAvailableTrue(UserEntity creator);
+
     Page<TaskSummary> findAllSummaryByExecutorAndAvailableTrue(UserEntity executor, Pageable pageable);
 
+    List<TaskSummary> findAllSummaryByExecutorAndAvailableTrue(UserEntity executor);
+
     Page<TaskSummary> findAllSummaryByRelativesAndAvailableTrue(UserEntity relative, Pageable pageable);
+
+    List<TaskSummary> findAllSummaryByRelativesAndAvailableTrue(UserEntity relative);
 
     @Query("select t from TaskEntity t where " +
             "(:creator is null or t.creator = :creator) and " +
@@ -65,7 +71,9 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
             @Param("status") List<String> status,
             Pageable pageable);
 
-    Boolean existsByCreatorOrExecutorOrRelatives(UserEntity creator, UserEntity executor, UserEntity relative);
+    Boolean existsByCreatorAndIdOrExecutorAndIdOrRelativesAndId(UserEntity creator, Integer id1,
+                                                                UserEntity executor, Integer id2,
+                                                                UserEntity relative, Integer id3);
 
     Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable);
 

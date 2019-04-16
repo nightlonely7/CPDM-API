@@ -7,6 +7,7 @@ import com.fpt.cpdm.models.tasks.Task;
 import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
+import com.fpt.cpdm.models.tasks.task_issues.TaskIssueStatus;
 import com.fpt.cpdm.models.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,8 @@ public interface TaskService {
 
     TaskDetail findDetailById(Integer id);
 
+    TaskIssueStatus findIssueStatusById(Integer id);
+
     TaskSummary complete(Integer id);
 
     TaskDetail create(TaskCreateForm taskCreateForm);
@@ -29,9 +32,15 @@ public interface TaskService {
 
     Page<TaskSummary> findAllSummaryByExecutor(TaskSearchForm taskSearchForm, Pageable pageable);
 
+    List<TaskSummary> findAllSummaryByExecutor();
+
     Page<TaskSummary> findAllSummaryByCreator(TaskSearchForm taskSearchForm, Pageable pageable);
 
+    List<TaskSummary> findAllSummaryByCreator();
+
     Page<TaskSummary> findAllSummaryByRelatives(TaskSearchForm taskSearchForm, Pageable pageable);
+
+    List<TaskSummary> findAllSummaryByRelatives();
 
     void deleteById(Integer id);
 

@@ -13,7 +13,11 @@ public interface LeaveRequestService extends CRUDService<LeaveRequest> {
 
     Page<LeaveRequestSummary> findAllSummaryByUserAndStatus(User userEntity, Integer status, Pageable pageable);
 
+    List<LeaveRequestSummary> findAllSummaryByUserAndStatus(User userEntity, Integer status);
+
     Page<LeaveRequestSummary> findAllSummaryByApproverAndStatus(User userEntity, Integer status, Pageable pageable);
+
+    List<LeaveRequestSummary> findAllSummaryByApproverAndStatus(User userEntity, Integer status);
 
     boolean existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(LocalDate fromDate, LocalDate toDate, User user,Integer status);
 

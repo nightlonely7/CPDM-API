@@ -1,13 +1,12 @@
 package com.fpt.cpdm.entities;
 
-import com.fpt.cpdm.models.comments.Comment;
+import com.fpt.cpdm.utils.Enum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity(name = "Comment")
 @Table(name = "comment")
@@ -48,6 +47,7 @@ public class CommentEntity extends BaseEntity{
     public void onCreated(){
         this.setCreatedDate(LocalDateTime.now());
         this.setLastModifiedDate(LocalDateTime.now());
+        this.setStatus(Enum.CommentStatus.New.getCommentStatusCode());
     }
 
     @PreUpdate

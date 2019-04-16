@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity(name = "Department")
 @Table(name = "department")
@@ -25,6 +22,11 @@ public class DepartmentEntity extends BaseEntity {
     private String alias;
 
     @Basic
-    @Column(name = "is_available", nullable = false)
-    private Boolean isAvailable;
+    @Column(name = "available", nullable = false)
+    private Boolean available;
+
+    @PrePersist
+    public void prePersist() {
+        this.available = Boolean.TRUE;
+    }
 }

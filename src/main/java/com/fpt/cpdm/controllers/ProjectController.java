@@ -27,13 +27,13 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<ProjectDTO>> findAll() {
-//
-//        List<ProjectDTO> projects = projectService.findAllDTO();
-//
-//        return ResponseEntity.ok(projects);
-//    }
+    @GetMapping("/search/all")
+    public ResponseEntity<List<ProjectDTO>> findAll() {
+
+        List<ProjectDTO> projects = projectService.findAllDTO();
+
+        return ResponseEntity.ok(projects);
+    }
 
     @GetMapping
     public ResponseEntity<Page<ProjectDTO>> findAll(@PageableDefault Pageable pageable) {

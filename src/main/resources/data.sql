@@ -3,14 +3,14 @@ INSERT INTO role (name) VALUES
 ('ROLE_STAFF'), ('ROLE_MANAGER'), ('ROLE_ADMIN');
 
 -- INSERT DEPARTMENT
-INSERT INTO department (name, alias, is_available) VALUES
+INSERT INTO department (name, alias, available) VALUES
 ('New Department 1', 'NEW1', true),
 ('New Department 2', 'NEW2', true);
 
 --INSERT PROJECT
 INSERT INTO project(name, alias) values
-('Dự án 1', 'DA1'),
-('Dự án 2', 'DA2');
+('Du an 1', 'DA1'),
+(n'Dự án 2', 'DA2');
 
 -- INSERT USER
 INSERT INTO user (display_name, full_name, gender, password, email, phone, address, birthday, department_id, role_id, is_enabled, created_time) VALUES
@@ -69,9 +69,9 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 ('title task 09', 'summary task 09', 'description task 09', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 10', 'summary task 10', 'description task 10', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true);
--- ('title task 11', 'summary task 11', 'description task 11', '2019-03-28 16:30:00'
--- , '2019-03-27 16:30:00', '2019-03-29 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
+('title task 11', 'summary task 11', 'description task 11', '2019-03-28 16:30:00'
+, '2019-05-27 16:30:00', '2019-05-29 23:59:59', 1, 'Waiting', 1, 2, 1, 1, true);
 -- ('title task 11b', 'summary task 11b', 'description task 11b', '2019-03-28 16:30:00'
 -- , '2019-03-29 16:30:00', '2019-03-30 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 -- ('title task 11c', 'summary task 11c', 'description task 11c', '2019-03-28 16:30:00'

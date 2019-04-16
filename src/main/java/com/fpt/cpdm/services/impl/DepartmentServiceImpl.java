@@ -42,20 +42,20 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Page<DepartmentDTO> findAll(Pageable pageable) {
-        return departmentRepository.findAllDTOByIsAvailableTrue(pageable);
+        return departmentRepository.findAllDTOByAvailableTrue(pageable);
     }
 
     @Override
     public Page<DepartmentDTO> findByName(String name, Pageable pageable) {
         Page<DepartmentDTO> departments = departmentRepository
-                .findAllDTOByNameContainingAndIsAvailableTrue(name, pageable);
+                .findAllDTOByNameContainingAndAvailableTrue(name, pageable);
         return departments;
     }
 
     @Override
     public Page<DepartmentDTO> findByNameAndAlias(String name, String alias, Pageable pageable) {
         Page<DepartmentDTO> departments = departmentRepository
-                .findAllDTOByNameContainingAndAliasContainingAndIsAvailableTrue(name, alias, pageable);
+                .findAllDTOByNameContainingAndAliasContainingAndAvailableTrue(name, alias, pageable);
         return departments;
     }
 
@@ -74,7 +74,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Department deleteById(Integer id) {
         Optional<DepartmentEntity> departmentEntity = departmentRepository.findById(id);
         if(departmentEntity.isPresent()){
-            departmentEntity.get().setIsAvailable(false);
+            departmentEntity.get().setAvailable(false);
             departmentRepository.save(departmentEntity.get());
         }
         Department savedDepartment = ModelConverter.departmentEntityToModel(departmentEntity.get());
@@ -83,12 +83,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public boolean existsByName(String name) {
-        return departmentRepository.existsByNameAndIsAvailableTrue(name);
+        return departmentRepository.existsByNameAndAvailableTrue(name);
     }
 
     @Override
     public boolean existsByAlias(String alias) {
-        return departmentRepository.existsByAliasAndIsAvailableTrue(alias);
+        return departmentRepository.existsByAliasAndAvailableTrue(alias);
     }
 
 }

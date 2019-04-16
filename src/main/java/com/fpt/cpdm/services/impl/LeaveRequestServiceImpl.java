@@ -57,9 +57,23 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
+    public List<LeaveRequestSummary> findAllSummaryByUserAndStatus(User user, Integer status) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestRepository.findAllSummaryByUserAndStatus(userEntity, status);
+        return leaveRequestSummaries;
+    }
+
+    @Override
     public Page<LeaveRequestSummary> findAllSummaryByApproverAndStatus(User approver, Integer status, Pageable pageable) {
         UserEntity userEntity = ModelConverter.userModelToEntity(approver);
         Page<LeaveRequestSummary> leaveRequestSummaries = leaveRequestRepository.findAllSummaryByApproverAndStatus(userEntity, status, pageable);
+        return leaveRequestSummaries;
+    }
+
+    @Override
+    public List<LeaveRequestSummary> findAllSummaryByApproverAndStatus(User approver, Integer status) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(approver);
+        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestRepository.findAllSummaryByApproverAndStatus(userEntity, status);
         return leaveRequestSummaries;
     }
 
