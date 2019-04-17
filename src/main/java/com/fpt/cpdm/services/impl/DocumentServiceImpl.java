@@ -124,6 +124,7 @@ public class DocumentServiceImpl implements DocumentService {
         documentEntity.setProject(projectEntity);
         documentEntity.setTitle(documentCreateForm.getTitle());
         documentEntity.setSummary(documentCreateForm.getSummary());
+        documentEntity.setDescription(documentCreateForm.getDescription());
         documentEntity.setStartTime(documentCreateForm.getStartTime());
         documentEntity.setEndTime(documentCreateForm.getEndTime());
         documentEntity.setRelatives(relatives);

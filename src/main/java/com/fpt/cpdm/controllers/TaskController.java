@@ -253,9 +253,6 @@ public class TaskController {
     public ResponseEntity<List<TaskFilesSummary>> loadFiles(@PathVariable("id") Integer id) {
 
         List<TaskFilesSummary> taskFilesSummaries = taskFilesService.findSummaryByTask_Id(id);
-        if (taskFilesSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
 
         return ResponseEntity.ok(taskFilesSummaries);
     }
