@@ -28,9 +28,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public String store(MultipartFile file) {
-
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+    public void store(MultipartFile file, String filename) {
 
         try {
             // Check if the file's name contains invalid characters
@@ -42,7 +40,6 @@ public class FileStorageServiceImpl implements FileStorageService {
             Path targetLocation = this.fileStorageLocation.resolve(filename);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return filename;
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + filename + ". Please try again!");
         }

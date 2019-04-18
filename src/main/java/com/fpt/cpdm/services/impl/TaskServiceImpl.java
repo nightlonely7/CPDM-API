@@ -3,7 +3,7 @@ package com.fpt.cpdm.services.impl;
 import com.fpt.cpdm.configurations.AuthenticationFacade;
 import com.fpt.cpdm.entities.ProjectEntity;
 import com.fpt.cpdm.entities.TaskEntity;
-import com.fpt.cpdm.entities.TaskFilesEntity;
+import com.fpt.cpdm.entities.TaskFileEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.BadRequestException;
 import com.fpt.cpdm.exceptions.ConflictException;
@@ -68,10 +68,10 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(
                 () -> new TaskNotFoundException(id)
         );
-        TaskFilesEntity taskFilesEntity = new TaskFilesEntity();
-        taskFilesEntity.setTask(taskEntity);
-        taskFilesEntity.setFilename(filename);
-        taskFilesRepository.save(taskFilesEntity);
+        TaskFileEntity taskFileEntity = new TaskFileEntity();
+        taskFileEntity.setTask(taskEntity);
+        taskFileEntity.setFilename(filename);
+        taskFilesRepository.save(taskFileEntity);
     }
 
     @Override
@@ -144,55 +144,6 @@ public class TaskServiceImpl implements TaskService {
 
         return savedTaskSummary;
     }
-
-//    @Override
-//    public TaskSummary save(Task task) {
-//
-//        // check task exist (can be null)
-//        if (task.getId() != null && taskRepository.existsById(task.getId()) == false) {
-//            throw new TaskNotFoundException(task.getId());
-//        }
-//
-//        // check end time after start time
-//        if (task.getEndTime().isBefore(task.getStartTime())) {
-//            throw new TaskTimeException("End time is before start time!");
-//        }
-//
-//        // find executor
-//        UserEntity executor = userRepository.findById(task.getExecutor().getId()).orElseThrow(
-//                () -> new UserNotFoundException(task.getExecutor().getId())
-//        );
-//
-//        // find creator
-//        UserEntity creator = userRepository.findById(task.getCreator().getId()).orElseThrow(
-//                () -> new UserNotFoundException(task.getCreator().getId())
-//        );
-//
-//        // check executor and creator in the same department
-//        if (executor.getDepartment().equals(creator.getDepartment()) == false) {
-//            throw new UnauthorizedException();
-//        }
-//
-//        // check parent task exists (can be null)
-//        if (task.getParentTask() != null && taskRepository.existsById(task.getParentTask().getId()) == false) {
-//            throw new TaskNotFoundException(task.getParentTask().getId());
-//        }
-//
-//        // check documents exist (can be null)
-//        if (task.getDocuments() != null && task.getDocuments().isEmpty() == false) {
-//            for (Document document : task.getDocuments()) {
-//                if (documentRepository.existsById(document.getId()) == false) {
-//                    throw new DocumentNotFoundException(document.getId());
-//                }
-//            }
-//        }
-//
-//        TaskEntity taskEntity = ModelConverter.taskModelToEntity(task);
-//        TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-//        TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
-//
-//        return savedTaskSummary;
-//    }
 
     @Override
     public TaskDetail create(TaskCreateForm taskCreateForm) {

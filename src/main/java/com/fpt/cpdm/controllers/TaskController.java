@@ -6,15 +6,13 @@ import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
 import com.fpt.cpdm.models.IdOnlyForm;
-import com.fpt.cpdm.models.UploadFileResponse;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
-import com.fpt.cpdm.models.tasks.task_files.TaskFilesSummary;
+import com.fpt.cpdm.models.tasks.task_files.TaskFileSummary;
 import com.fpt.cpdm.models.tasks.task_issues.TaskIssueDetail;
 import com.fpt.cpdm.models.tasks.task_issues.TaskIssueStatus;
-import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.models.users.UserSummary;
 import com.fpt.cpdm.services.*;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -28,13 +26,11 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
@@ -43,7 +39,7 @@ public class TaskController {
     private final TaskService taskService;
     private final UserService userService;
     private final FileStorageService fileStorageService;
-    private final TaskFilesService taskFilesService;
+    private final TaskFileService taskFileService;
     private final TaskIssueService taskIssueService;
     private final TaskRelativeService taskRelativeService;
     private final TaskDocumentService taskDocumentService;
@@ -51,14 +47,14 @@ public class TaskController {
     @Autowired
     public TaskController(TaskService taskService, UserService userService,
                           FileStorageService fileStorageService,
-                          TaskFilesService taskFilesService,
+                          TaskFileService taskFileService,
                           TaskIssueService taskIssueService,
                           TaskRelativeService taskRelativeService,
                           TaskDocumentService taskDocumentService) {
         this.taskService = taskService;
         this.userService = userService;
         this.fileStorageService = fileStorageService;
-        this.taskFilesService = taskFilesService;
+        this.taskFileService = taskFileService;
         this.taskIssueService = taskIssueService;
         this.taskRelativeService = taskRelativeService;
         this.taskDocumentService = taskDocumentService;
@@ -250,33 +246,20 @@ public class TaskController {
 
 
     @GetMapping("/{id}/files")
-    public ResponseEntity<List<TaskFilesSummary>> loadFiles(@PathVariable("id") Integer id) {
+    public ResponseEntity<List<TaskFileSummary>> loadFiles(@PathVariable("id") Integer id) {
 
-        List<TaskFilesSummary> taskFilesSummaries = taskFilesService.findSummaryByTask_Id(id);
+        List<TaskFileSummary> taskFilesSummaries = taskFileService.findSummaryByTask_Id(id);
 
         return ResponseEntity.ok(taskFilesSummaries);
     }
 
     @PostMapping("/{id}/files")
-    public ResponseEntity<UploadFileResponse> uploadFile(@PathVariable("id") Integer id,
-                                                         @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<TaskFileSummary> uploadFile(@PathVariable("id") Integer taskId,
+                                                      @RequestParam("file") MultipartFile file) {
 
-        // store the file
-        String filename = fileStorageService.store(file);
+        TaskFileSummary taskFileSummary = taskFileService.create(taskId, file);
 
-        // set filename for task
-        if (filename.trim().isEmpty() == false) {
-            taskService.uploadFile(id, filename);
-        }
-
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(filename)
-                .toUriString();
-        UploadFileResponse uploadFileResponse = new UploadFileResponse(filename, fileDownloadUri,
-                file.getContentType(), file.getSize());
-
-        return ResponseEntity.ok(uploadFileResponse);
+        return ResponseEntity.ok(taskFileSummary);
     }
 
     @GetMapping("/{id}/issues")
