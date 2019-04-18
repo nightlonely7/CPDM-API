@@ -47,11 +47,11 @@ public class TaskFileServiceImpl implements TaskFileService {
         String newFileName = task.getTitle() + "_" +
                 task.getProject().getAlias() + "_" +
                 currentLoggedUser.getEmail() + "_" +
-                filename + "_" +
                 LocalDateTime.now().toString()
                         .replaceFirst("T", " ")
                         .replaceFirst(":", "h")
-                        .replaceFirst(":", "m");
+                        .replaceFirst(":", "m")
+                + "_" + filename;
 
         fileStorageService.store(file, newFileName);
         TaskFileEntity taskFileEntity = new TaskFileEntity();
