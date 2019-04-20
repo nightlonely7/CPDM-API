@@ -81,4 +81,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     List<UserDisplayName> findAllDisplayNameByDepartmentAndRole_NameAndIdNot(DepartmentEntity departmentEntity, String roleName, Integer id);
 
     List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName);
+
+    List<UserSummary> findAllSummaryByDepartment_IdAndRole_IdNotLike(Integer departmentId, Integer roleId);
 }

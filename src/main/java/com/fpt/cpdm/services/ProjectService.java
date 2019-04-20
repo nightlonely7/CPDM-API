@@ -26,4 +26,6 @@ public interface ProjectService {
 
     Project save(Project project);
 
+    Project deleteById(Integer id);
+
 }

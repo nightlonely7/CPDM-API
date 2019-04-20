@@ -62,6 +62,11 @@ public class ProjectController {
         return save(id, project, result);
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Integer id) {
+        projectService.deleteById(id);
+    }
+
     public ResponseEntity<Project> save(Integer id, Project project,
                                            BindingResult result){
         if(result.hasErrors()){
@@ -101,7 +106,7 @@ public class ProjectController {
 
     @GetMapping("/check/existByAlias")
     public ResponseEntity<Boolean> existsByAlias(@RequestParam("alias") String alias) {
-        return ResponseEntity.ok(projectService.existsByName(alias));
+        return ResponseEntity.ok(projectService.existsByAlias(alias));
     }
 
 }

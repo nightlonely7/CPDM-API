@@ -13,7 +13,7 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Integer>
 
     List<ProjectDTO> findAllDTOBy();
 
-    Page<ProjectDTO> findAllDTOBy(Pageable pageable);
+    Page<ProjectDTO> findAllDTOByAndAvailableTrue(Pageable pageable);
 
     Page<ProjectDTO> findAllDTOByNameContaining(String name, Pageable pageable);
 

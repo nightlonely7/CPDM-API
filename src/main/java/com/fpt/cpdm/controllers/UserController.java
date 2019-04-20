@@ -1,5 +1,6 @@
 package com.fpt.cpdm.controllers;
 
+import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.models.users.*;
 import com.fpt.cpdm.services.RoleService;
@@ -49,7 +50,6 @@ public class UserController {
     public ResponseEntity<Page<UserSummary>> findAllForAdmin(
             @PageableDefault Pageable pageable
     ) {
-
         Page<UserSummary> userSummaries = userService.findAllSummaryForAdmin(pageable);
         if (userSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -275,14 +275,18 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable(name = "id") Integer id) {
-
-        return ResponseEntity.noContent().build();
+    public void delete(@PathVariable(name = "id") Integer id) {
+        userService.delete(id);
     }
 
     @GetMapping("/check/existByEmail")
     public ResponseEntity<Boolean> existsByEmail(@Valid @RequestParam("email") String email){
         return ResponseEntity.ok(userService.existsByEmail(email));
+    }
+
+    @GetMapping("/findAllSummaryByDepartmentId/{id}")
+    public ResponseEntity<List<UserSummary>> findAllSummaryByDepartmentId(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(userService.findAllSummaryByDepartmentId(id));
     }
 
 }

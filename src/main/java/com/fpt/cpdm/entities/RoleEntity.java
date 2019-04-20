@@ -20,7 +20,4 @@ public class RoleEntity extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    public RoleEntity() {
-    }
-
 }

@@ -9,12 +9,14 @@ import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
+import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.repositories.ProjectRepository;
 import com.fpt.cpdm.repositories.UserRepository;
 import com.fpt.cpdm.services.DocumentService;
+import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +64,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Page<DocumentSummary> findAllSummary(Pageable pageable) {
 
-        Page<DocumentSummary> documentSummaries = documentRepository.findAllSummaryBy(pageable);
+        Page<DocumentSummary> documentSummaries = documentRepository.findAllSummaryByAndAvailableTrue(pageable);
 
         return documentSummaries;
     }
@@ -136,6 +138,22 @@ public class DocumentServiceImpl implements DocumentService {
         );
 
         return documentSummary;
+    }
+
+    @Override
+    public Document deleteById(Integer id) {
+        Optional<DocumentEntity> documentEntity = documentRepository.findById(id);
+        if(documentEntity.isPresent()){
+            documentEntity.get().setAvailable(false);
+            documentRepository.save(documentEntity.get());
+        }
+        Document savedDepartment = ModelConverter.documentEntityToModel(documentEntity.get());
+        return savedDepartment;
+    }
+
+    @Override
+    public boolean existsByTitle(String title) {
+        return documentRepository.existsByTitle(title);
     }
 
 

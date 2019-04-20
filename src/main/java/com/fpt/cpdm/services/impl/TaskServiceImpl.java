@@ -414,14 +414,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskBasic> findAllBasicByCurrentExecutorAndProject_Id(Integer projectId) {
+    public List<TaskSummary> findAllBasicByCurrentExecutorAndProject_Id(Integer projectId) {
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
-        List<TaskBasic> taskBasics = taskRepository.findAllBasicByExecutorAndProject_Id(executor, projectId);
+        List<TaskSummary> taskSummaries = taskRepository.findAllBasicByExecutorAndProject_Id(executor, projectId);
 
-        return taskBasics;
+        return taskSummaries;
     }
 
     @Override

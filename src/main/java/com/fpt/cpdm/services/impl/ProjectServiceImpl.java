@@ -36,7 +36,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Page<ProjectDTO> findAllDTOBy(Pageable pageable) {
-        return projectRepository.findAllDTOBy(pageable);
+        return projectRepository.findAllDTOByAndAvailableTrue(pageable);
     }
 
     @Override
@@ -66,8 +66,20 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project save(Project project) {
         ProjectEntity projectEntity = ModelConverter.projectModelToEntity(project);
+        projectEntity.setAvailable(true);
         ProjectEntity savedProjectEntity = projectRepository.save(projectEntity);
         Project savedProject = ModelConverter.projectEntityToModel(savedProjectEntity);
+        return savedProject;
+    }
+
+    @Override
+    public Project deleteById(Integer id) {
+        Optional<ProjectEntity> projectEntity = projectRepository.findById(id);
+        if(projectEntity.isPresent()){
+            projectEntity.get().setAvailable(false);
+            projectRepository.save(projectEntity.get());
+        }
+        Project savedProject = ModelConverter.projectEntityToModel(projectEntity.get());
         return savedProject;
     }
 

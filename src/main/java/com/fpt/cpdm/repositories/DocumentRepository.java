@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface DocumentRepository extends JpaRepository<DocumentEntity, Integer> {
 
-    Page<DocumentSummary> findAllSummaryBy(Pageable pageable);
+    Page<DocumentSummary> findAllSummaryByAndAvailableTrue(Pageable pageable);
 
     List<DocumentSummary> findAllSummaryByProject_Id(Integer projectId);
 
@@ -29,6 +29,8 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
     Optional<DocumentSummary> findSummaryById(Integer id);
 
     Optional<DocumentDetail> findDetailByIdAndAvailableTrue(Integer id);
+
+    Boolean existsByTitle(String title);
 
     Boolean existsByIdAndRelativesAndAvailableTrue(Integer id, UserEntity relative);
 }

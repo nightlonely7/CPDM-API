@@ -23,6 +23,8 @@ public interface UserService extends UserDetailsService {
 
     UserDetail update(User user, Principal principal);
 
+    User delete(Integer id);
+
     UserDetail findDetailById(Integer id, Principal principal);
 
     UserDetail findDetailByEmail(String email);
@@ -61,4 +63,6 @@ public interface UserService extends UserDetailsService {
     List<UserDisplayName> findDisplayNameByDepartmentAndRole_NameAndIdNot(Department department, String roleName, Integer id);
 
     List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName);
+
+    List<UserSummary> findAllSummaryByDepartmentId(Integer departmentId);
 }

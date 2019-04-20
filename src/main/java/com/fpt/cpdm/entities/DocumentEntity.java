@@ -1,8 +1,10 @@
 package com.fpt.cpdm.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -41,10 +43,12 @@ public class DocumentEntity extends BaseEntity {
 
     @Basic
     @Column(name = "start_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime;
 
     @Basic
     @Column(name = "end_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime endTime;
 
     @ManyToMany

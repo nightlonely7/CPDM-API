@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity(name = "Department")
 @Table(name = "department")
@@ -22,11 +23,26 @@ public class DepartmentEntity extends BaseEntity {
     private String alias;
 
     @Basic
-    @Column(name = "available", nullable = false)
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
+
+    @Basic
+    @Column(name = "last_modified_time")
+    private LocalDateTime lastModifiedTime;
+
+    @Basic
+    @Column(name = "available")
     private Boolean available;
 
     @PrePersist
     public void prePersist() {
+        this.createdTime = LocalDateTime.now();
+        this.lastModifiedTime = LocalDateTime.now();
         this.available = Boolean.TRUE;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastModifiedTime = LocalDateTime.now();
     }
 }

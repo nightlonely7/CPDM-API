@@ -131,6 +131,7 @@ public class DocumentController {
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable(name = "id") Integer id) {
+        documentService.deleteById(id);
     }
 
     private ResponseEntity<Document> save(Integer id, Document document, BindingResult result) {
@@ -144,5 +145,8 @@ public class DocumentController {
         return null;
     }
 
-
+    @GetMapping("/check/existByTitle")
+    public ResponseEntity<Boolean> existByName(@RequestParam("title") String title){
+        return ResponseEntity.ok(documentService.existsByTitle(title));
+    }
 }

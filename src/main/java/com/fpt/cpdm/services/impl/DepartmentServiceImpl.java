@@ -42,6 +42,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         DepartmentEntity departmentEntity = ModelConverter.departmentModelToEntity(department);
+        departmentEntity.setAvailable(true);
         System.out.println(departmentEntity);
         DepartmentEntity savedDepartmentEntity = departmentRepository.save(departmentEntity);
         Department savedDepartment = ModelConverter.departmentEntityToModel(savedDepartmentEntity);

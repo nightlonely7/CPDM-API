@@ -98,10 +98,9 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentResult);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Department> delete(@PathVariable("id") Integer id) {
-        Department department = departmentService.deleteById(id);
-        return ResponseEntity.ok(department);
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Integer id) {
+        departmentService.deleteById(id);
     }
 
     @GetMapping("/check/existByName")

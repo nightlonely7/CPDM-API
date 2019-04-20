@@ -351,6 +351,17 @@ public class UserServiceImpl implements UserService {
         return savedUserDetail;
     }
 
+    @Override
+    public User delete(Integer id) {
+        Optional<UserEntity> userEntity = userRepository.findById(id);
+        if(userEntity.isPresent()){
+            userEntity.get().setEnabled(false);
+            userRepository.save(userEntity.get());
+        }
+        User savedUser = ModelConverter.userEntityToModel(userEntity.get());
+        return savedUser;
+    }
+
     private List<User> getUsersConverted(List<UserEntity> userEntities) {
 
         List<User> users = new ArrayList<>();
@@ -568,6 +579,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName) {
         return userRepository.findAllDisplayNameByRole_Name(roleName);
+    }
+
+    @Override
+    public List<UserSummary> findAllSummaryByDepartmentId(Integer departmentId) {
+        return userRepository.findAllSummaryByDepartment_IdAndRole_IdNotLike(departmentId, 3);
     }
 
 }

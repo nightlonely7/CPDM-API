@@ -46,7 +46,7 @@ public interface TaskService {
 
     Page<TaskSummary> findAllByParentTask_Id(Integer taskId, Pageable pageable);
 
-    List<TaskBasic> findAllBasicByCurrentExecutorAndProject_Id(Integer projectId);
+    List<TaskSummary> findAllBasicByCurrentExecutorAndProject_Id(Integer projectId);
 
     boolean existsByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime, LocalDateTime toTime);
 

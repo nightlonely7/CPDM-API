@@ -81,7 +81,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     List<TaskEntity> findAllByDocuments(DocumentEntity documentEntity);
 
-    List<TaskBasic> findAllBasicByExecutorAndProject_Id(UserEntity executor, Integer projectId);
+    List<TaskSummary> findAllBasicByExecutorAndProject_Id(UserEntity executor, Integer projectId);
 
     boolean existsByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(UserEntity userEntity, String status, LocalDateTime fromTime, LocalDateTime toTime);
 

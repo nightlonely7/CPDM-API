@@ -1,6 +1,7 @@
 package com.fpt.cpdm.services;
 
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
+import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import org.springframework.data.domain.Page;
@@ -20,5 +21,9 @@ public interface DocumentService {
     Page<DocumentSummary> findAllSummaryByRelatives(Pageable pageable);
 
     DocumentSummary create(DocumentCreateForm documentCreateForm);
+
+    Document deleteById(Integer id);
+
+    boolean existsByTitle(String title);
 
 }
