@@ -38,9 +38,9 @@ public class NotificationController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<NotificationSummary>> findAllByCurrentLoogedUser(@PageableDefault Pageable pageable, Principal principal) {
+    public ResponseEntity<List<NotificationSummary>> findAllByCurrentLoogedUser(Principal principal) {
         User user = userService.findByEmail(principal.getName());
-        Page<NotificationSummary> notificationSummaries = notificationService.findAllByUserOrderByCreatedTimeDesc(user, pageable);
+        List<NotificationSummary> notificationSummaries = notificationService.findAllByCurrentLoogedUser(user);
 
         return ResponseEntity.ok(notificationSummaries);
     }

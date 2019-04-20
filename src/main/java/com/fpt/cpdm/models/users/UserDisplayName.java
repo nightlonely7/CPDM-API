@@ -6,4 +6,5 @@ public interface UserDisplayName {
 
     String getDisplayName();
 
+    String getEmail();
 }

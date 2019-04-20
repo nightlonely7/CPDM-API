@@ -37,9 +37,9 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Page<NotificationSummary> findAllByUserOrderByCreatedTimeDesc(User user, Pageable pageable) {
+    public List<NotificationSummary> findAllByCurrentLoogedUser(User user) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return notificationRepository.findAllByUserOrderByCreatedTimeDesc(userEntity, pageable);
+        return notificationRepository.findAllByUserAndHiddenOrderByCreatedTimeDesc(userEntity, false);
     }
 
     @Override
