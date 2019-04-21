@@ -17,6 +17,8 @@ public class LeaveRequest {
 
     private String content;
 
+    private Integer dayOff;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fromDate;

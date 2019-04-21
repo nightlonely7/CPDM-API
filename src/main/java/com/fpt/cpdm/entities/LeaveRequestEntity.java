@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 @Entity(name = "LeaveRequest")
 @Table(name = "leave_request")
 @Data
@@ -19,6 +21,10 @@ public class LeaveRequestEntity extends BaseEntity {
     @Basic
     @Column(name = "content")
     private String content;
+
+    @Basic
+    @Column(name = "day_off")
+    private Integer dayOff;
 
     @Basic
     @Column(name = "from_date")
@@ -47,5 +53,6 @@ public class LeaveRequestEntity extends BaseEntity {
     @PrePersist
     public void onCreated(){
         this.setCreatedDate(LocalDate.now());
+        this.setDayOff((int)DAYS.between(this.getFromDate(), this.getToDate()) + 1);
     }
 }

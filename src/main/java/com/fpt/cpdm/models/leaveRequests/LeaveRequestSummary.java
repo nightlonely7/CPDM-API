@@ -13,6 +13,8 @@ public interface LeaveRequestSummary {
 
     String getContent();
 
+    Integer getDayOff();
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate getFromDate();
 

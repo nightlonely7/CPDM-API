@@ -133,10 +133,10 @@ INSERT INTO stored_comment (content, created_date, comment_id) VALUES
 
 -- INSERT LEAVE REQUEST
 
-INSERT INTO leave_request (content, from_date, to_date, created_date, status, user_id, approver_id) VALUES
-('Đơn xin nghỉ phép 2 ngày','2019-03-17', '2019-04-18', '2019-04-16', 0, 2, 1),
-('Đơn xin nghỉ phép 1 ngày','2019-03-15', '2019-04-15', '2019-04-14', 1, 2, 1),
-('Đơn xin nghỉ phép 3 ngày','2019-03-11', '2019-04-13', '2019-04-10', 0, 2, 1),
-('Đơn xin nghỉ phép 1 ngày','2019-03-08', '2019-04-08', '2019-04-07', 1, 2, 1),
-('Đơn xin nghỉ phép 2 ngày','2019-03-06', '2019-04-07', '2019-04-05', 0, 2, 1),
-('Đơn xin nghỉ phép 1 ngày','2019-03-01', '2019-04-01', '2019-03-28', 1, 2, 1);
+INSERT INTO leave_request (content, day_off, from_date, to_date, created_date, status, user_id, approver_id) VALUES
+('Đơn xin nghỉ phép 2 ngày', 2,'2019-03-17', '2019-04-18', '2019-04-16', 0, 2, 1),
+('Đơn xin nghỉ phép 1 ngày', 1,'2019-03-15', '2019-04-15', '2019-04-14', 1, 2, 1),
+('Đơn xin nghỉ phép 3 ngày', 3,'2019-03-11', '2019-04-13', '2019-04-10', 0, 2, 1),
+('Đơn xin nghỉ phép 1 ngày', 1,'2019-03-08', '2019-04-08', '2019-04-07', 1, 2, 1),
+('Đơn xin nghỉ phép 2 ngày', 2,'2019-03-06', '2019-04-07', '2019-04-05', 0, 2, 1),
+('Đơn xin nghỉ phép 1 ngày', 1,'2019-03-01', '2019-04-01', '2019-03-28', 1, 2, 1);

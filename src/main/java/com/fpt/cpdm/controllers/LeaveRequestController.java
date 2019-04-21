@@ -10,11 +10,11 @@ import com.fpt.cpdm.models.PolicyForLeave;
 import com.fpt.cpdm.models.leaveRequests.Leave;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequestSummary;
+import com.fpt.cpdm.models.leaveRequests.LeaveSummary;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.models.users.UserLeaves;
 import com.fpt.cpdm.models.users.UserSummary;
-import com.fpt.cpdm.services.AssignRequestService;
 import com.fpt.cpdm.services.LeaveRequestService;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.services.UserService;
@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -107,11 +106,13 @@ public class LeaveRequestController {
 
     @GetMapping("/search/findAllByApprover")
     public ResponseEntity<List<LeaveRequestSummary>> findByApprover(@RequestParam Integer status,
-                                                                    Principal principal) {
+                                                 Principal principal) {
         // get current logged user
         User approver = userService.findByEmail(principal.getName());
 
+        //Get all leave request list
         List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByApproverAndStatus(approver, status);
+
         return ResponseEntity.ok(leaveRequestSummaries);
     }
 
@@ -120,7 +121,7 @@ public class LeaveRequestController {
                                                BindingResult result, Principal principal) {
         User user = userService.findByEmail(principal.getName());
 
-        if(!leaveRequestService.validateNewLeaveRequest(user,leaveRequest)){
+        if (!leaveRequestService.validateNewLeaveRequest(user, leaveRequest)) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }
 
@@ -161,7 +162,7 @@ public class LeaveRequestController {
     }
 
     @GetMapping("/search/findByUserAndDateRange")
-    public ResponseEntity<List<LeaveRequestSummary>> findByUserAndDateRange(
+    public ResponseEntity<LeaveSummary> findByUserAndDateRange(
             @RequestParam String fromDate, @RequestParam String toDate, @RequestParam Integer userId) {
 
         LocalDate from = LocalDate.parse(fromDate);
@@ -180,11 +181,52 @@ public class LeaveRequestController {
         List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(user, integerList, from, to);
         leaveRequestSummaries.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(user, integerList, from));
 
-        if (leaveRequestSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        LeaveSummary leaveSummary = getYearLeaveSummaryByUser(userId).getBody();
+
+        //reset leave request list
+        leaveSummary.setLeaveRequestSummaries(leaveRequestSummaries);
+        return ResponseEntity.ok(leaveSummary);
+    }
+
+    @GetMapping("search/findYearSummary/{id}")
+    public ResponseEntity<LeaveSummary> getYearLeaveSummaryByUser(@PathVariable Integer id){
+
+        //create user object for querry
+        User user = new User();
+        user.setId(id);
+
+        //get start and end of current year
+        int year = LocalDate.now().getYear();
+        LocalDate startOfYear = LocalDate.ofYearDay(year,1);
+        LocalDate endOfYear = LocalDate.of(year,12, 31);
+
+        List<Integer> integerList = new ArrayList<>();
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+        integerList.add(approvedCode);
+        //Get all leave request waiting or approved by user
+        List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(user, integerList, startOfYear, endOfYear);
+        leaveRequestSummaries.addAll(leaveRequestService.findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(user, integerList, startOfYear));
+
+        int dayOffApproved = 0;
+
+        for (LeaveRequestSummary leaveRequestSummary : leaveRequestSummaries) {
+            int dayOffDiffYear = 0;
+            if(leaveRequestSummary.getFromDate().isBefore(startOfYear)) {
+                dayOffDiffYear += (int) DAYS.between(leaveRequestSummary.getFromDate(),startOfYear) + 1;
+            }
+            if (leaveRequestSummary.getToDate().isAfter(endOfYear)){
+                dayOffDiffYear += (int) DAYS.between(endOfYear,leaveRequestSummary.getToDate()) + 1;
+            }
+            dayOffApproved = dayOffApproved + leaveRequestSummary.getDayOff() - dayOffDiffYear;
         }
 
-        return ResponseEntity.ok(leaveRequestSummaries);
+        LeaveSummary leaveSummary = new LeaveSummary();
+        leaveSummary.setDayOffPerYear(ConstantManager.numberOfDayOffPerYear);
+        leaveSummary.setDayOffApproved(dayOffApproved);
+        leaveSummary.setDayOffRemain(ConstantManager.numberOfDayOffPerYear - dayOffApproved);
+        leaveSummary.setLeaveRequestSummaries(leaveRequestSummaries);
+
+        return ResponseEntity.ok(leaveSummary);
     }
 
     @GetMapping("/search/viewLeaves")
@@ -305,7 +347,7 @@ public class LeaveRequestController {
         }
 
         //add each day from day ranges to result list
-        for ( LocalDate startDateOfRange : tmpStartDateList) {
+        for (LocalDate startDateOfRange : tmpStartDateList) {
             LocalDate endDateOfRange = tmpEndDateList.get(tmpStartDateList.indexOf(startDateOfRange));
             int count = -1;
             while (startDateOfRange.plusDays(count).isBefore(endDateOfRange)) {
@@ -323,13 +365,13 @@ public class LeaveRequestController {
     }
 
     @GetMapping("/search/policyForLeave")
-    public ResponseEntity<Page<PolicyForLeave>> getAllPolicyFroLeave(@PageableDefault Pageable pageable){
+    public ResponseEntity<Page<PolicyForLeave>> getAllPolicyFroLeave(@PageableDefault Pageable pageable) {
         try {
             //get resource file
             File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
             //get data from resource file
             ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-            mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,true);
+            mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
             List<PolicyForLeave> policyForLeaveList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class, PolicyForLeave.class));
             if (policyForLeaveList.size() > 0) {
                 policyForLeaveList.sort((o1, o2) -> o2.getValidFromDate().compareTo(o1.getValidFromDate()));
@@ -349,7 +391,7 @@ public class LeaveRequestController {
     }
 
     @GetMapping("search/policyForLeave/notAllowDate")
-    public ResponseEntity<List<LocalDate>> getNotAllowDateForPolicyManager(){
+    public ResponseEntity<List<LocalDate>> getNotAllowDateForPolicyManager() {
         List<LocalDate> result = new ArrayList<>();
         LocalDate today = LocalDate.now();
         try {
@@ -357,11 +399,11 @@ public class LeaveRequestController {
             File file = getResourceFile(ConstantManager.policyForLeaveConfigFileName);
             //get data from resource file
             ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-            mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE,true);
+            mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
             List<PolicyForLeave> policyForLeaveList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class, PolicyForLeave.class));
             if (policyForLeaveList.size() > 0) {
                 for (PolicyForLeave p : policyForLeaveList) {
-                    if(!p.getValidFromDate().isBefore(today)){
+                    if (!p.getValidFromDate().isBefore(today)) {
                         result.add(p.getValidFromDate());
                     }
                 }
@@ -378,14 +420,14 @@ public class LeaveRequestController {
     }
 
     @PostMapping("/policyForLeave")
-    public ResponseEntity<PolicyForLeave> AddPolicyFroLeave(@Valid @RequestBody PolicyForLeave policyForLeave){
+    public ResponseEntity<PolicyForLeave> AddPolicyFroLeave(@Valid @RequestBody PolicyForLeave policyForLeave) {
         try {
             //Set created and last modified date
             LocalDate today = LocalDate.now();
             policyForLeave.setCreatedDate(today);
             policyForLeave.setLastModifiedDate(today);
             //Validate date from date must after today
-            if(policyForLeave.getValidFromDate().isBefore(today)){
+            if (policyForLeave.getValidFromDate().isBefore(today)) {
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
             }
             //get resource file
@@ -396,7 +438,7 @@ public class LeaveRequestController {
             List<PolicyForLeave> policyForLeaveList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class, PolicyForLeave.class));
             //Check exist date valid from
             for (PolicyForLeave p : policyForLeaveList) {
-                if(p.getValidFromDate().equals(policyForLeave.getValidFromDate())){
+                if (p.getValidFromDate().equals(policyForLeave.getValidFromDate())) {
                     return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
                 }
             }
@@ -418,7 +460,7 @@ public class LeaveRequestController {
     }
 
     @PutMapping("/policyForLeave")
-    public ResponseEntity<PolicyForLeave> EditPolicyFroLeave(@Valid @RequestBody Map<String,PolicyForLeave> data){
+    public ResponseEntity<PolicyForLeave> EditPolicyFroLeave(@Valid @RequestBody Map<String, PolicyForLeave> data) {
         try {
             PolicyForLeave oldPolicyForLeave = data.get("oldPolicyForLeave");
             PolicyForLeave newPolicyForLeave = data.get("newPolicyForLeave");
@@ -426,7 +468,7 @@ public class LeaveRequestController {
             LocalDate today = LocalDate.now();
             newPolicyForLeave.setLastModifiedDate(today);
             //Validate date from date must after today
-            if(newPolicyForLeave.getValidFromDate().isBefore(today)){
+            if (newPolicyForLeave.getValidFromDate().isBefore(today)) {
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
             }
             //get resource file
@@ -437,13 +479,13 @@ public class LeaveRequestController {
             List<PolicyForLeave> policyForLeaveList = mapper.readValue(file, mapper.getTypeFactory().constructCollectionType(List.class, PolicyForLeave.class));
             //Check exist date valid from
             for (PolicyForLeave p : policyForLeaveList) {
-                if(p.getValidFromDate().equals(newPolicyForLeave.getValidFromDate())){
+                if (p.getValidFromDate().equals(newPolicyForLeave.getValidFromDate())) {
                     return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
                 }
             }
             //find index of old and replace by new one
             int index = policyForLeaveList.indexOf(oldPolicyForLeave);
-            policyForLeaveList.set(index,newPolicyForLeave);
+            policyForLeaveList.set(index, newPolicyForLeave);
             //re-sort
             policyForLeaveList.sort((o1, o2) -> o2.getValidFromDate().compareTo(o1.getValidFromDate()));
             mapper.writeValue(file, policyForLeaveList);
@@ -461,11 +503,11 @@ public class LeaveRequestController {
     }
 
     @DeleteMapping("/policyForLeave")
-    public ResponseEntity EditPolicyFroLeave(@Valid @RequestBody PolicyForLeave policyForLeave){
+    public ResponseEntity EditPolicyFroLeave(@Valid @RequestBody PolicyForLeave policyForLeave) {
         try {
             LocalDate today = LocalDate.now();
             //Validate date from date must after today
-            if(!policyForLeave.getValidFromDate().isAfter(today)){
+            if (!policyForLeave.getValidFromDate().isAfter(today)) {
                 return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
             }
             //get resource file
