@@ -112,10 +112,6 @@ public class LeaveRequestController {
         User approver = userService.findByEmail(principal.getName());
 
         List<LeaveRequestSummary> leaveRequestSummaries = leaveRequestService.findAllSummaryByApproverAndStatus(approver, status);
-        if (leaveRequestSummaries.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
         return ResponseEntity.ok(leaveRequestSummaries);
     }
 
