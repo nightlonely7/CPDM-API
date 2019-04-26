@@ -9,5 +9,5 @@ public class LeaveSummary {
     private Integer dayOffPerYear;
     private Integer dayOffApproved;
     private Integer dayOffRemain;
-    private List<LeaveRequestSummary> leaveRequestSummaries;
+    private List<LeaveRequest> leaveRequestSummaries;
 }

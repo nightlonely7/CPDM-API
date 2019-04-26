@@ -59,4 +59,6 @@ public interface UserService extends UserDetailsService {
 
     Page<UserSummary> advancedSearch(String email, String displayName, String fullName, Integer departmentId,
                                        LocalDate birthDateFrom, LocalDate birthDateTo, Boolean gender, Pageable pageable);
+
+    Page<UserSummary> findAllByRole_IdIn(List<Integer> listRole, Pageable pageable);
 }

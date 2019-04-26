@@ -14,4 +14,5 @@ public class PushNotification {
     private String title;
     private String detail;
     private String url;
+    private Integer id;
 }

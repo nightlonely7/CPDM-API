@@ -1,6 +1,7 @@
 package com.fpt.cpdm.repositories;
 
 import com.fpt.cpdm.entities.DepartmentEntity;
+import com.fpt.cpdm.entities.RoleEntity;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.models.users.*;
@@ -72,4 +73,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName);
 
     List<UserSummary> findAllSummaryByDepartment_IdAndRole_IdNotLike(Integer departmentId, Integer roleId);
+
+    Page<UserSummary> findAllByRole_IdIn(List<Integer> listRole, Pageable pageable);
 }

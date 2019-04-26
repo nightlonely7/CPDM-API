@@ -60,6 +60,16 @@ public class NotificationController {
         }
     }
 
+    @PutMapping("/read/{id}")
+    public ResponseEntity<Notification> read(@PathVariable(name = "id") Integer id) {
+        //get notification by id
+        Notification notification = notificationService.findById(id);
+        notification.setRead(true);
+        Notification savedNotification = notificationService.save(notification);
+        return ResponseEntity.ok(savedNotification);
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<Notification> edit(@PathVariable(name = "id") Integer id,
                                              @Valid @RequestBody Notification notification,
