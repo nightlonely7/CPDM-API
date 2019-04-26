@@ -503,50 +503,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserSummary> findAllSummaryByEmail(String email, Integer depId, Boolean gender, Pageable pageable) {
-        Page<UserSummary> userSummaries;
-        if (gender == null) {
-            userSummaries = userRepository.findAllSummaryByEmailContainingAndDepartment_Id(email, depId, pageable);
-        } else {
-            userSummaries = userRepository.findAllSummaryByEmailContainingAndDepartment_IdAndGender(email, depId, gender, pageable);
-        }
-        return userSummaries;
-    }
-
-    @Override
-    public Page<UserSummary> findAllSummaryByDisplayName(String displayName, Integer depId, Boolean gender, Pageable pageable) {
-        Page<UserSummary> userSummaries;
-        if (gender == null) {
-            userSummaries = userRepository.findAllSummaryByDisplayNameContainingAndDepartment_Id(displayName, depId, pageable);
-        } else {
-            userSummaries = userRepository.findAllSummaryByDisplayNameContainingAndDepartment_IdAndGender(displayName, depId, gender, pageable);
-        }
-        return userSummaries;
-    }
-
-    @Override
-    public Page<UserSummary> findAllSummaryByFullName(String fullName, Integer depId, Boolean gender, Pageable pageable) {
-        Page<UserSummary> userSummaries;
-        if (gender == null) {
-            userSummaries = userRepository.findAllSummaryByFullNameContainingAndDepartment_Id(fullName, depId, pageable);
-        } else {
-            userSummaries = userRepository.findAllSummaryByFullNameContainingAndDepartment_IdAndGender(fullName, depId, gender, pageable);
-        }
-        return userSummaries;
-    }
-
-    @Override
-    public Page<UserSummary> findAllSummaryByAge(LocalDate birthDateFrom, LocalDate birthDateTo, Boolean gender, Pageable pageable) {
-        Page<UserSummary> userSummaries;
-        if (gender == null) {
-            userSummaries = userRepository.findAllSummaryByAge(birthDateFrom, birthDateTo, pageable);
-        } else {
-            userSummaries = userRepository.findAllSummaryByAgeAndGender(birthDateFrom, birthDateTo, gender, pageable);
-        }
-        return userSummaries;
-    }
-
-    @Override
     public List<UserBirthDate> findMaxAndMinAge() {
         Optional<UserBirthDate> minAgeResult = userRepository.findFirstBirthDateByBirthdayNotNullOrderByBirthdayAsc();
         Optional<UserBirthDate> maxAgeResult = userRepository.findFirstBirthDateByBirthdayNotNullOrderByBirthdayDesc();
@@ -584,6 +540,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserSummary> findAllSummaryByDepartmentId(Integer departmentId) {
         return userRepository.findAllSummaryByDepartment_IdAndRole_IdNotLike(departmentId, 3);
+    }
+
+    @Override
+    public Page<UserSummary> advancedSearch(String email, String displayName, String fullName, Integer departmentId,
+                                              LocalDate birthDateFrom, LocalDate birthDateTo, Boolean gender, Pageable pageable) {
+        email = email.toLowerCase();
+        displayName = displayName.toLowerCase();
+        fullName = fullName.toLowerCase();
+        return userRepository.advancedSearch
+                (email, displayName, fullName, departmentId, birthDateFrom,
+                birthDateTo, gender, pageable);
     }
 
 }

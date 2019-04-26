@@ -8,6 +8,7 @@ import com.fpt.cpdm.exceptions.EntityNotFoundException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
+import com.fpt.cpdm.forms.documents.DocumentUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
@@ -141,6 +142,45 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    public DocumentSummary update(Integer id, DocumentUpdateForm documentUpdateForm) {
+
+        DocumentEntity documentEntity = documentRepository.findById(id).orElseThrow(
+                () -> new DocumentNotFoundException(id)
+        );
+
+        Integer projectId = documentUpdateForm.getProject().getId();
+
+        if (projectRepository.existsById(projectId) == false) {
+            throw new EntityNotFoundException(projectId, "Project");
+        }
+        ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setId(projectId);
+
+        List<UserEntity> relatives = new ArrayList<>();
+        if (documentUpdateForm.getRelatives() != null) {
+            for (IdOnlyForm idOnlyForm : documentUpdateForm.getRelatives()) {
+                UserEntity relative = new UserEntity(idOnlyForm.getId());
+                relatives.add(relative);
+            }
+        }
+        documentEntity.setProject(projectEntity);
+        documentEntity.setTitle(documentUpdateForm.getTitle());
+        documentEntity.setSummary(documentUpdateForm.getSummary());
+        documentEntity.setDescription(documentUpdateForm.getDescription());
+        documentEntity.setStartTime(documentUpdateForm.getStartTime());
+        documentEntity.setEndTime(documentUpdateForm.getEndTime());
+        documentEntity.setRelatives(relatives);
+
+        DocumentEntity savedDocumentEntity = documentRepository.save(documentEntity);
+
+        DocumentSummary documentSummary = documentRepository.findSummaryById(savedDocumentEntity.getId()).orElseThrow(
+                () -> new EntityNotFoundException(savedDocumentEntity.getId(), "Document")
+        );
+
+        return documentSummary;
+    }
+
+    @Override
     public Document deleteById(Integer id) {
         Optional<DocumentEntity> documentEntity = documentRepository.findById(id);
         if(documentEntity.isPresent()){
@@ -156,5 +196,13 @@ public class DocumentServiceImpl implements DocumentService {
         return documentRepository.existsByTitle(title);
     }
 
+    @Override
+    public Page<DocumentSummary> findAllSummaryByTitleAndSummary(String title, String summary, Pageable pageable) {
+        title = title.toLowerCase();
+        summary = summary.toLowerCase();
+        return documentRepository
+                .findAllSummaryByTitleContainingIgnoreCaseAndSummaryContainingIgnoreCaseAndAvailableTrue
+                        (title, summary, pageable);
+    }
 
 }

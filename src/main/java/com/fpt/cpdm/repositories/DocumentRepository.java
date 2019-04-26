@@ -33,4 +33,7 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
     Boolean existsByTitle(String title);
 
     Boolean existsByIdAndRelativesAndAvailableTrue(Integer id, UserEntity relative);
+
+    Page<DocumentSummary> findAllSummaryByTitleContainingIgnoreCaseAndSummaryContainingIgnoreCaseAndAvailableTrue
+            (String title, String summary, Pageable pageable);
 }

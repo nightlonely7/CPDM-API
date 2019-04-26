@@ -16,7 +16,7 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, In
 
     Page<DepartmentDTO> findAllDTOByNameContainingAndAvailableTrue(String name, Pageable pageable);
 
-    Page<DepartmentDTO> findAllDTOByNameContainingAndAliasContainingAndAvailableTrue(String name, String alias, Pageable pageable);
+    Page<DepartmentDTO> findAllDTOByNameContainingIgnoreCaseAndAliasContainingIgnoreCaseAndAvailableTrue(String name, String alias, Pageable pageable);
 
     boolean existsByNameAndAvailableTrue(String name);
 

@@ -2,6 +2,7 @@ package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
+import com.fpt.cpdm.forms.documents.DocumentUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
@@ -122,11 +123,17 @@ public class DocumentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Document> update(@PathVariable(name = "id") Integer id,
-                                           @Valid @RequestBody Document document,
+    public ResponseEntity<DocumentSummary> update(@PathVariable(name = "id") Integer id,
+                                           @Valid @RequestBody DocumentUpdateForm documentUpdateForm,
                                            BindingResult result) {
+        if (result.hasErrors()) {
+            String message = ModelErrorMessage.build(result);
+            throw new ModelNotValidException(message);
+        }
 
-        return save(id, document, result);
+        DocumentSummary documentSummary = documentService.update(id, documentUpdateForm);
+
+        return ResponseEntity.ok(documentSummary);
     }
 
     @DeleteMapping("/{id}")
@@ -134,19 +141,22 @@ public class DocumentController {
         documentService.deleteById(id);
     }
 
-    private ResponseEntity<Document> save(Integer id, Document document, BindingResult result) {
-
-        if (result.hasErrors()) {
-            String message = ModelErrorMessage.build(result);
-            throw new ModelNotValidException(message);
-        }
-        document.setId(id);
-
-        return null;
-    }
 
     @GetMapping("/check/existByTitle")
     public ResponseEntity<Boolean> existByName(@RequestParam("title") String title){
         return ResponseEntity.ok(documentService.existsByTitle(title));
     }
+
+    @GetMapping("/search/titleAndSummary")
+    public ResponseEntity<Page<DocumentSummary>> findByTitleAndSummary(@RequestParam("title") String title,
+                                                                       @RequestParam("summary") String summary,
+                                                                       @PageableDefault Pageable pageable) {
+        Page<DocumentSummary> documentSummaries =
+                documentService.findAllSummaryByTitleAndSummary(title, summary, pageable);
+        if (documentSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(documentSummaries);
+    }
+
 }

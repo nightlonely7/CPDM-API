@@ -58,8 +58,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Page<ProjectDTO> findAllDTOByNameAndAlias(String name, String alias, Pageable pageable) {
+        name = name.toLowerCase();
+        alias = alias.toLowerCase();
         Page<ProjectDTO> projectDTOS = projectRepository
-                .findAllDTOByNameContainingAndAliasContaining(name, alias, pageable);
+                .findAllDTOByNameContainingIgnoreCaseAndAliasContainingIgnoreCase(name, alias, pageable);
         return projectDTOS;
     }
 

@@ -45,32 +45,21 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     Page<UserSummary> findAllSummaryBy(Pageable pageable);
 
-    Page<UserSummary> findAllSummaryByEmailContainingAndDepartment_Id(String email, Integer depId, Pageable pageable);
-
-    Page<UserSummary> findAllSummaryByEmailContainingAndDepartment_IdAndGender(String email, Integer depId, Boolean gender, Pageable pageable);
-
-    Page<UserSummary> findAllSummaryByDisplayNameContainingAndDepartment_Id(String displayName, Integer depId, Pageable pageable);
-
-    Page<UserSummary> findAllSummaryByDisplayNameContainingAndDepartment_IdAndGender(String displayName, Integer depId, Boolean gender, Pageable pageable);
-
-    Page<UserSummary> findAllSummaryByFullNameContainingAndDepartment_Id(String fullName, Integer depId, Pageable pageable);
-
-    Page<UserSummary> findAllSummaryByFullNameContainingAndDepartment_IdAndGender(String fullName, Integer depId, Boolean gender, Pageable pageable);
-
     @Query("select user from User user where " +
-            "(:birthdayFrom is null or user.birthday >= :birthdayFrom) and " +
-            "(:birthdayTo is null or user.birthday <= :birthdayTo)")
-    Page<UserSummary> findAllSummaryByAge(@Param("birthdayFrom") LocalDate birthdayFrom,
-                                          @Param("birthdayTo") LocalDate birthdayTo,
-                                          Pageable pageable);
-
-    @Query("select user from User user where " +
+            "(:email is null or lower(user.email) like %:email%) and" +
+            "(:displayName is null or lower(user.displayName) like %:displayName%) and " +
+            "(:fullName is null or lower(user.fullName) like %:fullName%) and " +
+            "(:departmentId is null or user.department.id = :departmentId) and " +
             "(:birthdayFrom is null or user.birthday >= :birthdayFrom) and " +
             "(:birthdayTo is null or user.birthday <= :birthdayTo) and " +
             "(:gender is null or user.gender = :gender)")
-    Page<UserSummary> findAllSummaryByAgeAndGender(@Param("birthdayFrom") LocalDate birthdayFrom,
-                                                   @Param("birthdayTo") LocalDate birthdayTo,
-                                                   @Param("gender") Boolean gender, Pageable pageable);
+    Page<UserSummary> advancedSearch (@Param("email") String email,
+                                      @Param("displayName") String displayName,
+                                      @Param("fullName") String fullName,
+                                      @Param("departmentId") Integer departmentId,
+                                      @Param("birthdayFrom") LocalDate birthdayFrom,
+                                      @Param("birthdayTo") LocalDate birthdayTo,
+                                      @Param("gender") Boolean gender, Pageable pageable);
 
     Optional<UserBirthDate> findFirstBirthDateByBirthdayNotNullOrderByBirthdayDesc();
 

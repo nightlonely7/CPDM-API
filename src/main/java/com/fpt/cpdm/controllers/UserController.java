@@ -177,48 +177,22 @@ public class UserController {
         return ResponseEntity.ok(userSummaries);
     }
 
-    @GetMapping("/search/email")
-    public ResponseEntity<Page<UserSummary>> findAllSummaryByEmail(@RequestParam("searchValue") String email,
-                                                                   @RequestParam("departmentId") String depId,
-                                                                   @RequestParam("gender") String gender,
-                                                                   @PageableDefault Pageable pageable){
-        Boolean isGender = gender.equals("null") ? null : (gender.equals("true") ? true: false);
-        Integer departmentId = Integer.parseInt(depId);
-        Page<UserSummary> userSummaries = userService.findAllSummaryByEmail(email, departmentId, isGender, pageable);
-        return ResponseEntity.ok(userSummaries);
-    }
-
-    @GetMapping("/search/displayName")
-    public ResponseEntity<Page<UserSummary>> findAllSummaryByDisplayName(@RequestParam("searchValue") String displayName,
-                                                                         @RequestParam("departmentId") String depId,
-                                                                         @RequestParam("gender") String gender,
-                                                                         @PageableDefault Pageable pageable){
-        Boolean isGender = gender.equals("null") ? null : (gender.equals("true") ? true: false);
-        Integer departmentId = Integer.parseInt(depId);
-        Page<UserSummary> userSummaries = userService.findAllSummaryByDisplayName(displayName, departmentId, isGender, pageable);
-        return ResponseEntity.ok(userSummaries);
-    }
-
-    @GetMapping("/search/fullName")
-    public ResponseEntity<Page<UserSummary>> findAllSummaryByFullName(@RequestParam("searchValue") String fullName,
-                                                                      @RequestParam("departmentId") String depId,
-                                                                      @RequestParam("gender") String gender,
-                                                                      @PageableDefault Pageable pageable){
+    @GetMapping("/search/advancedSearch")
+    public ResponseEntity<Page<UserSummary>> findAllSummaryBy(@RequestParam("email") String email,
+                                                              @RequestParam("displayName") String displayName,
+                                                              @RequestParam("fullName") String fullName,
+                                                              @RequestParam("departmentId") String depId,
+                                                              @RequestParam("birthDateFrom") String birthDateFrom,
+                                                              @RequestParam("birthDateTo") String birthDateTo,
+                                                              @RequestParam("gender") String gender,
+                                                              @PageableDefault Pageable pageable){
         Boolean isGender = gender.equals("null") ? null : (gender.equals("true") ? true : false);
+        System.out.println("Gender: " + isGender);
         Integer departmentId = Integer.parseInt(depId);
-        Page<UserSummary> userSummaries = userService.findAllSummaryByFullName(fullName, departmentId, isGender, pageable);
-        return ResponseEntity.ok(userSummaries);
-    }
-
-    @GetMapping("/search/age")
-    public ResponseEntity<Page<UserSummary>> findAllSummaryByAge(@RequestParam("birthDateFrom") String birthDateFrom,
-                                                                      @RequestParam("birthDateTo") String birthDateTo,
-                                                                      @RequestParam("gender") String gender,
-                                                                      @PageableDefault Pageable pageable){
         LocalDate dateFrom = LocalDate.parse(birthDateFrom);
         LocalDate dateTo = LocalDate.parse(birthDateTo);
-        Boolean isGender = gender.equals("null") ? null : (gender.equals("true") ? true : false);
-        Page<UserSummary> userSummaries = userService.findAllSummaryByAge(dateFrom, dateTo, isGender, pageable);
+        Page<UserSummary> userSummaries = userService.advancedSearch(email, displayName, fullName, departmentId,
+                dateFrom, dateTo, isGender, pageable);
         return ResponseEntity.ok(userSummaries);
     }
 
@@ -288,5 +262,7 @@ public class UserController {
     public ResponseEntity<List<UserSummary>> findAllSummaryByDepartmentId(@PathVariable("id") Integer id){
         return ResponseEntity.ok(userService.findAllSummaryByDepartmentId(id));
     }
+
+
 
 }
