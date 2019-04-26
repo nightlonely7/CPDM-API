@@ -2,6 +2,7 @@ package com.fpt.cpdm.repositories;
 
 import com.fpt.cpdm.entities.LeaveRequestEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequestSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,5 +26,9 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequestEntity
 
     List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
 
-    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate fromDate2);
+    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate fromDate2);
+
+    List<LeaveRequestEntity> findAllByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
+
+    List<LeaveRequestEntity> findAlByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate fromDate2);
 }

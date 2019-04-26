@@ -65,4 +65,6 @@ public interface UserService extends UserDetailsService {
     List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName);
 
     List<UserSummary> findAllSummaryByDepartmentId(Integer departmentId);
+
+    Page<UserSummary> findAllByRole_IdIn(List<Integer> listRole, Pageable pageable);
 }

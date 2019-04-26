@@ -48,6 +48,7 @@ public class NotificationServiceImpl implements NotificationService {
         msg.put("title", pushNotification.getTitle());
         msg.put("body", pushNotification.getDetail());
         msg.put("url", pushNotification.getUrl());
+        msg.put("id", pushNotification.getId());
 
         pushNotification.getKeys().forEach(key -> {
             try {

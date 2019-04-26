@@ -90,9 +90,33 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
-    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(User user, List<Integer> integerList, LocalDate fromDate) {
+    public List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(User user, List<Integer> integerList, LocalDate fromDate) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(userEntity, integerList, fromDate, fromDate);
+        return leaveRequestRepository.findAllSummaryByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(userEntity, integerList, fromDate, fromDate);
+    }
+
+    @Override
+    public List<LeaveRequest> findAllByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(User user, List<Integer> integerList, LocalDate fromDate, LocalDate toDate) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        List<LeaveRequestEntity> leaveRequestEntities = leaveRequestRepository.findAllByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(userEntity, integerList, fromDate, toDate);
+        List<LeaveRequest> result = new ArrayList<>();
+        for (LeaveRequestEntity leaveRequestEntity : leaveRequestEntities) {
+            LeaveRequest leaveRequest = ModelConverter.leaveRequestEntityToModel(leaveRequestEntity);
+            result.add(leaveRequest);
+        }
+        return result;
+    }
+
+    @Override
+    public List<LeaveRequest> findAllByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(User user, List<Integer> integerList, LocalDate fromDate) {
+        UserEntity userEntity = ModelConverter.userModelToEntity(user);
+        List<LeaveRequestEntity> leaveRequestEntities = leaveRequestRepository.findAlByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(userEntity, integerList, fromDate, fromDate);
+        List<LeaveRequest> result = new ArrayList<>();
+        for (LeaveRequestEntity leaveRequestEntity : leaveRequestEntities) {
+            LeaveRequest leaveRequest = ModelConverter.leaveRequestEntityToModel(leaveRequestEntity);
+            result.add(leaveRequest);
+        }
+        return result;
     }
 
     @Override

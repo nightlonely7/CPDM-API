@@ -1,8 +1,8 @@
 -- INSERT ROLE
-INSERT INTO role (name) VALUES
-('ROLE_STAFF'),
-('ROLE_MANAGER'),
-('ROLE_ADMIN');
+INSERT INTO role (name,display_name) VALUES
+('ROLE_STAFF','Nhân viên'),
+('ROLE_MANAGER','Quản lý'),
+('ROLE_ADMIN','Giám đốc');
 
 -- INSERT DEPARTMENT
 INSERT INTO department (name, alias, available, created_time, last_modified_time) VALUES

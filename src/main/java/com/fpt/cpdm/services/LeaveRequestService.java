@@ -23,7 +23,11 @@ public interface LeaveRequestService extends CRUDService<LeaveRequest> {
 
     List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(User user, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
 
-    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(User userEntity, List<Integer> integerList, LocalDate fromDate);
+    List<LeaveRequestSummary> findAllSummaryByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(User user, List<Integer> integerList, LocalDate fromDate);
+
+    List<LeaveRequest> findAllByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(User user, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
+
+    List<LeaveRequest> findAllByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(User user, List<Integer> integerList, LocalDate fromDate);
 
     boolean validateNewLeaveRequest(User user, LeaveRequest leaveRequest);
 }

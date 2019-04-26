@@ -586,4 +586,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllSummaryByDepartment_IdAndRole_IdNotLike(departmentId, 3);
     }
 
+    @Override
+    public Page<UserSummary> findAllByRole_IdIn(List<Integer> listRole, Pageable pageable) {
+        return userRepository.findAllByRole_IdIn(listRole,pageable);
+    }
+
 }

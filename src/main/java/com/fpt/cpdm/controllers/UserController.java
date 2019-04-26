@@ -289,4 +289,11 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllSummaryByDepartmentId(id));
     }
 
+    @GetMapping("/search/staff-and-manager")
+    public ResponseEntity<Page<UserSummary>> findAllStaffAndManager(@PageableDefault Pageable pageable){
+        List<Integer> listRole = new ArrayList<>();
+        listRole.add(1);
+        listRole.add(2);
+        return ResponseEntity.ok(userService.findAllByRole_IdIn(listRole, pageable));
+    }
 }

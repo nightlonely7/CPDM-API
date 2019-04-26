@@ -1,6 +1,7 @@
 package com.fpt.cpdm.models.users;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fpt.cpdm.models.NameDisplayNameOnly;
 import com.fpt.cpdm.models.NameOnly;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,6 @@ public interface UserSummary {
 
     NameOnly getDepartment();
 
-    NameOnly getRole();
+    NameDisplayNameOnly getRole();
 
 }
