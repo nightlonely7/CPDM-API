@@ -10,6 +10,7 @@ import com.fpt.cpdm.models.PolicyForLeave;
 import com.fpt.cpdm.models.assignRequests.AssignRequestSummary;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequestSummary;
+import com.fpt.cpdm.models.leaveRequests.LeaveSummary;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.AssignRequestRepository;
@@ -129,6 +130,12 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
         //Get number of day off requested
         int diff = (int) DAYS.between(leaveRequest.getFromDate(), leaveRequest.getToDate()) + 1;
 
+        //check dayoff remain rule
+        Integer dayOffRemain = this.getYearLeaveSummaryByUser(user,LocalDate.now().getYear()).getDayOffRemain();
+        if(diff > dayOffRemain){
+            return false;
+        }
+
         //Get number of day off free check in json file default 3
         Integer numberOfDateFreeCheck = ConstantManager.defaultNumberOfDayOffFreeCheck;
         try {
@@ -175,6 +182,45 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
         }
         leaveRequest.setUser(user);
         return true;
+    }
+
+    @Override
+    public LeaveSummary getYearLeaveSummaryByUser(User user, Integer year) {
+        //get start and end of current year
+        LocalDate startOfYear = LocalDate.ofYearDay(year,1);
+        LocalDate endOfYear = LocalDate.of(year,12, 31);
+
+        List<Integer> integerList = new ArrayList<>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        integerList.add(newCode);
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+        integerList.add(approvedCode);
+        //Get all leave request waiting or approved by user
+        List<LeaveRequest> leaveRequests = this.findAllByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(user, integerList, startOfYear, endOfYear);
+        leaveRequests.addAll(this.findAllByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(user, integerList, startOfYear));
+
+        int dayOffApproved = 0;
+
+        for (LeaveRequest leaveRequest : leaveRequests) {
+            int dayOffDiffYear = 0;
+            if(leaveRequest.getFromDate().isBefore(startOfYear)) {
+                dayOffDiffYear += (int) DAYS.between(leaveRequest.getFromDate(),startOfYear) + 1;
+                leaveRequest.setFromDate(startOfYear);
+            }
+            if (leaveRequest.getToDate().isAfter(endOfYear)){
+                dayOffDiffYear += (int) DAYS.between(endOfYear,leaveRequest.getToDate()) + 1;
+                leaveRequest.setToDate(endOfYear);
+            }
+            leaveRequest.setDayOff(leaveRequest.getDayOff() - dayOffDiffYear);
+            dayOffApproved = dayOffApproved + leaveRequest.getDayOff();
+        }
+
+        LeaveSummary leaveSummary = new LeaveSummary();
+        leaveSummary.setDayOffPerYear(ConstantManager.numberOfDayOffPerYear);
+        leaveSummary.setDayOffApproved(dayOffApproved);
+        leaveSummary.setDayOffRemain(ConstantManager.numberOfDayOffPerYear - dayOffApproved);
+        leaveSummary.setLeaveRequestSummaries(leaveRequests);
+        return leaveSummary;
     }
 
     private static File getResourceFile(String fileName) throws IOException {

@@ -2,6 +2,7 @@ package com.fpt.cpdm.services;
 
 import com.fpt.cpdm.models.leaveRequests.LeaveRequest;
 import com.fpt.cpdm.models.leaveRequests.LeaveRequestSummary;
+import com.fpt.cpdm.models.leaveRequests.LeaveSummary;
 import com.fpt.cpdm.models.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,4 +31,6 @@ public interface LeaveRequestService extends CRUDService<LeaveRequest> {
     List<LeaveRequest> findAllByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(User user, List<Integer> integerList, LocalDate fromDate);
 
     boolean validateNewLeaveRequest(User user, LeaveRequest leaveRequest);
+
+    LeaveSummary getYearLeaveSummaryByUser(User user, Integer year);
 }

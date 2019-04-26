@@ -182,7 +182,7 @@ public class LeaveRequestController {
         List<LeaveRequest> leaveRequests = leaveRequestService.findAllByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(user, integerList, from, to);
         leaveRequests.addAll(leaveRequestService.findAllByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(user, integerList, from));
 
-        LeaveSummary leaveSummary = getYearLeaveSummaryByUser(userId, LocalDate.now().getYear()).getBody();
+        LeaveSummary leaveSummary = leaveRequestService.getYearLeaveSummaryByUser(user,LocalDate.now().getYear());
 
         //reset leave request list
         leaveSummary.setLeaveRequestSummaries(leaveRequests);
@@ -197,40 +197,19 @@ public class LeaveRequestController {
         User user = new User();
         user.setId(userId);
 
-        //get start and end of current year
-        LocalDate startOfYear = LocalDate.ofYearDay(year,1);
-        LocalDate endOfYear = LocalDate.of(year,12, 31);
+        LeaveSummary result = leaveRequestService.getYearLeaveSummaryByUser(user,year);
+        return ResponseEntity.ok(result);
+    }
 
-        List<Integer> integerList = new ArrayList<>();
-        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
-        integerList.add(approvedCode);
-        //Get all leave request waiting or approved by user
-        List<LeaveRequest> leaveRequests = leaveRequestService.findAllByUserAndStatusInAndFromDateGreaterThanEqualAndFromDateLessThanEqual(user, integerList, startOfYear, endOfYear);
-        leaveRequests.addAll(leaveRequestService.findAllByUserAndStatusInAndFromDateLessThanAndToDateGreaterThanEqual(user, integerList, startOfYear));
+    @GetMapping("search/findYearSummary/self")
+    public ResponseEntity<LeaveSummary> getYearLeaveSummaryByUser(@RequestParam Integer year,
+                                                                  Principal principal){
 
-        int dayOffApproved = 0;
+        // get current logged user
+        User user = userService.findByEmail(principal.getName());
 
-        for (LeaveRequest leaveRequest : leaveRequests) {
-            int dayOffDiffYear = 0;
-            if(leaveRequest.getFromDate().isBefore(startOfYear)) {
-                dayOffDiffYear += (int) DAYS.between(leaveRequest.getFromDate(),startOfYear) + 1;
-                leaveRequest.setFromDate(startOfYear);
-            }
-            if (leaveRequest.getToDate().isAfter(endOfYear)){
-                dayOffDiffYear += (int) DAYS.between(endOfYear,leaveRequest.getToDate()) + 1;
-                leaveRequest.setToDate(endOfYear);
-            }
-            leaveRequest.setDayOff(leaveRequest.getDayOff() - dayOffDiffYear);
-            dayOffApproved = dayOffApproved + leaveRequest.getDayOff();
-        }
-
-        LeaveSummary leaveSummary = new LeaveSummary();
-        leaveSummary.setDayOffPerYear(ConstantManager.numberOfDayOffPerYear);
-        leaveSummary.setDayOffApproved(dayOffApproved);
-        leaveSummary.setDayOffRemain(ConstantManager.numberOfDayOffPerYear - dayOffApproved);
-        leaveSummary.setLeaveRequestSummaries(leaveRequests);
-
-        return ResponseEntity.ok(leaveSummary);
+        LeaveSummary result = leaveRequestService.getYearLeaveSummaryByUser(user,year);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/search/viewLeaves")
