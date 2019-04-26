@@ -15,12 +15,12 @@ import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.assignRequests.AssignRequestSummary;
-import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.tasks.task_issues.TaskIssueStatus;
 import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.*;
+import com.fpt.cpdm.services.TaskHistoryService;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelConverter;
@@ -50,9 +50,10 @@ public class TaskServiceImpl implements TaskService {
     private final TaskFilesRepository taskFilesRepository;
     private final AuthenticationFacade authenticationFacade;
     private final AssignRequestRepository assignRequestRepository;
+    private final TaskHistoryService taskHistoryService;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, TaskIssueRepository taskIssueRepository, UserRepository userRepository, DocumentRepository documentRepository, DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository, AuthenticationFacade authenticationFacade, AssignRequestRepository assignRequestRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, TaskIssueRepository taskIssueRepository, UserRepository userRepository, DocumentRepository documentRepository, DepartmentRepository departmentRepository, TaskFilesRepository taskFilesRepository, AuthenticationFacade authenticationFacade, AssignRequestRepository assignRequestRepository, TaskHistoryService taskHistoryService) {
         this.taskRepository = taskRepository;
         this.taskIssueRepository = taskIssueRepository;
         this.userRepository = userRepository;
@@ -61,6 +62,7 @@ public class TaskServiceImpl implements TaskService {
         this.taskFilesRepository = taskFilesRepository;
         this.authenticationFacade = authenticationFacade;
         this.assignRequestRepository = assignRequestRepository;
+        this.taskHistoryService = taskHistoryService;
     }
 
     @Override
@@ -191,6 +193,8 @@ public class TaskServiceImpl implements TaskService {
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
 
+
+
         TaskDetail taskDetail = taskRepository.findDetailByIdAndAvailableTrue(savedTaskEntity.getId());
 
         return taskDetail;
@@ -227,6 +231,9 @@ public class TaskServiceImpl implements TaskService {
 
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+
+        taskHistoryService.save(savedTaskEntity);
+
         TaskDetail taskDetail = taskRepository.findDetailByIdAndAvailableTrue(savedTaskEntity.getId());
 
         return taskDetail;

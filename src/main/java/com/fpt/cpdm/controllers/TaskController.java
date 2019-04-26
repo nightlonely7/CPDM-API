@@ -7,7 +7,6 @@ import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.DocumentSummary;
-import com.fpt.cpdm.models.tasks.TaskBasic;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.tasks.task_files.TaskFileSummary;
@@ -43,6 +42,7 @@ public class TaskController {
     private final TaskIssueService taskIssueService;
     private final TaskRelativeService taskRelativeService;
     private final TaskDocumentService taskDocumentService;
+    private final TaskHistoryService taskHistoryService;
 
     @Autowired
     public TaskController(TaskService taskService, UserService userService,
@@ -50,7 +50,7 @@ public class TaskController {
                           TaskFileService taskFileService,
                           TaskIssueService taskIssueService,
                           TaskRelativeService taskRelativeService,
-                          TaskDocumentService taskDocumentService) {
+                          TaskDocumentService taskDocumentService, TaskHistoryService taskHistoryService) {
         this.taskService = taskService;
         this.userService = userService;
         this.fileStorageService = fileStorageService;
@@ -58,6 +58,7 @@ public class TaskController {
         this.taskIssueService = taskIssueService;
         this.taskRelativeService = taskRelativeService;
         this.taskDocumentService = taskDocumentService;
+        this.taskHistoryService = taskHistoryService;
     }
 
     @GetMapping("/{id}")
@@ -244,7 +245,6 @@ public class TaskController {
         return ResponseEntity.ok(documentSummaries);
     }
 
-
     @GetMapping("/{id}/files")
     public ResponseEntity<List<TaskFileSummary>> loadFiles(@PathVariable("id") Integer id) {
 
@@ -293,6 +293,12 @@ public class TaskController {
         TaskIssueDetail taskIssueDetail = taskIssueService.create(taskId, taskIssueForm);
 
         return ResponseEntity.ok(taskIssueDetail);
+    }
+
+    @GetMapping("/{id}/histories")
+    public ResponseEntity readAllHistories(@PathVariable("id") Integer taskId) {
+        taskHistoryService.findById(taskId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping
