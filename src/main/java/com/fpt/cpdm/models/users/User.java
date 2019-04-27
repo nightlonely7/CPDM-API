@@ -48,7 +48,6 @@ public class User {
 
     private Department department;
 
-
     private Role role;
 
     @NotNull
