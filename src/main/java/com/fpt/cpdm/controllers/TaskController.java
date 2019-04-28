@@ -353,7 +353,7 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
-    @Secured("ROLE_MANAGER")
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @GetMapping("/search/basicByExecutes")
     public ResponseEntity<List<TaskSummary>> getBasicByExecute(@RequestParam("projectId") Integer projectId) {
         List<TaskSummary> taskSummaries = taskService.findAllBasicByCurrentExecutorAndProject_Id(projectId);
