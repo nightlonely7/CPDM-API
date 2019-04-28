@@ -83,6 +83,7 @@ public class DocumentServiceImpl implements DocumentService {
         );
 
         if (relative.getRole().getName().equals("ROLE_ADMIN") == false &&
+                relative.getRole().getName().equals("ROLE_MANAGER") == false &&
                 documentRepository.existsByIdAndRelativesAndAvailableTrue(id, relative) == false) {
             throw new UnauthorizedException();
         }

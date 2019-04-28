@@ -330,7 +330,6 @@ public class TaskController {
         return ResponseEntity.ok(taskDetail);
     }
 
-
     @PatchMapping("/{id}/complete")
     public ResponseEntity<TaskSummary> complete(@PathVariable("id") Integer id) {
 
