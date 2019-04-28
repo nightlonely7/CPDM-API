@@ -331,11 +331,9 @@ public class UserServiceImpl implements UserService {
         );
 //        userEntity.setRole(roleEntity);
 
-        creator.setRole(roleEntity);
+        userEntity.setRole(roleEntity);
 
-        creator.setEmail(user.getEmail());
-
-        System.out.println("User Entity value: " + creator.toString());
+        userEntity.setEmail(user.getEmail());
 
         // encode password
 //        String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
@@ -344,7 +342,7 @@ public class UserServiceImpl implements UserService {
 
 //      UserEntity savedUserEntity = userRepository.save(userEntity);
 
-        UserEntity savedUserEntity = userRepository.save(creator);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
         UserDetail savedUserDetail = userRepository.findDetailById(savedUserEntity.getId()).get();
 

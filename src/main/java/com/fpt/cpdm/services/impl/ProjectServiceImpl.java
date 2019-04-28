@@ -31,6 +31,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDTO findDTOById(Integer id) {
+
         return projectRepository.findDTOById(id).get();
     }
 
