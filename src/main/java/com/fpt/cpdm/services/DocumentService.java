@@ -21,7 +21,7 @@ public interface DocumentService {
 
     Page<DocumentSummary> findAllSummaryByRelatives(Pageable pageable);
 
-    DocumentSummary create(DocumentCreateForm documentCreateForm, Boolean selectAll);
+    DocumentSummary create(DocumentCreateForm documentCreateForm, boolean selectAll, List<Integer> departmentList);
 
     DocumentSummary update(Integer id, DocumentUpdateForm documentUpdateForm);
 

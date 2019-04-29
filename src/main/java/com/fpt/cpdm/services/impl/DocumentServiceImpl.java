@@ -7,6 +7,7 @@ import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.EntityNotFoundException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
+import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
 import com.fpt.cpdm.forms.documents.DocumentUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
@@ -105,7 +106,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public DocumentSummary create(DocumentCreateForm documentCreateForm, Boolean selectAll) {
+    public DocumentSummary create(DocumentCreateForm documentCreateForm, boolean selectAll, List<Integer> departmentList) {
 
         Integer projectId = documentCreateForm.getProject().getId();
 
@@ -116,11 +117,15 @@ public class DocumentServiceImpl implements DocumentService {
         projectEntity.setId(projectId);
 
         List<UserEntity> relatives = new ArrayList<>();
-        if (selectAll.booleanValue() == false) {
+        if (selectAll == false) {
             if (documentCreateForm.getRelatives() != null) {
                 for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
-                    UserEntity relative = new UserEntity(idOnlyForm.getId());
-                    relatives.add(relative);
+                    UserEntity relative = userRepository.findById(idOnlyForm.getId()).orElseThrow(
+                            ()-> new UserNotFoundException(idOnlyForm.getId())
+                    );
+                    if(departmentList.contains(relative.getDepartment().getId())){
+                        relatives.add(relative);
+                    }
                 }
             }
         } else {
