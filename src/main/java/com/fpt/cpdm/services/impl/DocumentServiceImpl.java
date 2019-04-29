@@ -105,7 +105,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public DocumentSummary create(DocumentCreateForm documentCreateForm) {
+    public DocumentSummary create(DocumentCreateForm documentCreateForm, Boolean selectAll) {
 
         Integer projectId = documentCreateForm.getProject().getId();
 
@@ -116,11 +116,15 @@ public class DocumentServiceImpl implements DocumentService {
         projectEntity.setId(projectId);
 
         List<UserEntity> relatives = new ArrayList<>();
-        if (documentCreateForm.getRelatives() != null) {
-            for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
-                UserEntity relative = new UserEntity(idOnlyForm.getId());
-                relatives.add(relative);
+        if (selectAll.booleanValue() == false) {
+            if (documentCreateForm.getRelatives() != null) {
+                for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
+                    UserEntity relative = new UserEntity(idOnlyForm.getId());
+                    relatives.add(relative);
+                }
             }
+        } else {
+            relatives = userRepository.findAll();
         }
 
         DocumentEntity documentEntity = new DocumentEntity();
@@ -148,7 +152,6 @@ public class DocumentServiceImpl implements DocumentService {
         DocumentEntity documentEntity = documentRepository.findById(id).orElseThrow(
                 () -> new DocumentNotFoundException(id)
         );
-
         Integer projectId = documentUpdateForm.getProject().getId();
 
         if (projectRepository.existsById(projectId) == false) {
@@ -184,7 +187,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Document deleteById(Integer id) {
         Optional<DocumentEntity> documentEntity = documentRepository.findById(id);
-        if(documentEntity.isPresent()){
+        if (documentEntity.isPresent()) {
             documentEntity.get().setAvailable(false);
             documentRepository.save(documentEntity.get());
         }

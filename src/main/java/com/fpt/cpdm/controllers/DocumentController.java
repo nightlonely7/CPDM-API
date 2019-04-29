@@ -111,13 +111,14 @@ public class DocumentController {
 
     @PostMapping
     public ResponseEntity<DocumentSummary> create(@Valid @RequestBody DocumentCreateForm documentCreateForm,
+                                                  @RequestParam("selectAll") Boolean selectAll,
                                                   BindingResult result) {
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
 
-        DocumentSummary documentSummary = documentService.create(documentCreateForm);
+        DocumentSummary documentSummary = documentService.create(documentCreateForm, selectAll);
 
         return ResponseEntity.ok(documentSummary);
     }
