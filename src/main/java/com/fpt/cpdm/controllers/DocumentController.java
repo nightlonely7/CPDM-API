@@ -113,14 +113,13 @@ public class DocumentController {
     public ResponseEntity<DocumentSummary> create(@Valid @RequestBody DocumentCreateForm documentCreateForm,
                                                   @RequestParam(name = "selectAll") boolean selectAll,
                                                   @RequestParam(name = "departmentList") List<Integer> departmentList,
+                                                  @RequestParam(name = "selectAllManager") boolean selectAllManager,
                                                   BindingResult result) {
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
-
-        DocumentSummary documentSummary = documentService.create(documentCreateForm, selectAll, departmentList);
-
+        DocumentSummary documentSummary = documentService.create(documentCreateForm, selectAll, departmentList, selectAllManager);
         return ResponseEntity.ok(documentSummary);
     }
 

@@ -14,6 +14,8 @@ import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
+import com.fpt.cpdm.models.users.UserDetail;
+import com.fpt.cpdm.models.users.UserSummary;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.repositories.ProjectRepository;
 import com.fpt.cpdm.repositories.UserRepository;
@@ -106,8 +108,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public DocumentSummary create(DocumentCreateForm documentCreateForm, boolean selectAll, List<Integer> departmentList) {
-
+    public DocumentSummary create(DocumentCreateForm documentCreateForm, boolean selectAll,
+                                  List<Integer> departmentList, boolean selectAllManager) {
         Integer projectId = documentCreateForm.getProject().getId();
 
         if (projectRepository.existsById(projectId) == false) {
@@ -119,12 +121,68 @@ public class DocumentServiceImpl implements DocumentService {
         List<UserEntity> relatives = new ArrayList<>();
         if (selectAll == false) {
             if (documentCreateForm.getRelatives() != null) {
-                for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
-                    UserEntity relative = userRepository.findById(idOnlyForm.getId()).orElseThrow(
-                            ()-> new UserNotFoundException(idOnlyForm.getId())
-                    );
-                    if(departmentList.contains(relative.getDepartment().getId())){
-                        relatives.add(relative);
+                if (documentCreateForm.getRelatives().isEmpty() && departmentList.isEmpty()) {
+                    if (selectAllManager) {
+                        List<UserSummary> managerList = userRepository.findAllSummaryByRole_Name("ROLE_MANAGER");
+                        for (UserSummary manager : managerList) {
+                            UserEntity relative = new UserEntity(manager.getId());
+                            relatives.add(relative);
+                        }
+                    } else {
+                        relatives = userRepository.findAll();
+                    }
+                } else if (!documentCreateForm.getRelatives().isEmpty() && departmentList.isEmpty()) {
+                    if (selectAllManager) {
+                        for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
+                            if(userRepository.existsByIdAndRole_Id(idOnlyForm.getId(), 2).booleanValue()){
+                                UserEntity relative = new UserEntity(idOnlyForm.getId());
+                                relatives.add(relative);
+                            }
+                        }
+                    } else {
+                        for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
+                            UserEntity relative = new UserEntity(idOnlyForm.getId());
+                            relatives.add(relative);
+                        }
+                    }
+                } else if (documentCreateForm.getRelatives().isEmpty() && !departmentList.isEmpty()) {
+                    if(selectAllManager){
+                        for (Integer departmentId : departmentList) {
+                            List<UserSummary> userResult = userRepository.findAllSummaryByDepartment_IdAndRole_Id(departmentId, 2);
+                            for (UserSummary userSummary : userResult) {
+                                UserEntity relative = new UserEntity(userSummary.getId());
+                                relatives.add(relative);
+                            }
+                        }
+                    } else {
+                        for (Integer departmentId : departmentList) {
+                            List<UserSummary> userResult = userRepository.findAllSummaryByDepartment_IdAndRole_IdNotLike(departmentId, 3);
+                            for (UserSummary userSummary : userResult) {
+                                UserEntity relative = new UserEntity(userSummary.getId());
+                                relatives.add(relative);
+                            }
+                        }
+                    }
+                } else {
+                    if(selectAllManager){
+                        for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
+                            UserEntity relative = userRepository.findById(idOnlyForm.getId()).orElseThrow(
+                                    () -> new UserNotFoundException(idOnlyForm.getId())
+                            );
+                            if (departmentList.contains(relative.getDepartment().getId())
+                            && relative.getRole().getId() == 2) {
+                                relatives.add(relative);
+                            }
+                        }
+                    } else {
+                        for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
+                            UserEntity relative = userRepository.findById(idOnlyForm.getId()).orElseThrow(
+                                    () -> new UserNotFoundException(idOnlyForm.getId())
+                            );
+                            if (departmentList.contains(relative.getDepartment().getId())) {
+                                relatives.add(relative);
+                            }
+                        }
                     }
                 }
             }
