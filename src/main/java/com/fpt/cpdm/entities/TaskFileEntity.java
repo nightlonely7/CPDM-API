@@ -27,6 +27,19 @@ public class TaskFileEntity extends BaseEntity {
     private String filename;
 
     @Basic
+    @Column(name = "detail_filename")
+    private String detailFilename;
+
+    @Basic
+    @Column(name = "extension")
+    private String extension;
+
+    @Basic
+    @Lob
+    @Column(name = "description")
+    private String description;
+
+    @Basic
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
