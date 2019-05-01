@@ -4,7 +4,7 @@ import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
 import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
-import com.fpt.cpdm.forms.tasks.files.TaskFileForm;
+import com.fpt.cpdm.forms.tasks.files.TaskFileCreateForm;
 import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.DocumentSummary;
@@ -249,16 +249,21 @@ public class TaskController {
     @GetMapping("/{id}/files")
     public ResponseEntity<List<TaskFileDetail>> loadFiles(@PathVariable("id") Integer id) {
 
-        List<TaskFileDetail> taskFilesSummaries = taskFileService.findSummaryByTask_Id(id);
+        List<TaskFileDetail> taskFilesSummaries = taskFileService.findAllSummaryByTask_Id(id);
 
         return ResponseEntity.ok(taskFilesSummaries);
     }
 
     @PostMapping("/{id}/files")
     public ResponseEntity<TaskFileDetail> uploadFile(@PathVariable("id") Integer taskId,
-                                                     TaskFileForm taskFileForm) {
+                                                     @Valid TaskFileCreateForm taskFileCreateForm,
+                                                     BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String message = ModelErrorMessage.build(bindingResult);
+            throw new ModelNotValidException(message);
+        }
 
-        TaskFileDetail taskFileDetail = taskFileService.create(taskId, taskFileForm);
+        TaskFileDetail taskFileDetail = taskFileService.create(taskId, taskFileCreateForm);
 
         return ResponseEntity.ok(taskFileDetail);
     }

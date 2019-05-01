@@ -22,6 +22,10 @@ public class TaskFileEntity extends BaseEntity {
     @JoinColumn(name = "creator_id")
     private UserEntity creator;
 
+    @ManyToOne
+    @JoinColumn(name = "last_editor_id")
+    private UserEntity lastEditor;
+
     @Basic
     @Column(name = "filename")
     private String filename;
@@ -53,14 +57,7 @@ public class TaskFileEntity extends BaseEntity {
 
     @PrePersist
     public void prePersist() {
-        this.createdTime = LocalDateTime.now();
-        this.lastModifiedTime = LocalDateTime.now();
         this.available = Boolean.TRUE;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.lastModifiedTime = LocalDateTime.now();
     }
 
 }

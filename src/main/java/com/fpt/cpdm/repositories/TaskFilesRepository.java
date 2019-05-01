@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface TaskFilesRepository extends JpaRepository<TaskFileEntity, Integer> {
 
-    Optional<TaskFileDetail> findDetailById(Integer id);
+    Optional<TaskFileDetail> findDetailByIdAndAvailableTrue(Integer id);
 
-    List<TaskFileDetail> findAllDetailByTask_Id(Integer id);
+    List<TaskFileDetail> findAllDetailByTask_IdAndAvailableTrue(Integer id);
 }
