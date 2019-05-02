@@ -1,12 +1,9 @@
 package com.fpt.cpdm.models.tasks.histories;
 
-import com.fpt.cpdm.models.IdOnlyForm;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
-public class TaskHistoryDataVersion1 {
+public class TaskHistoryData {
 
     private String title;
     private String summary;
