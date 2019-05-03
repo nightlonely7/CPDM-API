@@ -22,4 +22,6 @@ public interface DocumentDetail {
     LocalDateTime getEndTime();
 
     NameIdOnly getProject();
+
+    LocalDateTime getLastModifiedTime();
 }

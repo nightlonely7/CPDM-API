@@ -33,7 +33,9 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 ('staff5', 'Nguyễn Phú Staff', false, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff5@gmail.com'
 , '0123456789', 'abcxyz tphcm', '2000-01-30', 1, 1, true, '2017-09-20 07:22:11'),
 ('admin', 'Nguyễn Phú Admin', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'admin@gmail.com'
-, '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 3, true, '2017-09-20 07:22:11');
+, '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 3, true, '2017-09-20 07:22:11'),
+('hoangcm', 'Cao Minh Hoàng', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'hoangcm@gmail.com'
+, '0907419552', 'abcxyz tphcm', '1993-01-30', 2, 2, true, '2017-09-20 07:22:11');
 
 -- INSERT DOCUMENT
 INSERT INTO document (title, summary, description, created_time, start_time, end_time, project_id, available) VALUES

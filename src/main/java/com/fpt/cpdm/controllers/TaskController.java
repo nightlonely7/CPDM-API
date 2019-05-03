@@ -319,7 +319,6 @@ public class TaskController {
 
         TaskDetail taskDetail = taskService.create(taskCreateForm);
 
-
         return ResponseEntity.ok(taskDetail);
     }
 
