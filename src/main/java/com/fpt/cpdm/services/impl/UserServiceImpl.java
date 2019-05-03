@@ -331,11 +331,9 @@ public class UserServiceImpl implements UserService {
         );
 //        userEntity.setRole(roleEntity);
 
-        creator.setRole(roleEntity);
+        userEntity.setRole(roleEntity);
 
-        creator.setEmail(user.getEmail());
-
-        System.out.println("User Entity value: " + creator.toString());
+        userEntity.setEmail(user.getEmail());
 
         // encode password
 //        String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
@@ -344,7 +342,7 @@ public class UserServiceImpl implements UserService {
 
 //      UserEntity savedUserEntity = userRepository.save(userEntity);
 
-        UserEntity savedUserEntity = userRepository.save(creator);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
         UserDetail savedUserDetail = userRepository.findDetailById(savedUserEntity.getId()).get();
 
@@ -503,50 +501,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserSummary> findAllSummaryByEmail(String email, Integer depId, Boolean gender, Pageable pageable) {
-        Page<UserSummary> userSummaries;
-        if (gender == null) {
-            userSummaries = userRepository.findAllSummaryByEmailContainingAndDepartment_Id(email, depId, pageable);
-        } else {
-            userSummaries = userRepository.findAllSummaryByEmailContainingAndDepartment_IdAndGender(email, depId, gender, pageable);
-        }
-        return userSummaries;
-    }
-
-    @Override
-    public Page<UserSummary> findAllSummaryByDisplayName(String displayName, Integer depId, Boolean gender, Pageable pageable) {
-        Page<UserSummary> userSummaries;
-        if (gender == null) {
-            userSummaries = userRepository.findAllSummaryByDisplayNameContainingAndDepartment_Id(displayName, depId, pageable);
-        } else {
-            userSummaries = userRepository.findAllSummaryByDisplayNameContainingAndDepartment_IdAndGender(displayName, depId, gender, pageable);
-        }
-        return userSummaries;
-    }
-
-    @Override
-    public Page<UserSummary> findAllSummaryByFullName(String fullName, Integer depId, Boolean gender, Pageable pageable) {
-        Page<UserSummary> userSummaries;
-        if (gender == null) {
-            userSummaries = userRepository.findAllSummaryByFullNameContainingAndDepartment_Id(fullName, depId, pageable);
-        } else {
-            userSummaries = userRepository.findAllSummaryByFullNameContainingAndDepartment_IdAndGender(fullName, depId, gender, pageable);
-        }
-        return userSummaries;
-    }
-
-    @Override
-    public Page<UserSummary> findAllSummaryByAge(LocalDate birthDateFrom, LocalDate birthDateTo, Boolean gender, Pageable pageable) {
-        Page<UserSummary> userSummaries;
-        if (gender == null) {
-            userSummaries = userRepository.findAllSummaryByAge(birthDateFrom, birthDateTo, pageable);
-        } else {
-            userSummaries = userRepository.findAllSummaryByAgeAndGender(birthDateFrom, birthDateTo, gender, pageable);
-        }
-        return userSummaries;
-    }
-
-    @Override
     public List<UserBirthDate> findMaxAndMinAge() {
         Optional<UserBirthDate> minAgeResult = userRepository.findFirstBirthDateByBirthdayNotNullOrderByBirthdayAsc();
         Optional<UserBirthDate> maxAgeResult = userRepository.findFirstBirthDateByBirthdayNotNullOrderByBirthdayDesc();
@@ -594,6 +548,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserSummary> findAllByRole_IdInAndDepartment_IdIn(List<Integer> listRole, List<Integer> listDepartment, Pageable pageable) {
         return userRepository.findAllByRole_IdInAndDepartment_IdIn(listRole,listDepartment,pageable);
+    }
+
+    @Override
+    public Page<UserSummary> advancedSearch(String email, String displayName, String fullName, Integer departmentId,
+                                              LocalDate birthDateFrom, LocalDate birthDateTo, Boolean gender, Pageable pageable) {
+        email = email.toLowerCase();
+        displayName = displayName.toLowerCase();
+        fullName = fullName.toLowerCase();
+        return userRepository.advancedSearch
+                (email, displayName, fullName, departmentId, birthDateFrom,
+                birthDateTo, gender, pageable);
     }
 
 }

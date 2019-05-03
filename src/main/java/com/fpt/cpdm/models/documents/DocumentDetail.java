@@ -17,13 +17,9 @@ public interface DocumentDetail {
 
     LocalDateTime getCreatedTime();
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime getStartTime();
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime getEndTime();
 
     NameIdOnly getProject();
-
-    Boolean getAvailable();
 }

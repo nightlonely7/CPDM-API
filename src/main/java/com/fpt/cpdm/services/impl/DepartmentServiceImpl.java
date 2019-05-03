@@ -64,8 +64,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Page<DepartmentDTO> findByNameAndAlias(String name, String alias, Pageable pageable) {
+        name = name.toLowerCase();
+        alias = alias.toLowerCase();
         Page<DepartmentDTO> departments = departmentRepository
-                .findAllDTOByNameContainingAndAliasContainingAndAvailableTrue(name, alias, pageable);
+                .findAllDTOByNameContainingIgnoreCaseAndAliasContainingIgnoreCaseAndAvailableTrue(name, alias, pageable);
         return departments;
     }
 

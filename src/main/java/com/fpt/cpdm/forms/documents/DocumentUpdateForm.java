@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class DocumentCreateForm {
+public class DocumentUpdateForm {
 
     @NotNull
     @Size(min = 4, max = 30)

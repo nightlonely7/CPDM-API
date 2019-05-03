@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
@@ -23,8 +24,7 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     Page<TaskSummary> findSummaryByTitleAndSummaryAndDescriptionContaining(String title, String summary,
                                                                            String description, Pageable pageable);
-
-    TaskSummary findSummaryById(Integer id);
+    Optional<TaskSummary> findSummaryById(Integer id);
 
     Page<TaskSummary> findAllSummaryByCreatorAndAvailableTrue(UserEntity creator, Pageable pageable);
 

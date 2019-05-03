@@ -1,6 +1,7 @@
 package com.fpt.cpdm.services;
 
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
+import com.fpt.cpdm.forms.documents.DocumentUpdateForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
@@ -22,8 +23,12 @@ public interface DocumentService {
 
     DocumentSummary create(DocumentCreateForm documentCreateForm);
 
+    DocumentSummary update(Integer id, DocumentUpdateForm documentUpdateForm);
+
     Document deleteById(Integer id);
 
     boolean existsByTitle(String title);
+
+    Page<DocumentSummary> findAllSummaryByTitleAndSummary(String title, String summary, Pageable pageable);
 
 }

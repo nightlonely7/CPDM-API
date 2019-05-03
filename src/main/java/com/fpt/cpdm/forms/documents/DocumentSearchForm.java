@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class DocumentCreateForm {
-
+public class DocumentSearchForm {
     @NotNull
     @Size(min = 4, max = 30)
     private String title;
@@ -30,4 +29,5 @@ public class DocumentCreateForm {
 
     @NotNull
     private IdOnlyForm project;
+
 }

@@ -144,7 +144,9 @@ public class TaskServiceImpl implements TaskService {
         }
         taskEntity.setCompletedTime(LocalDateTime.now());
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-        TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId());
+        TaskSummary savedTaskSummary = taskRepository.findSummaryById(savedTaskEntity.getId()).orElseThrow(
+                () -> new EntityNotFoundException(savedTaskEntity.getId(), "Task")
+        );
 
         return savedTaskSummary;
     }
@@ -196,7 +198,6 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
 
 
-
         TaskDetail taskDetail = taskRepository.findDetailByIdAndAvailableTrue(savedTaskEntity.getId());
 
         return taskDetail;
@@ -233,7 +234,6 @@ public class TaskServiceImpl implements TaskService {
 
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-
         taskHistoryService.save(savedTaskEntity);
 
         TaskDetail taskDetail = taskRepository.findDetailByIdAndAvailableTrue(savedTaskEntity.getId());

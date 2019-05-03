@@ -4,12 +4,14 @@ import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.tasks.TaskCreateForm;
 import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
+import com.fpt.cpdm.forms.tasks.files.TaskFileCreateForm;
 import com.fpt.cpdm.forms.tasks.issues.TaskIssueForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
-import com.fpt.cpdm.models.tasks.task_files.TaskFileSummary;
+import com.fpt.cpdm.models.tasks.histories.TaskHistorySummary;
+import com.fpt.cpdm.models.tasks.task_files.TaskFileDetail;
 import com.fpt.cpdm.models.tasks.task_issues.TaskIssueDetail;
 import com.fpt.cpdm.models.tasks.task_issues.TaskIssueStatus;
 import com.fpt.cpdm.models.users.UserSummary;
@@ -24,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -256,20 +257,25 @@ public class TaskController {
     }
 
     @GetMapping("/{id}/files")
-    public ResponseEntity<List<TaskFileSummary>> loadFiles(@PathVariable("id") Integer id) {
+    public ResponseEntity<List<TaskFileDetail>> loadFiles(@PathVariable("id") Integer id) {
 
-        List<TaskFileSummary> taskFilesSummaries = taskFileService.findSummaryByTask_Id(id);
+        List<TaskFileDetail> taskFilesSummaries = taskFileService.findAllSummaryByTask_Id(id);
 
         return ResponseEntity.ok(taskFilesSummaries);
     }
 
     @PostMapping("/{id}/files")
-    public ResponseEntity<TaskFileSummary> uploadFile(@PathVariable("id") Integer taskId,
-                                                      @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<TaskFileDetail> uploadFile(@PathVariable("id") Integer taskId,
+                                                     @Valid TaskFileCreateForm taskFileCreateForm,
+                                                     BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String message = ModelErrorMessage.build(bindingResult);
+            throw new ModelNotValidException(message);
+        }
 
-        TaskFileSummary taskFileSummary = taskFileService.create(taskId, file);
+        TaskFileDetail taskFileDetail = taskFileService.create(taskId, taskFileCreateForm);
 
-        return ResponseEntity.ok(taskFileSummary);
+        return ResponseEntity.ok(taskFileDetail);
     }
 
     @GetMapping("/{id}/issues")
@@ -306,9 +312,11 @@ public class TaskController {
     }
 
     @GetMapping("/{id}/histories")
-    public ResponseEntity readAllHistories(@PathVariable("id") Integer taskId) {
-        taskHistoryService.findById(taskId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<TaskHistorySummary>> readAllHistoryByTask_Id(@PathVariable("id") Integer taskId) {
+
+        List<TaskHistorySummary> taskHistorySummaries = taskHistoryService.findAllSummaryByTask_Id(taskId);
+
+        return ResponseEntity.ok(taskHistorySummaries);
     }
 
     @PostMapping
@@ -363,7 +371,7 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
-    @Secured("ROLE_MANAGER")
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @GetMapping("/search/basicByExecutes")
     public ResponseEntity<List<TaskSummary>> getBasicByExecute(@RequestParam("projectId") Integer projectId) {
         List<TaskSummary> taskSummaries = taskService.findAllBasicByCurrentExecutorAndProject_Id(projectId);

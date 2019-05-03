@@ -47,15 +47,6 @@ public interface UserService extends UserDetailsService {
 
     Page<UserSummary> findAllSummaryForAdmin(Pageable pageable);
 
-    Page<UserSummary> findAllSummaryByEmail(String email, Integer depId, Boolean gender, Pageable pageable);
-
-    Page<UserSummary> findAllSummaryByDisplayName(String displayName, Integer depId, Boolean gender, Pageable pageable);
-
-    Page<UserSummary> findAllSummaryByFullName(String fullName, Integer depId, Boolean gender, Pageable pageable);
-
-    Page<UserSummary> findAllSummaryByAge(LocalDate birthDate, LocalDate currentDate, Boolean gender,
-                                          Pageable pageable);
-
     List<UserBirthDate> findMaxAndMinAge();
 
     Boolean existsByEmail(String email);
@@ -65,6 +56,9 @@ public interface UserService extends UserDetailsService {
     List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName);
 
     List<UserSummary> findAllSummaryByDepartmentId(Integer departmentId);
+
+    Page<UserSummary> advancedSearch(String email, String displayName, String fullName, Integer departmentId,
+                                       LocalDate birthDateFrom, LocalDate birthDateTo, Boolean gender, Pageable pageable);
 
     Page<UserSummary> findAllByRole_IdIn(List<Integer> listRole, Pageable pageable);
 
