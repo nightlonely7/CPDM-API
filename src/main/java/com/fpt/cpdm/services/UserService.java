@@ -67,4 +67,6 @@ public interface UserService extends UserDetailsService {
     List<UserSummary> findAllSummaryByDepartmentId(Integer departmentId);
 
     Page<UserSummary> findAllByRole_IdIn(List<Integer> listRole, Pageable pageable);
+
+    Page<UserSummary> findAllByRole_IdInAndDepartment_IdIn(List<Integer> listRole, List<Integer> listDepartment, Pageable pageable);
 }

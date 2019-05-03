@@ -22,6 +22,7 @@ import com.fpt.cpdm.models.users.User;
 import com.fpt.cpdm.repositories.*;
 import com.fpt.cpdm.services.TaskHistoryService;
 import com.fpt.cpdm.services.TaskService;
+import com.fpt.cpdm.utils.ConstantManager;
 import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -444,27 +446,29 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime, LocalDateTime toTime) {
+    public List<TaskSummary> findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, List<String> listStatus, LocalDateTime fromTime, LocalDateTime toTime) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(userEntity, status, fromTime, toTime);
+        return taskRepository.findAllByExecutorAndStatusInAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(userEntity, listStatus, fromTime, toTime);
     }
 
     @Override
-    public List<TaskSummary> findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime) {
+    public List<TaskSummary> findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, List<String> listStatus, LocalDateTime fromTime) {
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
-        return taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(userEntity, status, fromTime, fromTime);
+        return taskRepository.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(userEntity, listStatus, fromTime, fromTime);
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotAssigned(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotAssigned(LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable) {
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
 
-        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor, status, fromTime, toTime);
-        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor, status, fromTime, fromTime));
+        List<String> listStatus = ConstantManager.NOT_COMPLETE_STATUS_LIST;
+
+        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusInAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor, listStatus, fromTime, toTime);
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor, listStatus, fromTime, fromTime));
 
         LocalDate fromDate = fromTime.toLocalDate();
         LocalDate toDate = toTime.toLocalDate();
@@ -489,7 +493,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndFullAssigned(String status, LocalDate fromDate, LocalDate toDate, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndFullAssigned(LocalDate fromDate, LocalDate toDate, Pageable pageable) {
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
@@ -515,7 +519,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndPartAssigned(String status, LocalDate fromDate, LocalDate toDate, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndPartAssigned(LocalDate fromDate, LocalDate toDate, Pageable pageable) {
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
@@ -544,17 +548,30 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndStatus(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable) {
+    public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotComplete(LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable) {
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(email)
         );
 
-        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor, status, fromTime, toTime);
-        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor, status, fromTime, fromTime));
+        List<String> listStatus = ConstantManager.NOT_COMPLETE_STATUS_LIST;
+        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusInAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor, listStatus, fromTime, toTime);
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor, listStatus, fromTime, fromTime));
 
         Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), taskSummaries.size());
+        return result;
+    }
+
+    @Override
+    public Page<TaskSummary> findAllSummaryByExecutorAndStatus(String status, Pageable pageable) {
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        Page<TaskSummary> result = taskRepository.findAllByExecutorAndStatusAndAvailableTrue(executor,status,pageable);
         return result;
     }
 }

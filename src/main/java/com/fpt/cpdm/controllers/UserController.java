@@ -289,11 +289,24 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllSummaryByDepartmentId(id));
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/search/staff-and-manager")
     public ResponseEntity<Page<UserSummary>> findAllStaffAndManager(@PageableDefault Pageable pageable){
         List<Integer> listRole = new ArrayList<>();
         listRole.add(1);
         listRole.add(2);
         return ResponseEntity.ok(userService.findAllByRole_IdIn(listRole, pageable));
+    }
+
+    @GetMapping("/search/staff-for-manager")
+    public ResponseEntity<Page<UserSummary>> findAllStaffForManager(@PageableDefault Pageable pageable,
+                                                                    Principal principal){
+        // get current logged manager
+        User user = userService.findByEmail(principal.getName());
+        List<Integer> listRole = new ArrayList<>();
+        listRole.add(1);
+        List<Integer> listDepartment = new ArrayList<>();
+        listDepartment.add(user.getDepartment().getId());
+        return ResponseEntity.ok(userService.findAllByRole_IdInAndDepartment_IdIn(listRole, listDepartment, pageable));
     }
 }

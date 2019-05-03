@@ -86,4 +86,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     List<UserSummary> findAllSummaryByDepartment_IdAndRole_IdNotLike(Integer departmentId, Integer roleId);
 
     Page<UserSummary> findAllByRole_IdIn(List<Integer> listRole, Pageable pageable);
+
+    Page<UserSummary> findAllByRole_IdInAndDepartment_IdIn(List<Integer> listRole, List<Integer> listDepartment, Pageable pageable);
 }

@@ -87,7 +87,9 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
 
     boolean existsByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(UserEntity userEntity, String status, LocalDateTime fromTime, LocalDateTime fromTime2);
 
-    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(UserEntity userEntity, String status, LocalDateTime fromTime, LocalDateTime toTime);
+    List<TaskSummary> findAllByExecutorAndStatusInAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(UserEntity userEntity, List<String> listStatus, LocalDateTime fromTime, LocalDateTime toTime);
 
-    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(UserEntity userEntity, String status, LocalDateTime fromTime, LocalDateTime fromTime2);
+    List<TaskSummary> findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(UserEntity userEntity, List<String> listStatus, LocalDateTime fromTime, LocalDateTime fromTime2);
+
+    Page<TaskSummary> findAllByExecutorAndStatusAndAvailableTrue(UserEntity userEntity, String status, Pageable pageable);
 }

@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -166,9 +167,10 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
             List<Integer> integerList = new ArrayList<>();
             integerList.add(Enum.AssignRequestStatus.Approved.getAssignRequestStatusCode());
             //get task start in date range request
-            List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(userEntity, "Working", leaveRequest.getFromDate().atStartOfDay(), leaveRequest.getToDate().plusDays(1).atStartOfDay());
+            List<String> listStatus = ConstantManager.NOT_COMPLETE_STATUS_LIST;
+            List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusInAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(userEntity, listStatus, leaveRequest.getFromDate().atStartOfDay(), leaveRequest.getToDate().plusDays(1).atStartOfDay());
             //get task strat before but still not end
-            taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(userEntity, "Working", leaveRequest.getFromDate().atStartOfDay(),leaveRequest.getFromDate().plusDays(1).atStartOfDay()));
+            taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(userEntity, listStatus, leaveRequest.getFromDate().atStartOfDay(),leaveRequest.getFromDate().plusDays(1).atStartOfDay()));
             //get all assign request approved
             List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(userEntity,integerList,leaveRequest.getFromDate(),leaveRequest.getToDate());
             List<Integer> assignedTaskSummaryIds = new ArrayList<>();
