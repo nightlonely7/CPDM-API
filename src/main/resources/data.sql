@@ -6,13 +6,17 @@ INSERT INTO role (name,display_name) VALUES
 
 -- INSERT DEPARTMENT
 INSERT INTO department (name, alias, available, created_time, last_modified_time) VALUES
-('New Department 1', 'NEW1', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('New Department 2', 'NEW2', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11');
+('Văn Phòng Quản Li Xây Dựng', 'QLXD', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Quản Li Ngân Sách', 'QLNS', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Quản Li Nhân Viên', 'QLNV', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Nhân Sự', 'NS', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11');
 
 --INSERT PROJECT
 INSERT INTO project(name, alias, available, created_time, last_modified_time) values
-('Du an 1', 'DA1', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-(n'Dự án 2', 'DA2', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11');
+('Dự án thầu 2019', 'DAT 2019', true, '2017-09-20 07:22:11', '2019-07-23 07:22:11'),
+('Dự án nhà nước 2018', 'DANN 2018', true, '2017-09-30 07:22:11', '2018-08-24 07:22:11'),
+('Dự án thầu 2017', 'DAT 2017', true, '2016-04-20 07:22:11', '2017-09-10 07:22:11'),
+('Dự án tư nhân 2019', 'DATU 2018', true, '2015-02-27 07:22:11', '2019-06-15 07:22:11');
 
 -- INSERT USER
 INSERT INTO user (display_name, full_name, gender, password, email, phone, address, birthday, department_id, role_id, is_enabled, created_time) VALUES
@@ -20,26 +24,26 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 2, true, '2017-09-20 07:22:11'),
 ('quang', 'Hoàng Vinh Quang', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'quang@gmail.com'
 , '0987654321', 'xyzabc tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
-('hoang', 'Nguyễn Phú Hoàng', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u','hoang@gmail.com'
+('hoang', 'Nguyễn Hoàng', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u','hoang@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-09-30', 2, 1, true, '2017-09-20 07:22:11'),
-('staff1', 'Nguyễn Phú Staff', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff1@gmail.com'
+('nam', 'Lưu Thành Nam', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'luutn@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
-('staff2', 'Nguyễn Phú Staff', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff2@gmail.com'
+('dao', 'Lê Thị Đào', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'daolt@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
-('staff3', 'Nguyễn Phú Staff', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff3@gmail.com'
+('truong', 'Đàm Xuân Trường', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'truongdx@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
-('staff4', 'Nguyễn Phú Staff', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff4@gmail.com'
+('han', 'Văn Hân', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'hanv@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 1, true, '2017-09-20 07:22:11'),
-('staff5', 'Nguyễn Phú Staff', false, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'staff5@gmail.com'
+('minh', 'Nguyễn Hoàng Minh', false, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'minhnh@gmail.com'
 , '0123456789', 'abcxyz tphcm', '2000-01-30', 1, 1, true, '2017-09-20 07:22:11'),
-('admin', 'Nguyễn Phú Admin', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'admin@gmail.com'
+('admin', 'Admin', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'admin@gmail.com'
 , '0123456789', 'abcxyz tphcm', '1993-01-30', 1, 3, true, '2017-09-20 07:22:11'),
 ('hoangcm', 'Cao Minh Hoàng', true, '$2a$11$JDbss487mfwgvAzx7g.6L.Y2hXwLh58861Q.wvLKIbfr0b9gDzh3u', 'hoangcm@gmail.com'
 , '0907419552', 'abcxyz tphcm', '1993-01-30', 2, 2, true, '2017-09-20 07:22:11');
 
 -- INSERT DOCUMENT
 INSERT INTO document (title, summary, description, created_time, start_time, end_time, creator_id, project_id, available) VALUES
-('document title 1', 'document summary 1', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document summary 1', 'document summary 1', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('document title 2', 'document summary 2', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('document title 3', 'document summary 3', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('document title 4', 'document summary 4', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
@@ -49,7 +53,6 @@ INSERT INTO document (title, summary, description, created_time, start_time, end
 ('document title 8', 'document summary 8', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('document title 9', 'document summary 9', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('document title 10', 'document summary 10', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true);
-
 
 -- INSERT TASK
 INSERT INTO task (title, summary, description, created_time,
