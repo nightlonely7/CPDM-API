@@ -546,6 +546,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<UserSummary> findAllByRole_IdInAndDepartment_IdIn(List<Integer> listRole, List<Integer> listDepartment, Pageable pageable) {
+        return userRepository.findAllByRole_IdInAndDepartment_IdIn(listRole,listDepartment,pageable);
+    }
+
+    @Override
     public Page<UserSummary> advancedSearch(String email, String displayName, String fullName, Integer departmentId,
                                               LocalDate birthDateFrom, LocalDate birthDateTo, Boolean gender, Pageable pageable) {
         email = email.toLowerCase();

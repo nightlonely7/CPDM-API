@@ -52,15 +52,17 @@ public interface TaskService {
 
     boolean existsByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime);
 
-    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime, LocalDateTime toTime);
+    List<TaskSummary> findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(User user, List<String> listStatus, LocalDateTime fromTime, LocalDateTime toTime);
 
-    List<TaskSummary> findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, String status, LocalDateTime fromTime);
+    List<TaskSummary> findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(User user, List<String> listStatus, LocalDateTime fromTime);
 
-    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotAssigned(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotAssigned(LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndFullAssigned(String status, LocalDate fromDate, LocalDate toDate, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndFullAssigned(LocalDate fromDate, LocalDate toDate, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndPartAssigned(String status, LocalDate fromDate, LocalDate toDate, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndPartAssigned(LocalDate fromDate, LocalDate toDate, Pageable pageable);
 
-    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndStatus(String status, LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable);
+    Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotComplete(LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable);
+
+    Page<TaskSummary> findAllSummaryByExecutorAndStatus(String status, Pageable pageable);
 }

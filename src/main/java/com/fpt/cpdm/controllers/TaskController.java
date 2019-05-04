@@ -86,15 +86,14 @@ public class TaskController {
         return ResponseEntity.ok(taskSummaries);
     }
 
-    @GetMapping("search/executes/{status}")
-    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndStatus(@PathVariable(name = "status") String status,
-                                                                                    @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+    @GetMapping("search/executes/notComplete")
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndStatus(@RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                                     @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
                                                                                     @PageableDefault Pageable pageable) {
         LocalDateTime fromTime = fromDate.atStartOfDay();
         LocalDateTime toTime = toDate.atTime(23, 59, 59);
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndStatus(status, fromTime, toTime, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndNotComplete(fromTime, toTime, pageable);
 
         if (taskSummaries.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -104,15 +103,29 @@ public class TaskController {
 
     }
 
+    @GetMapping("search/executes/all-working")
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorStatus(@PathVariable(name = "status") String status,
+                                                                     @PageableDefault Pageable pageable) {
+
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndStatus(status, pageable);
+
+        if (taskSummaries.getContent().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(taskSummaries);
+
+    }
+
+
     @GetMapping("/search/executes/notAssigned")
-    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndNotAssigned(@RequestParam(name = "status") String status,
-                                                                                         @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndNotAssigned(@RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                                          @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
                                                                                          @PageableDefault Pageable pageable) {
         LocalDateTime fromTime = fromDate.atStartOfDay();
         LocalDateTime toTime = toDate.atTime(23, 59, 59);
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndNotAssigned(status, fromTime, toTime, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndNotAssigned(fromTime, toTime, pageable);
 
         if (taskSummaries.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -122,12 +135,11 @@ public class TaskController {
     }
 
     @GetMapping("/search/executes/fullAssigned")
-    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndFullAssigned(@RequestParam(name = "status") String status,
-                                                                                          @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndFullAssigned(@RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                                           @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
                                                                                           @PageableDefault Pageable pageable) {
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndFullAssigned(status, fromDate, toDate, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndFullAssigned(fromDate, toDate, pageable);
 
         if (taskSummaries.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -137,13 +149,11 @@ public class TaskController {
     }
 
     @GetMapping("/search/executes/partAssigned")
-    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndPartAssigned(
-            @RequestParam(name = "status") String status,
-            @RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-            @PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<TaskSummary>> findAllByExecutorAndDateRangeAndPartAssigned(@RequestParam(name = "fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                                                                          @RequestParam(name = "toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+                                                                                          @PageableDefault Pageable pageable) {
 
-        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndPartAssigned(status, fromDate, toDate, pageable);
+        Page<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndPartAssigned(fromDate, toDate, pageable);
 
         if (taskSummaries.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();

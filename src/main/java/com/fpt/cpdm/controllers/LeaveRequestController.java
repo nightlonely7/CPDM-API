@@ -301,8 +301,9 @@ public class LeaveRequestController {
         LocalDateTime limitDay = LocalDate.now().plusDays(366).atStartOfDay();
 
         //Get all working task by executor
-        List<TaskSummary> taskSummaries = taskService.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(user, "Working", today, limitDay);
-        taskSummaries.addAll(taskService.findAllByExecutorAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(user, "Working", today));
+        List<String> listStatus = ConstantManager.NOT_COMPLETE_STATUS_LIST;
+        List<TaskSummary> taskSummaries = taskService.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(user, listStatus, today, limitDay);
+        taskSummaries.addAll(taskService.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(user, listStatus, today));
         //Sort by start time
         taskSummaries.sort((o1, o2) -> o1.getStartTime().compareTo(o2.getStartTime()));
 
