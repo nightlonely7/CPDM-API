@@ -14,11 +14,12 @@ import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
-import com.fpt.cpdm.models.users.UserDetail;
 import com.fpt.cpdm.models.users.UserSummary;
+import com.fpt.cpdm.repositories.DocumentHistoryRepository;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.repositories.ProjectRepository;
 import com.fpt.cpdm.repositories.UserRepository;
+import com.fpt.cpdm.services.DocumentHistoryService;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,15 @@ import java.util.Optional;
 public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
+    private final DocumentHistoryService documentHistoryService;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    public DocumentServiceImpl(DocumentRepository documentRepository, UserRepository userRepository, ProjectRepository projectRepository, AuthenticationFacade authenticationFacade) {
+    public DocumentServiceImpl(DocumentRepository documentRepository, DocumentHistoryService documentHistoryService, UserRepository userRepository, ProjectRepository projectRepository, AuthenticationFacade authenticationFacade) {
         this.documentRepository = documentRepository;
+        this.documentHistoryService = documentHistoryService;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.authenticationFacade = authenticationFacade;
@@ -239,6 +242,8 @@ public class DocumentServiceImpl implements DocumentService {
         documentEntity.setRelatives(relatives);
 
         DocumentEntity savedDocumentEntity = documentRepository.save(documentEntity);
+
+        documentHistoryService.save(savedDocumentEntity);
 
         DocumentSummary documentSummary = documentRepository.findSummaryById(savedDocumentEntity.getId()).orElseThrow(
                 () -> new EntityNotFoundException(savedDocumentEntity.getId(), "Document")

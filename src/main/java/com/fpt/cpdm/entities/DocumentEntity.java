@@ -61,6 +61,10 @@ public class DocumentEntity extends BaseEntity {
     @Column(name = "last_modified_time")
     private LocalDateTime lastModifiedTime;
 
+    @ManyToOne
+    @JoinColumn(name = "creator_id", referencedColumnName = "id")
+    private UserEntity creator;
+
     @Basic
     @Column(name = "available")
     private Boolean available;

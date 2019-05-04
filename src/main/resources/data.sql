@@ -38,17 +38,17 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 , '0907419552', 'abcxyz tphcm', '1993-01-30', 2, 2, true, '2017-09-20 07:22:11');
 
 -- INSERT DOCUMENT
-INSERT INTO document (title, summary, description, created_time, start_time, end_time, project_id, available) VALUES
-('document title 1', 'document summary 1', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 2', 'document summary 2', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 3', 'document summary 3', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 4', 'document summary 4', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 5', 'document summary 5', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 6', 'document summary 6', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 7', 'document summary 7', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 8', 'document summary 8', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 9', 'document summary 9', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true),
-('document title 10', 'document summary 10', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, true);
+INSERT INTO document (title, summary, description, created_time, start_time, end_time, creator_id, project_id, available) VALUES
+('document title 1', 'document summary 1', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 2', 'document summary 2', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 3', 'document summary 3', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 4', 'document summary 4', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 5', 'document summary 5', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 6', 'document summary 6', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 7', 'document summary 7', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 8', 'document summary 8', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 9', 'document summary 9', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 10', 'document summary 10', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true);
 
 
 -- INSERT TASK

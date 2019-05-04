@@ -230,7 +230,6 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setEndTime(taskUpdateForm.getEndTime());
         taskEntity.setPriority(taskUpdateForm.getPriority());
 
-
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
         taskHistoryService.save(savedTaskEntity);
 
