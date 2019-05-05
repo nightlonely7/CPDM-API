@@ -104,12 +104,12 @@ INSERT INTO tasks_relatives(task_id, user_id) VALUES
 (1, 3), (1, 4), (1, 5), (1, 6);
 
 -- INSERT TASK_ISSUE
-INSERT INTO task_issue(task_id, summary, description, completed, created_time, last_modified_time, available) VALUES
-(1, 'issue 1', 'detail 1', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
-(1, 'issue 2', 'detail 2', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
-(1, 'issue 3', 'detail 3', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
-(1, 'issue 4', 'detail 4', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
-(1, 'issue 5', 'detail 5', true, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true);
+INSERT INTO task_issue(task_id, summary, description, completed, creator_id, created_time, last_editor_id, last_modified_time, available) VALUES
+(1, 'issue 1', 'detail 1', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true),
+(1, 'issue 2', 'detail 2', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true),
+(1, 'issue 3', 'detail 3', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true),
+(1, 'issue 4', 'detail 4', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true),
+(1, 'issue 5', 'detail 5', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true);
 
 -- INSERT TASK-DOCUMENT MAPPING
 INSERT INTO tasks_documents(task_id, document_id) VALUES

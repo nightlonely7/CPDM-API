@@ -32,8 +32,20 @@ public class TaskIssueEntity extends BaseEntity {
     private Boolean completed;
 
     @Basic
+    @Column(name = "completedTime")
+    private LocalDateTime completedTime;
+
+    @ManyToOne
+    @JoinColumn(name = "creator_id", referencedColumnName = "id")
+    private UserEntity creator;
+
+    @Basic
     @Column(name = "created_time")
     private LocalDateTime createdTime;
+
+    @ManyToOne
+    @JoinColumn(name = "last_editor_id", referencedColumnName = "id")
+    private UserEntity lastEditor;
 
     @Basic
     @Column(name = "last_modified_time")
@@ -49,10 +61,5 @@ public class TaskIssueEntity extends BaseEntity {
         this.lastModifiedTime = LocalDateTime.now();
         this.available = Boolean.TRUE;
         this.completed = Boolean.FALSE;
-    }
-
-    @PreUpdate
-    private void preUpdate() {
-        this.lastModifiedTime = LocalDateTime.now();
     }
 }
