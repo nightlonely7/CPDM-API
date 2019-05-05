@@ -40,17 +40,17 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
     Page<DocumentSummary> findAllSummaryByTitleContainingIgnoreCaseAndSummaryContainingIgnoreCaseAndAvailableTrue
             (String title, String summary, Pageable pageable);
 
-    @Query("select t from TaskEntity t where " +
-            "(:title is null or t.title like %:title%) and " +
-            "(:summary is null or t.summary like %:summary%) and " +
-            "(:createdTimeFrom is null or t.createdTime >= :createdTimeFrom) and " +
-            "(:createdTimeTo is null or t.createdTime <= :createdTimeTo) and " +
-            "(:startTimeFrom is null or t.startTime >= :startTimeFrom) and " +
-            "(:startTimeTo is null or t.startTime <= :startTimeTo) and " +
-            "(:endTimeFrom is null or t.endTime >= :endTimeFrom) and " +
-            "(:endTimeTo is null or t.endTime <= :endTimeTo) and " +
-            "(t.available = true)")
-    Page<DocumentSummary> advancedSearch(@Param("title") String title,
+    @Query("select d from DocumentEntity d where " +
+            "(:title is null or d.title like %:title%) and " +
+            "(:summary is null or d.summary like %:summary%) and " +
+            "(:createdTimeFrom is null or d.createdTime >= :createdTimeFrom) and " +
+            "(:createdTimeTo is null or d.createdTime <= :createdTimeTo) and " +
+            "(:startTimeFrom is null or d.startTime >= :startTimeFrom) and " +
+            "(:startTimeTo is null or d.startTime <= :startTimeTo) and " +
+            "(:endTimeFrom is null or d.endTime >= :endTimeFrom) and " +
+            "(:endTimeTo is null or d.endTime <= :endTimeTo) and " +
+            "(d.available = true)")
+    Page<DocumentSummary> advanceSearch(@Param("title") String title,
                                          @Param("summary") String summary,
                                          @Param("createdTimeFrom") LocalDateTime createdTimeFrom,
                                          @Param("createdTimeTo") LocalDateTime createdTimeTo,

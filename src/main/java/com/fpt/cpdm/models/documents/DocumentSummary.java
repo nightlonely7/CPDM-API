@@ -1,6 +1,5 @@
 package com.fpt.cpdm.models.documents;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fpt.cpdm.models.NameIdOnly;
 
 import java.time.LocalDateTime;
@@ -22,4 +21,6 @@ public interface DocumentSummary {
     LocalDateTime getEndTime();
 
     NameIdOnly getProject();
+
+    LocalDateTime getLastModifiedTime();
 }

@@ -154,8 +154,8 @@ public class DocumentController {
         return ResponseEntity.ok(documentService.existsByTitle(title));
     }
 
-    @GetMapping("/search/titleAndSummary")
-    public ResponseEntity<Page<DocumentSummary>> findByTitleAndSummary(DocumentSearchForm documentSearchForm,
+    @GetMapping("/search/creates")
+    public ResponseEntity<Page<DocumentSummary>> readByCreates(DocumentSearchForm documentSearchForm,
                                                                        @PageableDefault Pageable pageable) {
         Page<DocumentSummary> documentSummaries =
                 documentService.findAllSummaryByTitleAndSummary(documentSearchForm, pageable);

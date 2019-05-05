@@ -296,8 +296,7 @@ public class DocumentServiceImpl implements DocumentService {
             throw new BadRequestException("endTimeFrom is after endTimeTo");
         }
 
-        return documentRepository
-                .advancedSearch(documentSearchForm.getTitle(), documentSearchForm.getSummary(),
+        return documentRepository.advanceSearch(documentSearchForm.getTitle(), documentSearchForm.getSummary(),
                 documentSearchForm.getCreatedTimeFrom(), documentSearchForm.getCreatedTimeTo(),
                 documentSearchForm.getStartTimeFrom(), documentSearchForm.getStartTimeTo(),
                 documentSearchForm.getEndTimeFrom(), documentSearchForm.getEndTimeTo(),
