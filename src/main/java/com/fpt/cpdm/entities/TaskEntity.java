@@ -80,7 +80,7 @@ public class TaskEntity extends BaseEntity {
     @JoinColumn(name = "executor_id", referencedColumnName = "id")
     private UserEntity executor;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tasks_relatives",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))

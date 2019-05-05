@@ -35,6 +35,14 @@ public class AssignRequestEntity extends BaseEntity {
     @Column(name = "status")
     private Integer status;
 
+    @Basic
+    @Column(name = "started")
+    private Boolean started;
+
+    @Basic
+    @Column(name = "finished")
+    private Boolean finished;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
@@ -47,15 +55,17 @@ public class AssignRequestEntity extends BaseEntity {
     @JoinColumn(name = "approver_id", referencedColumnName = "id")
     private UserEntity approver;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "assignRequests_tasks",
-            joinColumns = @JoinColumn(name = "assign_request_id",referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id",referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "assign_request_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
     private List<TaskEntity> tasks;
 
     @PrePersist
-    public void onCreated(){
+    public void onCreated() {
         this.setCreatedDate(LocalDate.now());
+        this.setStarted(false);
+        this.setFinished(false);
     }
 }

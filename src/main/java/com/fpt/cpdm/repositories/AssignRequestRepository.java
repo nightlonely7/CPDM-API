@@ -2,6 +2,7 @@ package com.fpt.cpdm.repositories;
 
 import com.fpt.cpdm.entities.AssignRequestEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.models.assignRequests.AssignRequest;
 import com.fpt.cpdm.models.assignRequests.AssignRequestSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +26,8 @@ public interface AssignRequestRepository extends JpaRepository<AssignRequestEnti
     List<AssignRequestSummary> findAllByUserAndStatusInAndFromDateAfterAndFromDateLessThanEqual (UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
 
     List<AssignRequestSummary> findAllByUserAndStatusInAndToDateGreaterThanEqualAndToDateBefore (UserEntity userEntity, List<Integer> integerList, LocalDate fromDate, LocalDate toDate);
+
+    List<AssignRequestEntity> findAllByStatusAndFromDateLessThanEqualAndStartedFalseAndFinishedFalse(Integer status, LocalDate fromDate);
+
+    List<AssignRequestEntity> findAllByStatusAndToDateLessThanEqualAndStartedTrueAndFinishedFalse(Integer status, LocalDate toDate);
 }
