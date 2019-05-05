@@ -69,11 +69,19 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     Boolean existsByDepartment_Id(Integer id);
 
+    Boolean existsByIdAndDepartment_Id(Integer id, Integer departmentId);
+
+    Boolean existsByIdAndRole_Id(Integer id, Integer roleId);
+
     List<UserDisplayName> findAllDisplayNameByDepartmentAndRole_NameAndIdNot(DepartmentEntity departmentEntity, String roleName, Integer id);
 
     List<UserDisplayName> findAllDisplayNameByRole_Name(String roleName);
 
     List<UserSummary> findAllSummaryByDepartment_IdAndRole_IdNotLike(Integer departmentId, Integer roleId);
 
+    List<UserSummary> findAllSummaryByDepartment_IdAndRole_Id(Integer departmentId, Integer roleId);
+
     Page<UserSummary> findAllByRole_IdIn(List<Integer> listRole, Pageable pageable);
+
+    Page<UserSummary> findAllByRole_IdInAndDepartment_IdIn(List<Integer> listRole, List<Integer> listDepartment, Pageable pageable);
 }

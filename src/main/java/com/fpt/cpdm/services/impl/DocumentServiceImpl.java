@@ -7,15 +7,19 @@ import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.EntityNotFoundException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
+import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
 import com.fpt.cpdm.forms.documents.DocumentUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
+import com.fpt.cpdm.models.users.UserSummary;
+import com.fpt.cpdm.repositories.DocumentHistoryRepository;
 import com.fpt.cpdm.repositories.DocumentRepository;
 import com.fpt.cpdm.repositories.ProjectRepository;
 import com.fpt.cpdm.repositories.UserRepository;
+import com.fpt.cpdm.services.DocumentHistoryService;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.utils.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +36,15 @@ import java.util.Optional;
 public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
+    private final DocumentHistoryService documentHistoryService;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    public DocumentServiceImpl(DocumentRepository documentRepository, UserRepository userRepository, ProjectRepository projectRepository, AuthenticationFacade authenticationFacade) {
+    public DocumentServiceImpl(DocumentRepository documentRepository, DocumentHistoryService documentHistoryService, UserRepository userRepository, ProjectRepository projectRepository, AuthenticationFacade authenticationFacade) {
         this.documentRepository = documentRepository;
+        this.documentHistoryService = documentHistoryService;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.authenticationFacade = authenticationFacade;
@@ -83,6 +89,7 @@ public class DocumentServiceImpl implements DocumentService {
         );
 
         if (relative.getRole().getName().equals("ROLE_ADMIN") == false &&
+                relative.getRole().getName().equals("ROLE_MANAGER") == false &&
                 documentRepository.existsByIdAndRelativesAndAvailableTrue(id, relative) == false) {
             throw new UnauthorizedException();
         }
@@ -104,8 +111,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public DocumentSummary create(DocumentCreateForm documentCreateForm) {
-
+    public DocumentSummary create(DocumentCreateForm documentCreateForm, boolean selectAll,
+                                  List<Integer> departmentList, boolean selectAllManager) {
         Integer projectId = documentCreateForm.getProject().getId();
 
         if (projectRepository.existsById(projectId) == false) {
@@ -115,11 +122,75 @@ public class DocumentServiceImpl implements DocumentService {
         projectEntity.setId(projectId);
 
         List<UserEntity> relatives = new ArrayList<>();
-        if (documentCreateForm.getRelatives() != null) {
-            for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
-                UserEntity relative = new UserEntity(idOnlyForm.getId());
-                relatives.add(relative);
+        if (selectAll == false) {
+            if (documentCreateForm.getRelatives() != null) {
+                if (documentCreateForm.getRelatives().isEmpty() && departmentList.isEmpty()) {
+                    if (selectAllManager) {
+                        List<UserSummary> managerList = userRepository.findAllSummaryByRole_Name("ROLE_MANAGER");
+                        for (UserSummary manager : managerList) {
+                            UserEntity relative = new UserEntity(manager.getId());
+                            relatives.add(relative);
+                        }
+                    } else {
+                        relatives = userRepository.findAll();
+                    }
+                } else if (!documentCreateForm.getRelatives().isEmpty() && departmentList.isEmpty()) {
+                    if (selectAllManager) {
+                        for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
+                            if(userRepository.existsByIdAndRole_Id(idOnlyForm.getId(), 2).booleanValue()){
+                                UserEntity relative = new UserEntity(idOnlyForm.getId());
+                                relatives.add(relative);
+                            }
+                        }
+                    } else {
+                        for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
+                            UserEntity relative = new UserEntity(idOnlyForm.getId());
+                            relatives.add(relative);
+                        }
+                    }
+                } else if (documentCreateForm.getRelatives().isEmpty() && !departmentList.isEmpty()) {
+                    if(selectAllManager){
+                        for (Integer departmentId : departmentList) {
+                            List<UserSummary> userResult = userRepository.findAllSummaryByDepartment_IdAndRole_Id(departmentId, 2);
+                            for (UserSummary userSummary : userResult) {
+                                UserEntity relative = new UserEntity(userSummary.getId());
+                                relatives.add(relative);
+                            }
+                        }
+                    } else {
+                        for (Integer departmentId : departmentList) {
+                            List<UserSummary> userResult = userRepository.findAllSummaryByDepartment_IdAndRole_IdNotLike(departmentId, 3);
+                            for (UserSummary userSummary : userResult) {
+                                UserEntity relative = new UserEntity(userSummary.getId());
+                                relatives.add(relative);
+                            }
+                        }
+                    }
+                } else {
+                    if(selectAllManager){
+                        for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
+                            UserEntity relative = userRepository.findById(idOnlyForm.getId()).orElseThrow(
+                                    () -> new UserNotFoundException(idOnlyForm.getId())
+                            );
+                            if (departmentList.contains(relative.getDepartment().getId())
+                            && relative.getRole().getId() == 2) {
+                                relatives.add(relative);
+                            }
+                        }
+                    } else {
+                        for (IdOnlyForm idOnlyForm : documentCreateForm.getRelatives()) {
+                            UserEntity relative = userRepository.findById(idOnlyForm.getId()).orElseThrow(
+                                    () -> new UserNotFoundException(idOnlyForm.getId())
+                            );
+                            if (departmentList.contains(relative.getDepartment().getId())) {
+                                relatives.add(relative);
+                            }
+                        }
+                    }
+                }
             }
+        } else {
+            relatives = userRepository.findAll();
         }
 
         DocumentEntity documentEntity = new DocumentEntity();
@@ -147,7 +218,6 @@ public class DocumentServiceImpl implements DocumentService {
         DocumentEntity documentEntity = documentRepository.findById(id).orElseThrow(
                 () -> new DocumentNotFoundException(id)
         );
-
         Integer projectId = documentUpdateForm.getProject().getId();
 
         if (projectRepository.existsById(projectId) == false) {
@@ -173,6 +243,8 @@ public class DocumentServiceImpl implements DocumentService {
 
         DocumentEntity savedDocumentEntity = documentRepository.save(documentEntity);
 
+        documentHistoryService.save(savedDocumentEntity);
+
         DocumentSummary documentSummary = documentRepository.findSummaryById(savedDocumentEntity.getId()).orElseThrow(
                 () -> new EntityNotFoundException(savedDocumentEntity.getId(), "Document")
         );
@@ -183,7 +255,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Document deleteById(Integer id) {
         Optional<DocumentEntity> documentEntity = documentRepository.findById(id);
-        if(documentEntity.isPresent()){
+        if (documentEntity.isPresent()) {
             documentEntity.get().setAvailable(false);
             documentRepository.save(documentEntity.get());
         }

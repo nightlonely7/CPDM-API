@@ -318,10 +318,10 @@ public class UserServiceImpl implements UserService {
 //        if (userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
 //            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
 //        }
-//        if (user.getRole().getId() == 1 // 1 for "ROLE_STAFF"
-//                && userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
-//            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
-//        }
+        if (user.getRole().getId() == 2 // 1 for "ROLE_STAFF"
+                && userRepository.existsByDepartment_Id(user.getDepartment().getId())) {
+            throw new DepartmentAlreadyHaveManagerException("This department already have a manager!");
+        }
 
         UserEntity userEntity = ModelConverter.userModelToEntity(user);
 
@@ -543,6 +543,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserSummary> findAllByRole_IdIn(List<Integer> listRole, Pageable pageable) {
         return userRepository.findAllByRole_IdIn(listRole,pageable);
+    }
+
+    @Override
+    public Page<UserSummary> findAllByRole_IdInAndDepartment_IdIn(List<Integer> listRole, List<Integer> listDepartment, Pageable pageable) {
+        return userRepository.findAllByRole_IdInAndDepartment_IdIn(listRole,listDepartment,pageable);
     }
 
     @Override

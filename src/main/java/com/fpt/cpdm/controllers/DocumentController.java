@@ -3,12 +3,15 @@ package com.fpt.cpdm.controllers;
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
 import com.fpt.cpdm.forms.documents.DocumentUpdateForm;
+import com.fpt.cpdm.forms.documents.files.DocumentFileCreateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
-import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
 import com.fpt.cpdm.models.documents.DocumentSummary;
+import com.fpt.cpdm.models.documents.document_files.DocumentFileDetail;
+import com.fpt.cpdm.models.documents.document_histories.DocumentHistorySummary;
 import com.fpt.cpdm.models.tasks.TaskSummary;
-import com.fpt.cpdm.models.tasks.TaskSummary;
+import com.fpt.cpdm.services.DocumentFileService;
+import com.fpt.cpdm.services.DocumentHistoryService;
 import com.fpt.cpdm.services.DocumentService;
 import com.fpt.cpdm.services.TaskDocumentService;
 import com.fpt.cpdm.utils.ModelErrorMessage;
@@ -30,11 +33,15 @@ public class DocumentController {
 
     private final DocumentService documentService;
     private final TaskDocumentService taskDocumentService;
+    private final DocumentFileService documentFileService;
+    private final DocumentHistoryService documentHistoryService;
 
     @Autowired
-    public DocumentController(DocumentService documentService, TaskDocumentService taskDocumentService) {
+    public DocumentController(DocumentService documentService, TaskDocumentService taskDocumentService, DocumentFileService documentFileService, DocumentHistoryService documentHistoryService) {
         this.documentService = documentService;
         this.taskDocumentService = taskDocumentService;
+        this.documentFileService = documentFileService;
+        this.documentHistoryService = documentHistoryService;
     }
 
 //    @GetMapping
@@ -108,17 +115,17 @@ public class DocumentController {
         return ResponseEntity.ok(documentSummaries);
     }
 
-
     @PostMapping
     public ResponseEntity<DocumentSummary> create(@Valid @RequestBody DocumentCreateForm documentCreateForm,
+                                                  @RequestParam(name = "selectAll") boolean selectAll,
+                                                  @RequestParam(name = "departmentList") List<Integer> departmentList,
+                                                  @RequestParam(name = "selectAllManager") boolean selectAllManager,
                                                   BindingResult result) {
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
-
-        DocumentSummary documentSummary = documentService.create(documentCreateForm);
-
+        DocumentSummary documentSummary = documentService.create(documentCreateForm, selectAll, departmentList, selectAllManager);
         return ResponseEntity.ok(documentSummary);
     }
 
@@ -141,7 +148,6 @@ public class DocumentController {
         documentService.deleteById(id);
     }
 
-
     @GetMapping("/check/existByTitle")
     public ResponseEntity<Boolean> existByName(@RequestParam("title") String title){
         return ResponseEntity.ok(documentService.existsByTitle(title));
@@ -157,6 +163,34 @@ public class DocumentController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(documentSummaries);
+    }
+
+    @GetMapping("/{id}/files")
+    public ResponseEntity<List<DocumentFileDetail>> loadFiles(@PathVariable("id") Integer id) {
+
+        List<DocumentFileDetail> documentFileDetails = documentFileService.findAllDetailByDocument_Id(id);
+
+        return ResponseEntity.ok(documentFileDetails);
+    }
+
+    @PostMapping("/{id}/files")
+    public ResponseEntity<DocumentFileDetail> uploadFile(@PathVariable("id") Integer documentId,
+                                                     @Valid DocumentFileCreateForm documentFileCreateForm,
+                                                     BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String message = ModelErrorMessage.build(bindingResult);
+            throw new ModelNotValidException(message);
+        }
+
+        DocumentFileDetail documentFileDetail = documentFileService.create(documentId, documentFileCreateForm);
+
+        return ResponseEntity.ok(documentFileDetail);
+    }
+
+    @GetMapping("/{id}/histories")
+    public ResponseEntity<List<DocumentHistorySummary>> readAllHistoryByDocument_Id(@Valid @PathVariable("id") Integer documentId){
+        List<DocumentHistorySummary> documentHistorySummaries = documentHistoryService.findAllSummaryByDocument_Id(documentId);
+        return ResponseEntity.ok(documentHistorySummaries);
     }
 
 }
