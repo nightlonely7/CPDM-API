@@ -132,14 +132,17 @@ public class DocumentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<DocumentSummary> update(@PathVariable(name = "id") Integer id,
-                                           @Valid @RequestBody DocumentUpdateForm documentUpdateForm,
-                                           BindingResult result) {
+                                                  @Valid @RequestBody DocumentUpdateForm documentUpdateForm,
+                                                  @RequestParam(name = "selectAll") boolean selectAll,
+                                                  @RequestParam(name = "departmentList") List<Integer> departmentList,
+                                                  @RequestParam(name = "selectAllManager") boolean selectAllManager,
+                                                  BindingResult result) {
         if (result.hasErrors()) {
             String message = ModelErrorMessage.build(result);
             throw new ModelNotValidException(message);
         }
 
-        DocumentSummary documentSummary = documentService.update(id, documentUpdateForm);
+        DocumentSummary documentSummary = documentService.update(id, documentUpdateForm, selectAll, departmentList, selectAllManager);
 
         return ResponseEntity.ok(documentSummary);
     }
@@ -150,13 +153,13 @@ public class DocumentController {
     }
 
     @GetMapping("/check/existByTitle")
-    public ResponseEntity<Boolean> existByName(@RequestParam("title") String title){
+    public ResponseEntity<Boolean> existByName(@RequestParam("title") String title) {
         return ResponseEntity.ok(documentService.existsByTitle(title));
     }
 
     @GetMapping("/search/creates")
     public ResponseEntity<Page<DocumentSummary>> readByCreates(DocumentSearchForm documentSearchForm,
-                                                                       @PageableDefault Pageable pageable) {
+                                                               @PageableDefault Pageable pageable) {
         Page<DocumentSummary> documentSummaries =
                 documentService.findAllSummaryByTitleAndSummary(documentSearchForm, pageable);
         if (documentSummaries.isEmpty()) {
@@ -175,8 +178,8 @@ public class DocumentController {
 
     @PostMapping("/{id}/files")
     public ResponseEntity<DocumentFileDetail> uploadFile(@PathVariable("id") Integer documentId,
-                                                     @Valid DocumentFileCreateForm documentFileCreateForm,
-                                                     BindingResult bindingResult) {
+                                                         @Valid DocumentFileCreateForm documentFileCreateForm,
+                                                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String message = ModelErrorMessage.build(bindingResult);
             throw new ModelNotValidException(message);
@@ -188,7 +191,7 @@ public class DocumentController {
     }
 
     @GetMapping("/{id}/histories")
-    public ResponseEntity<List<DocumentHistorySummary>> readAllHistoryByDocument_Id(@Valid @PathVariable("id") Integer documentId){
+    public ResponseEntity<List<DocumentHistorySummary>> readAllHistoryByDocument_Id(@Valid @PathVariable("id") Integer documentId) {
         List<DocumentHistorySummary> documentHistorySummaries = documentHistoryService.findAllSummaryByDocument_Id(documentId);
         return ResponseEntity.ok(documentHistorySummaries);
     }

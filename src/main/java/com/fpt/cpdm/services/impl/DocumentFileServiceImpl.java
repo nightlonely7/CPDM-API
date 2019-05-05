@@ -82,7 +82,7 @@ public class DocumentFileServiceImpl implements DocumentFileService {
         UserEntity currentLoggedUser = authenticationService.getCurrentLoggedUser();
 
         LocalDateTime now = LocalDateTime.now();
-        String fileName= documentFileUpdateForm.getFileName();
+        String fileName= documentFileUpdateForm.getFilename();
 
         if(documentFileUpdateForm.getFile() != null){
             String originalFileName = documentFileUpdateForm.getFile().getOriginalFilename();
@@ -117,10 +117,10 @@ public class DocumentFileServiceImpl implements DocumentFileService {
 
         documentFileEntity.setDescription(documentFileUpdateForm.getDescription());
         DocumentFileEntity savedDocumentFileEntity = documentFilesRepository.save(documentFileEntity);
-        DocumentFileDetail savedTaskFileDetail = documentFilesRepository.findDetailByIdAndAvailableTrue(savedDocumentFileEntity.getId()).orElseThrow(
-                () -> new EntityNotFoundException(savedDocumentFileEntity.getId(), "TaskFile")
+        DocumentFileDetail savedDocumentFileDetail = documentFilesRepository.findDetailByIdAndAvailableTrue(savedDocumentFileEntity.getId()).orElseThrow(
+                () -> new EntityNotFoundException(savedDocumentFileEntity.getId(), "DocumentFile")
         );
-        return savedTaskFileDetail;
+        return savedDocumentFileDetail;
     }
 
     @Override

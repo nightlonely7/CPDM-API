@@ -6,17 +6,17 @@ INSERT INTO role (name,display_name) VALUES
 
 -- INSERT DEPARTMENT
 INSERT INTO department (name, alias, description, available, created_time, last_modified_time) VALUES
-('Văn Phòng Quản Li Xây Dựng', 'QLXD', '<h1>Văn Phòng Quản Li Xây Dựng</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('Văn Phòng Quản Li Ngân Sách', 'QLNS', '<h1>Văn Phòng Quản Li Ngân Sách</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('Văn Phòng Quản Li Nhân Viên', 'QLNV', '<h1>Văn Phòng Quản Li Nhân Viên</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('Văn Phòng Nhân Sự', 'NS', '<h1>Văn Phòng Nhân Sự</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11');
+('Văn Phòng Quản Li Xây Dựng', 'QLXD', 'Văn Phòng Quản Li Xây Dựng', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Quản Li Ngân Sách', 'QLNS', 'Văn Phòng Quản Li Ngân Sách', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Quản Li Nhân Viên', 'QLNV', 'Văn Phòng Quản Li Nhân Viên', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Nhân Sự', 'NS', 'Văn Phòng Nhân Sự', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11');
 
 --INSERT PROJECT
 INSERT INTO project(name, alias, description, available, created_time, last_modified_time) values
-('Dự án thầu Hải Phòng 2019', 'DAT 2019', '<h1>Dự án thầu Hải Phòng 2019</h1>', true, '2017-09-20 07:22:11', '2019-07-23 07:22:11'),
-('Dự án nhà nước Bình Dương 2018', 'DANN 2018', '<h1>Dự án nhà nước Bình Dương 2018</h1>', true, '2017-09-30 07:22:11', '2018-08-24 07:22:11'),
-('Dự án thầu TPHCM 2017', 'DAT 2017', '<h1>Dự án thầu TPHCM 2017</h1>', true, '2016-04-20 07:22:11', '2017-09-10 07:22:11'),
-('Dự án tư nhân TPHCM 2019', 'DATU 2018', '<h1>Dự án tư nhân TPHCM 2019</h1>', true, '2015-02-27 07:22:11', '2019-06-15 07:22:11');
+('Dự án thầu Hải Phòng 2019', 'DAT 2019', 'Dự án thầu Hải Phòng 2019', true, '2017-09-20 07:22:11', '2019-07-23 07:22:11'),
+('Dự án nhà nước Bình Dương 2018', 'DANN 2018', 'Dự án nhà nước Bình Dương 2018', true, '2017-09-30 07:22:11', '2018-08-24 07:22:11'),
+('Dự án thầu TPHCM 2017', 'DAT 2017', 'Dự án thầu TPHCM 2017', true, '2016-04-20 07:22:11', '2017-09-10 07:22:11'),
+('Dự án tư nhân TPHCM 2019', 'DATU 2018', 'Dự án tư nhân TPHCM 2019', true, '2015-02-27 07:22:11', '2019-06-15 07:22:11');
 
 -- INSERT USER
 INSERT INTO user (display_name, full_name, gender, password, email, phone, address, birthday, department_id, role_id, is_enabled, created_time) VALUES
@@ -43,16 +43,16 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 
 -- INSERT DOCUMENT
 INSERT INTO document (title, summary, description, created_time, start_time, end_time, creator_id, project_id, available) VALUES
-('document summary 1', 'document summary 1', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 2', 'document summary 2', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 3', 'document summary 3', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 4', 'document summary 4', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 5', 'document summary 5', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 6', 'document summary 6', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 7', 'document summary 7', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 8', 'document summary 8', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 9', 'document summary 9', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 10', 'document summary 10', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true);
+('document summary 1', 'document summary 1', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 2', 'document summary 2', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 3', 'document summary 3', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 4', 'document summary 4', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 5', 'document summary 5', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 6', 'document summary 6', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 7', 'document summary 7', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 8', 'document summary 8', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 9', 'document summary 9', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('document title 10', 'document summary 10', 'description', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true);
 
 -- INSERT TASK
 INSERT INTO task (title, summary, description, created_time,
