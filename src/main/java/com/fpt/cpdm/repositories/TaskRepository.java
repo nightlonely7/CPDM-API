@@ -92,4 +92,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
     List<TaskSummary> findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(UserEntity userEntity, List<String> listStatus, LocalDateTime fromTime, LocalDateTime fromTime2);
 
     Page<TaskSummary> findAllByExecutorAndStatusAndAvailableTrue(UserEntity userEntity, String status, Pageable pageable);
+
+    List<TaskSummary> findAllByExecutorAndStatusAndAvailableTrue(UserEntity userEntity, String status);
 }

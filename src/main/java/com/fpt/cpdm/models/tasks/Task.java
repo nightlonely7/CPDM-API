@@ -58,4 +58,6 @@ public class Task {
     private User executor;
 
     private List<Document> documents;
+
+    private List<User> relatives;
 }

@@ -32,6 +32,10 @@ public class AssignRequest {
 
     private Integer status;
 
+    private Boolean started;
+
+    private Boolean finished;
+
     private User user;
 
     private User assignee;

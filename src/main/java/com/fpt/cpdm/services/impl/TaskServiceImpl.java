@@ -1,10 +1,7 @@
 package com.fpt.cpdm.services.impl;
 
 import com.fpt.cpdm.configurations.AuthenticationFacade;
-import com.fpt.cpdm.entities.ProjectEntity;
-import com.fpt.cpdm.entities.TaskEntity;
-import com.fpt.cpdm.entities.TaskFileEntity;
-import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.entities.*;
 import com.fpt.cpdm.exceptions.BadRequestException;
 import com.fpt.cpdm.exceptions.ConflictException;
 import com.fpt.cpdm.exceptions.EntityNotFoundException;
@@ -14,17 +11,20 @@ import com.fpt.cpdm.forms.tasks.TaskCreateForm;
 import com.fpt.cpdm.forms.tasks.TaskSearchForm;
 import com.fpt.cpdm.forms.tasks.TaskUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
+import com.fpt.cpdm.models.assignRequests.AssignRequest;
 import com.fpt.cpdm.models.assignRequests.AssignRequestSummary;
 import com.fpt.cpdm.models.tasks.TaskDetail;
 import com.fpt.cpdm.models.tasks.TaskSummary;
 import com.fpt.cpdm.models.tasks.task_issues.TaskIssueStatus;
 import com.fpt.cpdm.models.users.User;
+import com.fpt.cpdm.models.users.UserDisplayName;
 import com.fpt.cpdm.repositories.*;
 import com.fpt.cpdm.services.TaskHistoryService;
 import com.fpt.cpdm.services.TaskService;
 import com.fpt.cpdm.utils.ConstantManager;
 import com.fpt.cpdm.utils.Enum;
 import com.fpt.cpdm.utils.ModelConverter;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -406,6 +406,55 @@ public class TaskServiceImpl implements TaskService {
         System.out.println("manage task status done " + System.currentTimeMillis());
     }
 
+    @Scheduled(fixedRate = 30000)
+    public void switchExecutorAuto(){
+        LocalDate today = LocalDate.now();
+        System.out.println("switch executor auto " + System.currentTimeMillis());
+
+        Integer approvedCode = Enum.AssignRequestStatus.Approved.getAssignRequestStatusCode();
+        //find all assign request approved, from date less than equal today but not change executor
+        List<AssignRequestEntity> notStartedApprovedAssignRequests = assignRequestRepository.findAllByStatusAndFromDateLessThanEqualAndStartedFalseAndFinishedFalse(approvedCode,today);
+        for (AssignRequestEntity assignRequestEntity: notStartedApprovedAssignRequests) {
+
+            UserEntity user = assignRequestEntity.getUser();
+            UserEntity assignee = assignRequestEntity.getAssignee();
+            UserEntity approver = assignRequestEntity.getApprover();
+            List<TaskEntity> taskEntities = assignRequestEntity.getTasks();
+            for (TaskEntity taskEntity : taskEntities) {
+                //Add current executor to relatives
+                taskEntity.getRelatives().add(user);
+                //Change executor to assignee
+                taskEntity.setExecutor(assignee);
+                //save history
+                TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+                taskHistoryService.save(savedTaskEntity, approver);
+            }
+            //update started status to true
+            assignRequestEntity.setStarted(true);
+            assignRequestRepository.save(assignRequestEntity);
+        }
+        //find all assign request approved, to date less than equal today but not change executor back
+        List<AssignRequestEntity> notFinshedApprovedAssignRequests = assignRequestRepository.findAllByStatusAndToDateLessThanEqualAndStartedTrueAndFinishedFalse(approvedCode,today);
+        for (AssignRequestEntity assignRequestEntity: notFinshedApprovedAssignRequests) {
+            UserEntity user = assignRequestEntity.getUser();
+            UserEntity approver = assignRequestEntity.getApprover();
+            for (TaskEntity taskEntity : assignRequestEntity.getTasks()) {
+                //Remove old executor from relatives
+                taskEntity.getRelatives().remove(user);
+                //Change executor back to old executor
+                taskEntity.setExecutor(user);
+                //save history
+                TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
+                taskHistoryService.save(savedTaskEntity,approver);
+            }
+            //update finised status to true
+            assignRequestEntity.setFinished(true);
+            assignRequestRepository.save(assignRequestEntity);
+        }
+
+        System.out.println("switch executor done " + System.currentTimeMillis());
+    }
+
     @Override
     public void deleteById(Integer id) {
 
@@ -464,10 +513,7 @@ public class TaskServiceImpl implements TaskService {
                 () -> new UsernameNotFoundException(email)
         );
 
-        List<String> listStatus = ConstantManager.NOT_COMPLETE_STATUS_LIST;
-
-        List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusInAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor, listStatus, fromTime, toTime);
-        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor, listStatus, fromTime, fromTime));
+        List<TaskSummary> taskSummaries = this.findAllSummaryByExecutorAndDateRangeAndNotComplete(fromTime, toTime);
 
         LocalDate fromDate = fromTime.toLocalDate();
         LocalDate toDate = toTime.toLocalDate();
@@ -548,6 +594,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotComplete(LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable) {
+        List<TaskSummary> taskSummaries = this.findAllSummaryByExecutorAndDateRangeAndNotComplete(fromTime,toTime);
+        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), taskSummaries.size());
+        return result;
+    }
+
+    @Override
+    public List<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotComplete(LocalDateTime fromTime, LocalDateTime toTime) {
         // get current logged user
         String email = authenticationFacade.getAuthentication().getName();
         UserEntity executor = userRepository.findByEmail(email).orElseThrow(
@@ -557,9 +610,10 @@ public class TaskServiceImpl implements TaskService {
         List<String> listStatus = ConstantManager.NOT_COMPLETE_STATUS_LIST;
         List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusInAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(executor, listStatus, fromTime, toTime);
         taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(executor, listStatus, fromTime, fromTime));
+        //add all outdated task
+        taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndAvailableTrue(executor, "Outdated"));
 
-        Page<TaskSummary> result = new PageImpl<TaskSummary>(taskSummaries, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), taskSummaries.size());
-        return result;
+        return taskSummaries;
     }
 
     @Override

@@ -171,6 +171,8 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
             List<TaskSummary> taskSummaries = taskRepository.findAllByExecutorAndStatusInAndStartTimeGreaterThanEqualAndStartTimeLessThanEqual(userEntity, listStatus, leaveRequest.getFromDate().atStartOfDay(), leaveRequest.getToDate().plusDays(1).atStartOfDay());
             //get task strat before but still not end
             taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(userEntity, listStatus, leaveRequest.getFromDate().atStartOfDay(),leaveRequest.getFromDate().plusDays(1).atStartOfDay()));
+            //add all outdated task
+            taskSummaries.addAll(taskRepository.findAllByExecutorAndStatusAndAvailableTrue(userEntity, "Outdated"));
             //get all assign request approved
             List<AssignRequestSummary> assignRequestSummaries = assignRequestRepository.findAllByUserAndStatusInAndFromDateLessThanEqualAndToDateGreaterThanEqual(userEntity,integerList,leaveRequest.getFromDate(),leaveRequest.getToDate());
             List<Integer> assignedTaskSummaryIds = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.TaskHistoryEntity;
+import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.EntityNotFoundException;
 import com.fpt.cpdm.models.projects.ProjectDTO;
 import com.fpt.cpdm.models.tasks.TaskSummary;
@@ -79,6 +80,44 @@ public class TaskHistoryServiceImpl implements TaskHistoryService {
         taskHistoryEntity.setCreatedTime(taskEntity.getLastModifiedTime());
         taskHistoryEntity.setData(data);
         taskHistoryEntity.setCreator(authenticationService.getCurrentLoggedUser());
+        taskHistoryRepository.save(taskHistoryEntity);
+    }
+
+    @Override
+    public void save(TaskEntity taskEntity, UserEntity creator) {
+
+        TaskHistoryData taskHistoryData = new TaskHistoryData();
+        taskHistoryData.setTitle(taskEntity.getTitle());
+        taskHistoryData.setSummary(taskEntity.getSummary());
+        taskHistoryData.setDescription(taskEntity.getDescription());
+        taskHistoryData.setCreatedTime(taskEntity.getCreatedTime().toString());
+        taskHistoryData.setStartTime(taskEntity.getStartTime().toString());
+        taskHistoryData.setEndTime(taskEntity.getEndTime().toString());
+        if (taskEntity.getCompletedTime() != null) {
+            taskHistoryData.setCompletedTime(taskEntity.getCompletedTime().toString());
+        }
+        taskHistoryData.setCreatorId(taskEntity.getCreator().getId());
+        taskHistoryData.setExecutorId(taskEntity.getExecutor().getId());
+        taskHistoryData.setProjectId(taskEntity.getProject().getId());
+        if (taskEntity.getParentTask() != null) {
+            taskHistoryData.setParentTaskId(taskEntity.getParentTask().getId());
+        }
+        taskHistoryData.setPriority(taskEntity.getPriority());
+        taskHistoryData.setStatus(taskEntity.getStatus());
+        taskHistoryData.setAvailable(taskEntity.getAvailable());
+
+        String data = "";
+        try {
+            data = new ObjectMapper().writeValueAsString(taskHistoryData);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        TaskHistoryEntity taskHistoryEntity = new TaskHistoryEntity();
+        taskHistoryEntity.setTask(taskEntity);
+        taskHistoryEntity.setCreatedTime(taskEntity.getLastModifiedTime());
+        taskHistoryEntity.setData(data);
+        taskHistoryEntity.setCreator(creator);
         taskHistoryRepository.save(taskHistoryEntity);
     }
 
