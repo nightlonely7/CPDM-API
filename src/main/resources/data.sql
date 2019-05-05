@@ -59,6 +59,24 @@ INSERT INTO task (title, summary, description, created_time,
 start_time, end_time, priority, status, creator_id, executor_id, project_id, parent_task_id, available) VALUES
 ('Tác vụ số 1', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 2', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 3', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 4', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 5', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 6', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 7', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 8', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 9', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 10', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('title task 02', 'summary task 02', 'description task 02', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-03-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('title task 03', 'summary task 03', 'description task 03', '2019-01-28 16:30:00'
