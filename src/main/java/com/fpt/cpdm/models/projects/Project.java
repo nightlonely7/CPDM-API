@@ -18,4 +18,5 @@ public class Project {
 
     private String alias;
 
+    private String description;
 }

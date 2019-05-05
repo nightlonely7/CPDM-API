@@ -2,6 +2,7 @@ package com.fpt.cpdm.controllers;
 
 import com.fpt.cpdm.exceptions.ModelNotValidException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
+import com.fpt.cpdm.forms.documents.DocumentSearchForm;
 import com.fpt.cpdm.forms.documents.DocumentUpdateForm;
 import com.fpt.cpdm.forms.documents.files.DocumentFileCreateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
@@ -154,11 +155,10 @@ public class DocumentController {
     }
 
     @GetMapping("/search/titleAndSummary")
-    public ResponseEntity<Page<DocumentSummary>> findByTitleAndSummary(@RequestParam("title") String title,
-                                                                       @RequestParam("summary") String summary,
+    public ResponseEntity<Page<DocumentSummary>> findByTitleAndSummary(DocumentSearchForm documentSearchForm,
                                                                        @PageableDefault Pageable pageable) {
         Page<DocumentSummary> documentSummaries =
-                documentService.findAllSummaryByTitleAndSummary(title, summary, pageable);
+                documentService.findAllSummaryByTitleAndSummary(documentSearchForm, pageable);
         if (documentSummaries.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

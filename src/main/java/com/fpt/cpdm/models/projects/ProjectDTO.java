@@ -12,4 +12,5 @@ public interface ProjectDTO {
 
     String getAlias();
 
+    String getDescription();
 }
