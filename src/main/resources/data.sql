@@ -44,8 +44,7 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 -- INSERT DOCUMENT
 INSERT INTO document (title, summary, description, created_time, start_time, end_time, creator_id, project_id, available) VALUES
 ('Hướng dẫn về hợp đồng tư vấn xây dựng',
- 'Thông tư này hướng dẫn một số nội dung của các hợp đồng tư vấn xây dựng gồm: tư vấn khảo sát xây dựng và' ||
-  ' tư vấn lập báo cáo nghiên cứu khả thi đầu tư xây dựng',
+ 'Hướng dẫn một số nội dung của các hợp đồng tư vấn xây dựng.',
 'Thông tư này hướng dẫn một số nội dung của các hợp đồng tư vấn xây dựng gồm: tư vấn khảo sát xây dựng, tư vấn lập' ||
 ' Báo cáo nghiên cứu khả thi đầu tư xây dựng, tư vấn thiết kế xây dựng công trình, tư vấn giám sát thi công xây ' ||
 'dựng công trình (sau đây gọi chung là tư vấn xây dựng) thuộc các dự án đầu tư xây dựng ' ||
@@ -64,13 +63,12 @@ INSERT INTO document (title, summary, description, created_time, start_time, end
    ' phép xây dựng; giấy phép xây dựng có thời hạn; quy trình và thẩm quyền cấp giấy phép xây dựng.',
    '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('Hướng dẫn về năng lực của tổ chức, cá nhân',
- 'Thông tư này hướng dẫn về năng lực hoạt động xây dựng, gồm: năng lực hành nghề hoạt động xây dựng của cá nhân' ||
-  'và năng lực hoạt động xây dựng của tổ chức',
+ 'Hướng dẫn về năng lực hoạt động xây dựng',
   'Phạm vi Điều chỉnh: Thông tư này hướng dẫn về năng lực hoạt động xây dựng, gồm: năng lực hành nghề hoạt động xây' ||
    ' dựng của cá nhân; năng lực hoạt động xây dựng của tổ chức; công bố thông tin về năng lực hoạt động xây dựng.',
    '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('Hướng dẫn hợp đồng thiết kế - cung cấp thiết bị công nghệ ',
-'Hướng dẫn hợp đồng thiết kế - cung cấp thiết bị công nghệ và thi công xây dựng công trình thuộc các dự án đầu tư xây dựng',
+'Hướng dẫn hợp đồng thiết kế - cung cấp thiết bị công nghệ và thi công xây dựng công trình',
  'Thông tư này hướng dẫn về hợp đồng thiết kế - cung cấp thiết bị công nghệ và thi công xây dựng công trình thuộc các ' ||
   'dự án đầu tư xây dựng' ||
   'dự án đầu tư xây dựng theo quy định tại khoản 2 Điều 1 Nghị định số 37/2015/NĐ-CP ngày 22/4/2015 của Chính phủ' ||
@@ -88,23 +86,20 @@ INSERT INTO document (title, summary, description, created_time, start_time, end
    ' phí thẩm định thiết kế cơ sở.',
    '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('hướng dẫn xác định đơn giá nhân công trong quản lý chi phí đầu tư xây dựng',
- 'ướng dẫn xác định đơn giá nhân công để quản lý chi phí đầu tư xây dựng công trình bao gồm: tổng mức'' ||
-   '' đầu tư, dự toán xây dựng, dự toán gói thầu, giá xây dựng, giá hợp đồng, chỉ số giá xây dựng.',
+ 'Hướng dẫn xác định đơn giá nhân công để quản lý chi phí đầu tư xây dựng công trình .',
   'Hướng dẫn xác định đơn giá nhân công để quản lý chi phí đầu tư xây dựng công trình bao gồm: tổng mức' ||
    ' đầu tư, dự toán xây dựng, dự toán gói thầu, giá xây dựng, giá hợp đồng, chỉ số giá xây dựng.' ||
     'Khuyến khích các cơ quan, tổ chức, cá nhân có liên quan đến việc quản lý chi phí đầu tư xây dựng sử dụng' ||
      ' các nguồn vốn khác áp dụng các quy định của Thông tư này.',
    '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('Công bố định mức các hao phí xác định giá ca máy và thiết bị thi công xây dựng',
- 'Công bố định mức các hao phí xác định giá ca máy và thiết bị thi công xây dựng kèm theo quyết định này để các cơ quan,' ||
-  ' tổ chức, các nhân có liên quan tham khảo, sử dụng trong xác định và quản lý chi phí đầu tư xây dựng.',
+ 'Công bố định mức các hao phí xác định giá ca máy và thiết bị thi công xây dựng kèm theo quyết định của nhà nước',
   'Công bố định mức các hao phí xác định giá ca máy và thiết bị thi công xây dựng kèm theo quyết định này để các cơ quan,'' ||
   '' tổ chức, các nhân có liên quan tham khảo, sử dụng trong xác định và quản lý chi phí đầu tư xây dựng.' ||
    'Định mức các hao phí xác định giá ca máy gồm: số ca làm việc trong năm; định mức khấu hao, sửa chữa, tiêu hao ' ||
    'nhiên liệu - năng lượng, nhân công điều khiển và định mức chi phí khác.', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
 ('Công bố định mức chi phí quản lý dự án và tư vấn đầu tư xây dựng',
- 'Công bố định mức chi phí quản lý dự án và tư vấn đầu tư xây dựng kèm theo quyết định này để các cơ quan, tổ chức, ' ||
-  'cá nhân có liên quan xác định chi phí quản lý dự án và tư vấn đầu tư xây dựng',
+ 'Công bố định mức chi phí quản lý dự án và tư vấn đầu tư xây dựng kèm theo quyết định của nhà nước',
   'Công bố định mức chi phí quản lý dự án và tư vấn đầu tư xây dựng kèm theo quyết định này để các cơ quan, tổ chức, ' ||
    'cá nhân có liên quan xác định chi phí quản lý dự án và tư vấn đầu tư xây dựng trong tổng mức đầu tư xây dựng,' ||
     ' dự toán xây dựng công trình, xác định giá gói thầu và quản lý chi phí đầu tư xây dựng các dự án thuộc đối' ||
