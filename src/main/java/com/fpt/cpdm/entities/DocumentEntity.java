@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity(name = "Document")
+@Entity(name = "DocumentEntity")
 @Table(name = "document")
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
@@ -39,6 +39,7 @@ public class DocumentEntity extends BaseEntity {
 
     @Basic
     @Column(name = "created_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime createdTime;
 
     @Basic
@@ -59,6 +60,7 @@ public class DocumentEntity extends BaseEntity {
 
     @Basic
     @Column(name = "last_modified_time")
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime lastModifiedTime;
 
     @ManyToOne

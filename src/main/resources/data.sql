@@ -5,18 +5,18 @@ INSERT INTO role (name,display_name) VALUES
 ('ROLE_ADMIN','Giám đốc');
 
 -- INSERT DEPARTMENT
-INSERT INTO department (name, alias, available, created_time, last_modified_time) VALUES
-('Văn Phòng Quản Li Xây Dựng', 'QLXD', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('Văn Phòng Quản Li Ngân Sách', 'QLNS', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('Văn Phòng Quản Li Nhân Viên', 'QLNV', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('Văn Phòng Nhân Sự', 'NS', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11');
+INSERT INTO department (name, alias, description, available, created_time, last_modified_time) VALUES
+('Văn Phòng Quản Li Xây Dựng', 'QLXD', '<h1>Văn Phòng Quản Li Xây Dựng</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Quản Li Ngân Sách', 'QLNS', '<h1>Văn Phòng Quản Li Ngân Sách</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Quản Li Nhân Viên', 'QLNV', '<h1>Văn Phòng Quản Li Nhân Viên</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Nhân Sự', 'NS', '<h1>Văn Phòng Nhân Sự</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11');
 
 --INSERT PROJECT
-INSERT INTO project(name, alias, available, created_time, last_modified_time) values
-('Dự án thầu 2019', 'DAT 2019', true, '2017-09-20 07:22:11', '2019-07-23 07:22:11'),
-('Dự án nhà nước 2018', 'DANN 2018', true, '2017-09-30 07:22:11', '2018-08-24 07:22:11'),
-('Dự án thầu 2017', 'DAT 2017', true, '2016-04-20 07:22:11', '2017-09-10 07:22:11'),
-('Dự án tư nhân 2019', 'DATU 2018', true, '2015-02-27 07:22:11', '2019-06-15 07:22:11');
+INSERT INTO project(name, alias, description, available, created_time, last_modified_time) values
+('Dự án thầu Hải Phòng 2019', 'DAT 2019', '<h1>Dự án thầu Hải Phòng 2019</h1>', true, '2017-09-20 07:22:11', '2019-07-23 07:22:11'),
+('Dự án nhà nước Bình Dương 2018', 'DANN 2018', '<h1>Dự án nhà nước Bình Dương 2018</h1>', true, '2017-09-30 07:22:11', '2018-08-24 07:22:11'),
+('Dự án thầu TPHCM 2017', 'DAT 2017', '<h1>Dự án thầu TPHCM 2017</h1>', true, '2016-04-20 07:22:11', '2017-09-10 07:22:11'),
+('Dự án tư nhân TPHCM 2019', 'DATU 2018', '<h1>Dự án tư nhân TPHCM 2019</h1>', true, '2015-02-27 07:22:11', '2019-06-15 07:22:11');
 
 -- INSERT USER
 INSERT INTO user (display_name, full_name, gender, password, email, phone, address, birthday, department_id, role_id, is_enabled, created_time) VALUES
@@ -104,12 +104,12 @@ INSERT INTO tasks_relatives(task_id, user_id) VALUES
 (1, 3), (1, 4), (1, 5), (1, 6);
 
 -- INSERT TASK_ISSUE
-INSERT INTO task_issue(task_id, summary, description, completed, created_time, last_modified_time, available) VALUES
-(1, 'issue 1', 'detail 1', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
-(1, 'issue 2', 'detail 2', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
-(1, 'issue 3', 'detail 3', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
-(1, 'issue 4', 'detail 4', false, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true),
-(1, 'issue 5', 'detail 5', true, '2019-02-28 23:59:59', '2019-02-28 23:59:59', true);
+INSERT INTO task_issue(task_id, summary, description, completed, creator_id, created_time, last_editor_id, last_modified_time, available) VALUES
+(1, 'issue 1', 'detail 1', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true),
+(1, 'issue 2', 'detail 2', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true),
+(1, 'issue 3', 'detail 3', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true),
+(1, 'issue 4', 'detail 4', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true),
+(1, 'issue 5', 'detail 5', false, 1, '2019-02-28 23:59:59', 1, '2019-02-28 23:59:59', true);
 
 -- INSERT TASK-DOCUMENT MAPPING
 INSERT INTO tasks_documents(task_id, document_id) VALUES

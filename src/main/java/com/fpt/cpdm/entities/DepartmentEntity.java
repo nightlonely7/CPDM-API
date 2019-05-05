@@ -23,6 +23,10 @@ public class DepartmentEntity extends BaseEntity {
     private String alias;
 
     @Basic
+    @Column(name = "description")
+    private String description;
+
+    @Basic
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 

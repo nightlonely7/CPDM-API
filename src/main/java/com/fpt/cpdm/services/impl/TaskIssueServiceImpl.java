@@ -1,6 +1,5 @@
 package com.fpt.cpdm.services.impl;
 
-import com.fpt.cpdm.configurations.AuthenticationFacade;
 import com.fpt.cpdm.entities.TaskEntity;
 import com.fpt.cpdm.entities.TaskIssueEntity;
 import com.fpt.cpdm.entities.UserEntity;
@@ -14,11 +13,13 @@ import com.fpt.cpdm.models.tasks.task_issues.TaskIssueDetail;
 import com.fpt.cpdm.repositories.TaskIssueRepository;
 import com.fpt.cpdm.repositories.TaskRepository;
 import com.fpt.cpdm.repositories.UserRepository;
+import com.fpt.cpdm.services.AuthenticationService;
 import com.fpt.cpdm.services.TaskIssueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,14 +28,14 @@ public class TaskIssueServiceImpl implements TaskIssueService {
     private final TaskIssueRepository taskIssueRepository;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
-    private final AuthenticationFacade authenticationFacade;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public TaskIssueServiceImpl(TaskIssueRepository taskIssueRepository, TaskRepository taskRepository, UserRepository userRepository, AuthenticationFacade authenticationFacade) {
+    public TaskIssueServiceImpl(TaskIssueRepository taskIssueRepository, TaskRepository taskRepository, UserRepository userRepository, AuthenticationService authenticationService) {
         this.taskIssueRepository = taskIssueRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
-        this.authenticationFacade = authenticationFacade;
+        this.authenticationService = authenticationService;
     }
 
     @Override
@@ -46,6 +47,8 @@ public class TaskIssueServiceImpl implements TaskIssueService {
 
     @Override
     public TaskIssueDetail create(Integer taskId, TaskIssueForm taskIssueForm) {
+
+        UserEntity creator = authenticationService.getCurrentLoggedUser();
 
         TaskEntity taskEntity = taskRepository.findById(taskId).orElseThrow(
                 () -> new TaskNotFoundException(taskId)
@@ -65,6 +68,7 @@ public class TaskIssueServiceImpl implements TaskIssueService {
                 .description(taskIssueForm.getDescription())
                 .completed(Boolean.FALSE)
                 .task(taskEntity)
+                .creator(creator)
                 .build();
         taskIssueEntity.setId(null);
 
@@ -79,10 +83,14 @@ public class TaskIssueServiceImpl implements TaskIssueService {
     @Override
     public TaskIssueDetail update(Integer id, TaskIssueForm taskIssueForm) {
 
+        UserEntity lastEditor = authenticationService.getCurrentLoggedUser();
+
         TaskIssueEntity taskIssueEntity = taskIssueRepository.findById(id).orElseThrow(
                 () -> new TaskIssueNotFoundException(id)
         );
 
+        taskIssueEntity.setLastEditor(lastEditor);
+        taskIssueEntity.setLastModifiedTime(LocalDateTime.now());
         taskIssueEntity.setDescription(taskIssueForm.getDescription());
         taskIssueEntity.setSummary(taskIssueForm.getSummary());
 
@@ -109,10 +117,7 @@ public class TaskIssueServiceImpl implements TaskIssueService {
     @Override
     public TaskIssueDetail complete(Integer id) {
 
-        String email = authenticationFacade.getAuthentication().getName();
-        UserEntity current = userRepository.findByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException(email)
-        );
+        UserEntity current = authenticationService.getCurrentLoggedUser();
 
         TaskIssueEntity taskIssueEntity = taskIssueRepository.findById(id).orElseThrow(
                 () -> new TaskIssueNotFoundException(id)
@@ -123,6 +128,7 @@ public class TaskIssueServiceImpl implements TaskIssueService {
         }
 
         taskIssueEntity.setCompleted(Boolean.TRUE);
+        taskIssueEntity.setCompletedTime(LocalDateTime.now());
 
         TaskIssueEntity savedTaskIssueEntity = taskIssueRepository.save(taskIssueEntity);
         TaskIssueDetail savedTaskIssueDetail = taskIssueRepository.findDetailByIdAndAvailableTrue(savedTaskIssueEntity.getId()).orElseThrow(

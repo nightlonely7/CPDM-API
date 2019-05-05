@@ -1,6 +1,7 @@
 package com.fpt.cpdm.services;
 
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
+import com.fpt.cpdm.forms.documents.DocumentSearchForm;
 import com.fpt.cpdm.forms.documents.DocumentUpdateForm;
 import com.fpt.cpdm.models.documents.Document;
 import com.fpt.cpdm.models.documents.DocumentDetail;
@@ -30,6 +31,6 @@ public interface DocumentService {
 
     boolean existsByTitle(String title);
 
-    Page<DocumentSummary> findAllSummaryByTitleAndSummary(String title, String summary, Pageable pageable);
+    Page<DocumentSummary> findAllSummaryByTitleAndSummary(DocumentSearchForm documentSearchForm, Pageable pageable);
 
 }

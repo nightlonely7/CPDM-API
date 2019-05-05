@@ -14,7 +14,6 @@ public interface TaskFileDetail {
     String getDescription();
     UserDisplayName getCreator();
     LocalDateTime getCreatedTime();
-
     UserDisplayName getLastEditor();
     LocalDateTime getLastModifiedTime();
 }

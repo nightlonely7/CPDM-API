@@ -4,11 +4,13 @@ import com.fpt.cpdm.configurations.AuthenticationFacade;
 import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.ProjectEntity;
 import com.fpt.cpdm.entities.UserEntity;
+import com.fpt.cpdm.exceptions.BadRequestException;
 import com.fpt.cpdm.exceptions.EntityNotFoundException;
 import com.fpt.cpdm.exceptions.UnauthorizedException;
 import com.fpt.cpdm.exceptions.documents.DocumentNotFoundException;
 import com.fpt.cpdm.exceptions.users.UserNotFoundException;
 import com.fpt.cpdm.forms.documents.DocumentCreateForm;
+import com.fpt.cpdm.forms.documents.DocumentSearchForm;
 import com.fpt.cpdm.forms.documents.DocumentUpdateForm;
 import com.fpt.cpdm.models.IdOnlyForm;
 import com.fpt.cpdm.models.documents.Document;
@@ -269,12 +271,37 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Page<DocumentSummary> findAllSummaryByTitleAndSummary(String title, String summary, Pageable pageable) {
-        title = title.toLowerCase();
-        summary = summary.toLowerCase();
-        return documentRepository
-                .findAllSummaryByTitleContainingIgnoreCaseAndSummaryContainingIgnoreCaseAndAvailableTrue
-                        (title, summary, pageable);
+    public Page<DocumentSummary> findAllSummaryByTitleAndSummary(DocumentSearchForm documentSearchForm, Pageable pageable) {
+        documentSearchForm.setTitle(documentSearchForm.getTitle().toLowerCase());
+        documentSearchForm.setSummary(documentSearchForm.getSummary().toLowerCase());
+
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity creator = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        if (documentSearchForm.getCreatedTimeFrom() != null && documentSearchForm.getCreatedTimeTo() != null
+                && documentSearchForm.getCreatedTimeFrom().isAfter(documentSearchForm.getCreatedTimeTo())) {
+            throw new BadRequestException("createdTimeFrom is after createdTimeTo");
+        }
+
+        if (documentSearchForm.getStartTimeFrom() != null && documentSearchForm.getStartTimeTo() != null
+                && documentSearchForm.getStartTimeFrom().isAfter(documentSearchForm.getStartTimeTo())) {
+            throw new BadRequestException("startTimeFrom is after startTimeTo");
+        }
+
+        if (documentSearchForm.getEndTimeFrom() != null && documentSearchForm.getEndTimeTo() != null
+                && documentSearchForm.getEndTimeFrom().isAfter(documentSearchForm.getEndTimeTo())) {
+            throw new BadRequestException("endTimeFrom is after endTimeTo");
+        }
+
+        return documentRepository.advanceSearch(documentSearchForm.getTitle(), documentSearchForm.getSummary(),
+                documentSearchForm.getCreatedTimeFrom(), documentSearchForm.getCreatedTimeTo(),
+                documentSearchForm.getStartTimeFrom(), documentSearchForm.getStartTimeTo(),
+                documentSearchForm.getEndTimeFrom(), documentSearchForm.getEndTimeTo(),
+                pageable);
+
     }
 
 }
