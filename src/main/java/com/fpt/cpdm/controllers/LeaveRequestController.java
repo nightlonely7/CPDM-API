@@ -295,15 +295,12 @@ public class LeaveRequestController {
     @GetMapping("/search/workingTaskDateFromToday")
     public ResponseEntity<List<LocalDate>> getWorkingTaskDateFromToday(Principal principal) {
         //Check number of day of policy rule
-        User user = userService.findByEmail(principal.getName());
         LocalDateTime today = LocalDate.now().atStartOfDay();
         //Limit task in 365 days
         LocalDateTime limitDay = LocalDate.now().plusDays(366).atStartOfDay();
 
         //Get all working task by executor
-        List<String> listStatus = ConstantManager.NOT_COMPLETE_STATUS_LIST;
-        List<TaskSummary> taskSummaries = taskService.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndStartTimeGreaterThanEqual(user, listStatus, today, limitDay);
-        taskSummaries.addAll(taskService.findAllByExecutorAndStatusInAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(user, listStatus, today));
+        List<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndNotComplete(today, limitDay);
         //Sort by start time
         taskSummaries.sort((o1, o2) -> o1.getStartTime().compareTo(o2.getStartTime()));
 

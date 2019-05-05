@@ -64,5 +64,7 @@ public interface TaskService {
 
     Page<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotComplete(LocalDateTime fromTime, LocalDateTime toTime, Pageable pageable);
 
+    List<TaskSummary> findAllSummaryByExecutorAndDateRangeAndNotComplete(LocalDateTime fromTime, LocalDateTime toTime);
+
     Page<TaskSummary> findAllSummaryByExecutorAndStatus(String status, Pageable pageable);
 }
