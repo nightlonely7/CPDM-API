@@ -13,7 +13,7 @@ import java.util.List;
 public class DocumentCreateForm {
 
     @NotNull
-    @Size(min = 4, max = 30)
+    @Size(min = 4, max = 100)
     private String title;
 
     private String summary;

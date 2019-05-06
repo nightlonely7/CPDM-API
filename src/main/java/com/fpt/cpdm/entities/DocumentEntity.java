@@ -18,7 +18,7 @@ import java.util.List;
 public class DocumentEntity extends BaseEntity {
 
     @Basic
-    @Column(name = "title")
+    @Column(name = "title", length = 100)
     private String title;
 
     @Basic

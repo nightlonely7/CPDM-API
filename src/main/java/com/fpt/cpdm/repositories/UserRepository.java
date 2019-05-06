@@ -52,8 +52,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             "(:displayName is null or lower(user.displayName) like %:displayName%) and " +
             "(:fullName is null or lower(user.fullName) like %:fullName%) and " +
             "(:departmentId is null or user.department.id = :departmentId) and " +
-            "(:birthdayFrom is null or user.birthday >= :birthdayFrom) and " +
-            "(:birthdayTo is null or user.birthday <= :birthdayTo) and " +
+            "(:birthdayFrom is null or user.birthday is null or user.birthday >= :birthdayFrom) and " +
+            "(:birthdayTo is null or user.birthday is null or user.birthday <= :birthdayTo) and " +
             "(:gender is null or user.gender = :gender)")
     Page<UserSummary> advancedSearch (@Param("email") String email,
                                       @Param("displayName") String displayName,

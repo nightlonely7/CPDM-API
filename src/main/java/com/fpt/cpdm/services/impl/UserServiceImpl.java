@@ -189,6 +189,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setRole(roleEntity);
 
         System.out.println(userEntity.isEnabled());
+
         UserEntity savedUserEntity = userRepository.save(userEntity);
 
         UserDetail savedUserDetail = userRepository.findDetailById(savedUserEntity.getId()).get();
