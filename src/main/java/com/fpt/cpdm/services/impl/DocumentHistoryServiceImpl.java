@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpt.cpdm.entities.DocumentEntity;
 import com.fpt.cpdm.entities.DocumentHistoryEntity;
+import com.fpt.cpdm.entities.UserEntity;
 import com.fpt.cpdm.exceptions.EntityNotFoundException;
 import com.fpt.cpdm.models.documents.DocumentSummary;
 import com.fpt.cpdm.models.documents.document_histories.DocumentHistoryData;
@@ -41,6 +42,8 @@ public class DocumentHistoryServiceImpl implements DocumentHistoryService {
     @Override
     public void save(DocumentEntity documentEntity) {
 
+        UserEntity creator = authenticationService.getCurrentLoggedUser();
+
         DocumentHistoryData documentHistoryData = new DocumentHistoryData();
         documentHistoryData.setTitle(documentEntity.getTitle());
         documentHistoryData.setSummary(documentEntity.getSummary());
@@ -48,7 +51,7 @@ public class DocumentHistoryServiceImpl implements DocumentHistoryService {
         documentHistoryData.setCreatedTime(documentEntity.getCreatedTime().toString());
         documentHistoryData.setStartTime(documentEntity.getStartTime().toString());
         documentHistoryData.setEndTime(documentEntity.getEndTime().toString());
-        documentHistoryData.setCreatorId(documentEntity.getCreator().getId());
+        documentHistoryData.setCreatorId(creator.getId());
         documentHistoryData.setAvailable(documentEntity.getAvailable());
 
         String data = "";

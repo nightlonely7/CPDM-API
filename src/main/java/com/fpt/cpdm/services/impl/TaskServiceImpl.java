@@ -202,7 +202,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-
+        taskHistoryService.save(savedTaskEntity);
 
         TaskDetail taskDetail = taskRepository.findDetailByIdAndAvailableTrue(savedTaskEntity.getId());
 
@@ -398,7 +398,7 @@ public class TaskServiceImpl implements TaskService {
                     && taskEntity.getStatus().equals("Working")
                     && now.isBefore(taskEntity.getEndTime())) {
                 long duration = ChronoUnit.MINUTES.between(taskEntity.getStartTime(), taskEntity.getEndTime());
-                LocalDateTime warningSpot = taskEntity.getEndTime().minus(duration / 10, ChronoUnit.MINUTES);
+                LocalDateTime warningSpot = taskEntity.getEndTime().minus(duration / 5, ChronoUnit.MINUTES);
                 if (now.isAfter(warningSpot)) {
                     taskEntity.setStatus("Near deadline");
                     changed = true;

@@ -207,6 +207,8 @@ public class DocumentServiceImpl implements DocumentService {
 
         DocumentEntity savedDocumentEntity = documentRepository.save(documentEntity);
 
+        documentHistoryService.save(savedDocumentEntity);
+
         DocumentSummary documentSummary = documentRepository.findSummaryById(savedDocumentEntity.getId()).orElseThrow(
                 () -> new EntityNotFoundException(savedDocumentEntity.getId(), "Document")
         );
