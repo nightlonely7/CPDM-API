@@ -122,12 +122,12 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 'Báo cáo giá cả dự án TPHCM và tính toán tiền bảo trì máy móc',
 'Báo cáo giá cả dự án TPHCM và tính toán tiền bảo trì máy móc. ' ||
  'Lấy đơn báo giá về tiền bảo trì và chi phí phát sinh.',
-'2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+'2019-05-01 16:30:00', '2019-05-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 3, true),
 ('Báo cáo giá cả dự án Đà Nẵng',
 'Báo cáo giá cả dự án Đà Nẵng và lấy đơn báo giá từng phần của dự án',
 'Báo cáo giá cả dự án Đà Nẵng và lấy đơn báo giá từng phần của dự án. ' ||
  'Thông báo cho văn phòng kế toán về đơn báo giá.',
-'2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+'2019-05-01 16:30:00', '2019-05-03 16:30:00', '2019-02-28 23:59:59', 1, 'Completed', 1, 2, 1, 1, true),
 ('Báo cáo giá cả vật liệu xây dựng dự án TPHCM',
  'Báo cáo giá cả vật liệu xây dựng dự án TPHCM và tính toán chi phí phát sinh.',
   'Báo cáo giá cả vật liệu xây dựng dự án TPHCM và tính toán chi phí phát sinh. ' ||
@@ -150,7 +150,7 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
 'Báo cáo tiến độ bảo trì hệ thống tháng 12 và chi phí bảo trì cộng với trang thái hệ thống. ' ||
  'Báo cáo tộng tiền lên quản lí của văn phòng kế toán.',
 '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+, '2019-04-15 16:30:00', '2019-05-08 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 ('Đấu thầu dự án Bình Dương',
 'Đấu thầu dự án Bình Dương và chi phí dự án.',
 'Đấu thầu dự án Bình Dương và chi phí dự án. Thông báo chi phí phát sinh và tông chi phí của cả dự án ' ||
