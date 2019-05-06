@@ -633,4 +633,15 @@ public class TaskServiceImpl implements TaskService {
         Page<TaskSummary> result = taskRepository.findAllByExecutorAndStatusAndAvailableTrue(executor,status,pageable);
         return result;
     }
+
+    @Override
+    public boolean existsByExecutorAndStatus(String status) {
+        // get current logged user
+        String email = authenticationFacade.getAuthentication().getName();
+        UserEntity executor = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(email)
+        );
+
+        return taskRepository.existsByExecutorAndStatus(executor,status);
+    }
 }

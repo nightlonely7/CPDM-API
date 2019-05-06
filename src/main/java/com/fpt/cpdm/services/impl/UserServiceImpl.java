@@ -552,6 +552,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAllByRole_IdIn(List<Integer> listRole) {
+        List<User> result = new ArrayList<>();
+        userRepository.findAllByRole_IdIn(listRole).forEach(userEntity -> result.add(ModelConverter.userEntityToModel(userEntity)));
+        return  result;
+    }
+
+    @Override
     public Page<UserSummary> advancedSearch(String email, String displayName, String fullName, Integer departmentId,
                                               LocalDate birthDateFrom, LocalDate birthDateTo, Boolean gender, Pageable pageable) {
         email = email.toLowerCase();

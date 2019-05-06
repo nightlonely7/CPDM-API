@@ -263,17 +263,24 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllSummaryByDepartmentId(id));
     }
 
-    @Secured("ROLE_ADMIN")
     @GetMapping("/search/staff-and-manager")
-    public ResponseEntity<Page<UserSummary>> findAllStaffAndManager(@PageableDefault Pageable pageable){
+    public ResponseEntity<Page<UserSummary>> findStaffAndManager(@PageableDefault Pageable pageable){
         List<Integer> listRole = new ArrayList<>();
         listRole.add(1);
         listRole.add(2);
         return ResponseEntity.ok(userService.findAllByRole_IdIn(listRole, pageable));
     }
 
+    @GetMapping("/search/all/staff-and-manager")
+    public ResponseEntity<List<User>> findAllStaffAndManager(@PageableDefault Pageable pageable){
+        List<Integer> listRole = new ArrayList<>();
+        listRole.add(1);
+        listRole.add(2);
+        return ResponseEntity.ok(userService.findAllByRole_IdIn(listRole));
+    }
+
     @GetMapping("/search/staff-for-manager")
-    public ResponseEntity<Page<UserSummary>> findAllStaffForManager(@PageableDefault Pageable pageable,
+    public ResponseEntity<Page<UserSummary>> findStaffForManager(@PageableDefault Pageable pageable,
                                                                     Principal principal){
         // get current logged manager
         User user = userService.findByEmail(principal.getName());
