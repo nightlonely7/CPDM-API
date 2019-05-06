@@ -42,8 +42,6 @@ public class DocumentHistoryServiceImpl implements DocumentHistoryService {
     @Override
     public void save(DocumentEntity documentEntity) {
 
-        UserEntity creator = authenticationService.getCurrentLoggedUser();
-
         DocumentHistoryData documentHistoryData = new DocumentHistoryData();
         documentHistoryData.setTitle(documentEntity.getTitle());
         documentHistoryData.setSummary(documentEntity.getSummary());
@@ -51,7 +49,7 @@ public class DocumentHistoryServiceImpl implements DocumentHistoryService {
         documentHistoryData.setCreatedTime(documentEntity.getCreatedTime().toString());
         documentHistoryData.setStartTime(documentEntity.getStartTime().toString());
         documentHistoryData.setEndTime(documentEntity.getEndTime().toString());
-        documentHistoryData.setCreatorId(creator.getId());
+        documentHistoryData.setCreatorId(authenticationService.getCurrentLoggedUser().getId());
         documentHistoryData.setAvailable(documentEntity.getAvailable());
 
         String data = "";
