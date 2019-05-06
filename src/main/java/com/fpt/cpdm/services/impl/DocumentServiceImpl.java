@@ -366,6 +366,7 @@ public class DocumentServiceImpl implements DocumentService {
                 documentSearchForm.getCreatedTimeFrom(), documentSearchForm.getCreatedTimeTo(),
                 documentSearchForm.getStartTimeFrom(), documentSearchForm.getStartTimeTo(),
                 documentSearchForm.getEndTimeFrom(), documentSearchForm.getEndTimeTo(),
+                documentSearchForm.getProjectId(),
                 pageable);
 
     }

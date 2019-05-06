@@ -46,6 +46,8 @@ public class DocumentSearchForm {
 
     private List<IdOnlyForm> relatives;
 
+    private Integer projectId;
+
     @NotNull
     private IdOnlyForm project;
 

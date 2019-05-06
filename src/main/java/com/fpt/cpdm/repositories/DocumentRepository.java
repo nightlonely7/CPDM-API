@@ -49,6 +49,7 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
             "(:startTimeTo is null or d.startTime <= :startTimeTo) and " +
             "(:endTimeFrom is null or d.endTime >= :endTimeFrom) and " +
             "(:endTimeTo is null or d.endTime <= :endTimeTo) and " +
+            "(:projectId is null or d.project.id = :projectId) and " +
             "(d.available = true)")
     Page<DocumentSummary> advanceSearch(@Param("title") String title,
                                          @Param("summary") String summary,
@@ -58,5 +59,6 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
                                          @Param("startTimeTo") LocalDateTime startTimeTo,
                                          @Param("endTimeFrom") LocalDateTime endTimeFrom,
                                          @Param("endTimeTo") LocalDateTime endTimeTo,
+                                         @Param("projectId") Integer projectId,
                                          Pageable pageable);
 }
