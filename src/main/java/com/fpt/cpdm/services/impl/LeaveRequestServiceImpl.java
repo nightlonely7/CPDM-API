@@ -147,7 +147,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
                 policyForFreeList.sort((o1, o2) -> o1.getValidFromDate().compareTo(o2.getValidFromDate()));
                 LocalDate fromDate = leaveRequest.getFromDate();
                 for (PolicyForLeave item : policyForFreeList) {
-                    if (fromDate.isAfter(item.getValidFromDate())) {
+                    if (!fromDate.isBefore(item.getValidFromDate())) {
                         if (item.getNumberOfDayOffFreeCheck() != null) {
                             numberOfDateFreeCheck = item.getNumberOfDayOffFreeCheck();
                         }

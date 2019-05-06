@@ -20,9 +20,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -135,5 +137,18 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void deleteAll() {
 
+    }
+
+    @Scheduled(fixedRate = 300000)
+    public void hideOldNotification() {
+        LocalDateTime hideAllBeforeTime = LocalDateTime.now().plusDays(-7);
+        notificationRepository.findAllByHiddenFalseAndCreatedTimeIsLessThanEqual(hideAllBeforeTime).forEach(notificationEntity -> {
+            notificationEntity.setHidden(true);
+            notificationRepository.save(notificationEntity);
+        });
+        LocalDateTime deleteAllBeforeTime = LocalDateTime.now().plusDays(-30);
+        notificationRepository.findAllByHiddenFalseAndCreatedTimeIsLessThanEqual(hideAllBeforeTime).forEach(notificationEntity -> {
+            notificationRepository.delete(notificationEntity);
+        });
     }
 }

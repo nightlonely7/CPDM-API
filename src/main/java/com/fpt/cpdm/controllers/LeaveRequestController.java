@@ -212,15 +212,73 @@ public class LeaveRequestController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/search/viewLeaves")
-    public ResponseEntity<Page<UserLeaves>> viewLeaves(
+    @GetMapping("/search/view-leaves-for-admin")
+    public ResponseEntity<Page<UserLeaves>> viewLeavesForAdmin(
             @RequestParam String fromDate, @RequestParam String toDate,
             @PageableDefault Pageable pageable) {
 
         LocalDate from = LocalDate.parse(fromDate);
         LocalDate to = LocalDate.parse(toDate);
 
-        Page<UserSummary> userSummaries = userService.findAllSummaryForAdmin(pageable);
+        List<Integer> listRole = new ArrayList<>();
+        listRole.add(1);
+        listRole.add(2);
+        Page<UserSummary> userSummaries = userService.findAllByRole_IdIn(listRole, pageable);
+
+        ArrayList<UserLeaves> userLeaveList = new ArrayList<UserLeaves>();
+        Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
+        Integer approvedCode = Enum.LeaveRequestStatus.Approved.getLeaveRequestStatusCode();
+
+        int countPlusDate = -1;
+        for (UserSummary userSummary : userSummaries) {
+            UserLeaves userLeaves = new UserLeaves();
+            userLeaves.setDisplayName(userSummary.getDisplayName());
+            ArrayList<Leave> list = new ArrayList<>();
+            User user = new User();
+            user.setId(userSummary.getId());
+            while (from.plusDays(countPlusDate).isBefore(to)) {
+                countPlusDate++;
+                LocalDate tmpDate = from.plusDays(countPlusDate);
+                Leave leave = new Leave();
+                leave.setDate(tmpDate);
+                leave.setWaiting(false);
+                leave.setApproved(false);
+                if (leaveRequestService.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(tmpDate, tmpDate, user, approvedCode)) {
+                    leave.setApproved(true);
+                } else if (leaveRequestService.existsLeaveRequestEntitiesByFromDateLessThanEqualAndToDateGreaterThanEqualAndUserAndStatus(tmpDate, tmpDate, user, newCode)) {
+                    leave.setWaiting(true);
+                }
+                list.add(leave);
+            }
+            countPlusDate = -1;
+            userLeaves.setLeaveList(list);
+            userLeaveList.add(userLeaves);
+        }
+
+        Page<UserLeaves> PageImpl = new PageImpl<UserLeaves>(userLeaveList, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), userSummaries.getTotalElements());
+
+        if (userSummaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(PageImpl);
+    }
+
+    @GetMapping("/search/view-leaves-for-manager")
+    public ResponseEntity<Page<UserLeaves>> viewLeavesForManager(
+            @RequestParam String fromDate, @RequestParam String toDate,
+            @PageableDefault Pageable pageable,
+            Principal principal) {
+
+        LocalDate from = LocalDate.parse(fromDate);
+        LocalDate to = LocalDate.parse(toDate);
+
+        User manager = userService.findByEmail(principal.getName());
+        List<Integer> listRole = new ArrayList<>();
+        listRole.add(1);
+        List<Integer> listDepartment = new ArrayList<>();
+        listDepartment.add(manager.getDepartment().getId());
+        Page<UserSummary> userSummaries = userService.findAllByRole_IdInAndDepartment_IdIn(listRole, listDepartment,pageable);
 
         ArrayList<UserLeaves> userLeaveList = new ArrayList<UserLeaves>();
         Integer newCode = Enum.LeaveRequestStatus.New.getLeaveRequestStatusCode();
