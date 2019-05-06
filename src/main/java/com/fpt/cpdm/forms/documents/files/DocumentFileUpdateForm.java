@@ -13,7 +13,7 @@ public class DocumentFileUpdateForm {
 
     @NotNull
     @Size(min = 4, max = 30)
-    private String fileName;
+    private String filename;
 
     private String description;
 }

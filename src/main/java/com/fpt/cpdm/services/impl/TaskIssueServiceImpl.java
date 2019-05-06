@@ -69,6 +69,7 @@ public class TaskIssueServiceImpl implements TaskIssueService {
                 .completed(Boolean.FALSE)
                 .task(taskEntity)
                 .creator(creator)
+                .lastEditor(creator)
                 .build();
         taskIssueEntity.setId(null);
 

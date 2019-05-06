@@ -6,17 +6,17 @@ INSERT INTO role (name,display_name) VALUES
 
 -- INSERT DEPARTMENT
 INSERT INTO department (name, alias, description, available, created_time, last_modified_time) VALUES
-('Văn Phòng Quản Li Xây Dựng', 'QLXD', '<h1>Văn Phòng Quản Li Xây Dựng</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('Văn Phòng Quản Li Ngân Sách', 'QLNS', '<h1>Văn Phòng Quản Li Ngân Sách</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('Văn Phòng Quản Li Nhân Viên', 'QLNV', '<h1>Văn Phòng Quản Li Nhân Viên</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
-('Văn Phòng Nhân Sự', 'NS', '<h1>Văn Phòng Nhân Sự</h1>', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11');
+('Văn Phòng Quản Li Xây Dựng', 'QLXD', 'Văn Phòng Quản Li Xây Dựng', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Quản Li Ngân Sách', 'QLNS', 'Văn Phòng Quản Li Ngân Sách', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Quản Li Nhân Viên', 'QLNV', 'Văn Phòng Quản Li Nhân Viên', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11'),
+('Văn Phòng Nhân Sự', 'NS', 'Văn Phòng Nhân Sự', true, '2017-09-20 07:22:11', '2017-09-20 07:22:11');
 
 --INSERT PROJECT
 INSERT INTO project(name, alias, description, available, created_time, last_modified_time) values
-('Dự án thầu Hải Phòng 2019', 'DAT 2019', '<h1>Dự án thầu Hải Phòng 2019</h1>', true, '2017-09-20 07:22:11', '2019-07-23 07:22:11'),
-('Dự án nhà nước Bình Dương 2018', 'DANN 2018', '<h1>Dự án nhà nước Bình Dương 2018</h1>', true, '2017-09-30 07:22:11', '2018-08-24 07:22:11'),
-('Dự án thầu TPHCM 2017', 'DAT 2017', '<h1>Dự án thầu TPHCM 2017</h1>', true, '2016-04-20 07:22:11', '2017-09-10 07:22:11'),
-('Dự án tư nhân TPHCM 2019', 'DATU 2018', '<h1>Dự án tư nhân TPHCM 2019</h1>', true, '2015-02-27 07:22:11', '2019-06-15 07:22:11');
+('Dự án thầu Hải Phòng 2019', 'DAT 2019', 'Dự án thầu Hải Phòng 2019', true, '2017-09-20 07:22:11', '2019-07-23 07:22:11'),
+('Dự án nhà nước Bình Dương 2018', 'DANN 2018', 'Dự án nhà nước Bình Dương 2018', true, '2017-09-30 07:22:11', '2018-08-24 07:22:11'),
+('Dự án thầu TPHCM 2017', 'DAT 2017', 'Dự án thầu TPHCM 2017', true, '2016-04-20 07:22:11', '2017-09-10 07:22:11'),
+('Dự án tư nhân TPHCM 2019', 'DATU 2018', 'Dự án tư nhân TPHCM 2019', true, '2015-02-27 07:22:11', '2019-06-15 07:22:11');
 
 -- INSERT USER
 INSERT INTO user (display_name, full_name, gender, password, email, phone, address, birthday, department_id, role_id, is_enabled, created_time) VALUES
@@ -43,21 +43,91 @@ INSERT INTO user (display_name, full_name, gender, password, email, phone, addre
 
 -- INSERT DOCUMENT
 INSERT INTO document (title, summary, description, created_time, start_time, end_time, creator_id, project_id, available) VALUES
-('document summary 1', 'document summary 1', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 2', 'document summary 2', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 3', 'document summary 3', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 4', 'document summary 4', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 5', 'document summary 5', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 6', 'document summary 6', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 7', 'document summary 7', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 8', 'document summary 8', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 9', 'document summary 9', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
-('document title 10', 'document summary 10', '<h1>description</h1>', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true);
+('Hướng dẫn về hợp đồng tư vấn xây dựng',
+ 'Hướng dẫn một số nội dung của các hợp đồng tư vấn xây dựng.',
+'Thông tư này hướng dẫn một số nội dung của các hợp đồng tư vấn xây dựng gồm: tư vấn khảo sát xây dựng, tư vấn lập' ||
+' Báo cáo nghiên cứu khả thi đầu tư xây dựng, tư vấn thiết kế xây dựng công trình, tư vấn giám sát thi công xây ' ||
+'dựng công trình (sau đây gọi chung là tư vấn xây dựng) thuộc các dự án đầu tư xây dựng ' ||
+'(bao gồm cả hợp đồng xây dựng giữa nhà đầu tư thực hiện dự án đối tác công tư PPP với nhà ' ||
+'thầu thực hiện các gói thầu của dự án)',
+'2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('Quy định về phân cấp công trình xây dựng',
+'Quy định về phân cấp công trình xây dựng và hướng dẫn áp dụng trong quản lý hoạt động đầu tư xây dựng',
+ 'Thông tư này quy định chi Tiết về phân cấp công trình xây dựng và hướng dẫn áp dụng cấp công trình xây ' ||
+  'dựng trong quản lý các hoạt động ' ||
+  'đầu tư xây dựng công trình theo quy định tại Khoản 3 Điều 8 Nghị định 46/2015/NĐ-CP.',
+  '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('Hướng dẫn về cấp giấy phép xây dựng',
+ 'Thông tư này quy định chi tiết về hồ sơ đề nghị cấp giấy phép xây dựng và điều chỉnh giấy phép xây dựng',
+  'Thông tư này quy định chi tiết về hồ sơ đề nghị cấp giấy phép xây dựng, Điều chỉnh giấy phép xây dựng, gia hạn giấy' ||
+   ' phép xây dựng; giấy phép xây dựng có thời hạn; quy trình và thẩm quyền cấp giấy phép xây dựng.',
+   '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('Hướng dẫn về năng lực của tổ chức, cá nhân',
+ 'Hướng dẫn về năng lực hoạt động xây dựng',
+  'Phạm vi Điều chỉnh: Thông tư này hướng dẫn về năng lực hoạt động xây dựng, gồm: năng lực hành nghề hoạt động xây' ||
+   ' dựng của cá nhân; năng lực hoạt động xây dựng của tổ chức; công bố thông tin về năng lực hoạt động xây dựng.',
+   '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('Hướng dẫn hợp đồng thiết kế - cung cấp thiết bị công nghệ ',
+'Hướng dẫn hợp đồng thiết kế - cung cấp thiết bị công nghệ và thi công xây dựng công trình',
+ 'Thông tư này hướng dẫn về hợp đồng thiết kế - cung cấp thiết bị công nghệ và thi công xây dựng công trình thuộc các ' ||
+  'dự án đầu tư xây dựng' ||
+  'dự án đầu tư xây dựng theo quy định tại khoản 2 Điều 1 Nghị định số 37/2015/NĐ-CP ngày 22/4/2015 của Chính phủ' ||
+   ' quy định chi tiết về hợp đồng xây dựng',
+  '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('Hướng dẫn xác định và quản lý chi phí khảo sát xây dựng',
+ 'Hướng dẫn xác định và quản lý chi phí khảo sát xây dựng phục vụ lập dự án đầu tư xây dựng, thiết kế',
+  'Thông tư này hướng dẫn việc xác định và quản lý chi phí khảo sát xây dựng phục vụ lập dự án đầu tư xây dựng, thiết kế' ||
+   ' xây dựng công trình, khảo sát phục vụ lập quy hoạch xây dựng và các công tác khảo sát khác có liên quan' ||
+    ' trong hoạt động đầu tư xây dựng.',
+   '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('Quy định mức thu, chế độ thu, nộp, quản lý',
+ 'Quy định mức thu, chế độ thu, nộp, quản lý và sử dụng phí thẩm định dự án đầu tư xây dựng',
+  'Thông tư này quy định mức thu, chế độ thu, nộp, quản lý và sử dụng phí thẩm định dự án đầu tư xây dựng,' ||
+   ' phí thẩm định thiết kế cơ sở.',
+   '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('hướng dẫn xác định đơn giá nhân công trong quản lý chi phí đầu tư xây dựng',
+ 'Hướng dẫn xác định đơn giá nhân công để quản lý chi phí đầu tư xây dựng công trình .',
+  'Hướng dẫn xác định đơn giá nhân công để quản lý chi phí đầu tư xây dựng công trình bao gồm: tổng mức' ||
+   ' đầu tư, dự toán xây dựng, dự toán gói thầu, giá xây dựng, giá hợp đồng, chỉ số giá xây dựng.' ||
+    'Khuyến khích các cơ quan, tổ chức, cá nhân có liên quan đến việc quản lý chi phí đầu tư xây dựng sử dụng' ||
+     ' các nguồn vốn khác áp dụng các quy định của Thông tư này.',
+   '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('Công bố định mức các hao phí xác định giá ca máy và thiết bị thi công xây dựng',
+ 'Công bố định mức các hao phí xác định giá ca máy và thiết bị thi công xây dựng kèm theo quyết định của nhà nước',
+  'Công bố định mức các hao phí xác định giá ca máy và thiết bị thi công xây dựng kèm theo quyết định này để các cơ quan,'' ||
+  '' tổ chức, các nhân có liên quan tham khảo, sử dụng trong xác định và quản lý chi phí đầu tư xây dựng.' ||
+   'Định mức các hao phí xác định giá ca máy gồm: số ca làm việc trong năm; định mức khấu hao, sửa chữa, tiêu hao ' ||
+   'nhiên liệu - năng lượng, nhân công điều khiển và định mức chi phí khác.', '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true),
+('Công bố định mức chi phí quản lý dự án và tư vấn đầu tư xây dựng',
+ 'Công bố định mức chi phí quản lý dự án và tư vấn đầu tư xây dựng kèm theo quyết định của nhà nước',
+  'Công bố định mức chi phí quản lý dự án và tư vấn đầu tư xây dựng kèm theo quyết định này để các cơ quan, tổ chức, ' ||
+   'cá nhân có liên quan xác định chi phí quản lý dự án và tư vấn đầu tư xây dựng trong tổng mức đầu tư xây dựng,' ||
+    ' dự toán xây dựng công trình, xác định giá gói thầu và quản lý chi phí đầu tư xây dựng các dự án thuộc đối' ||
+     ' tượng áp dụng của Nghị định số 32/2015/NĐ-CP ngày 25/3/2015 của Chính phủ về quản lý chi phí đầu tư xây dựng.',
+   '2016-05-22 18:30:31', '2016-01-22 18:30:31', '2016-06-22 18:30:31', 1, 1, true);
 
 -- INSERT TASK
 INSERT INTO task (title, summary, description, created_time,
 start_time, end_time, priority, status, creator_id, executor_id, project_id, parent_task_id, available) VALUES
 ('Tác vụ số 1', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 2', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 3', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 4', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 5', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 6', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 7', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 8', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 9', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Tác vụ số 10', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('title task 02', 'summary task 02', 'description task 02', '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-03-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),

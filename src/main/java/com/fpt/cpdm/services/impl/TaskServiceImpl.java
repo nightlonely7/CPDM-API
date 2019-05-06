@@ -181,6 +181,8 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
+
+
         TaskEntity taskEntity = TaskEntity.builder()
                 .project(project)
                 .creator(creator)
@@ -194,6 +196,10 @@ public class TaskServiceImpl implements TaskService {
                 .startTime(taskCreateForm.getStartTime())
                 .endTime(taskCreateForm.getEndTime())
                 .build();
+
+        if (taskCreateForm.getStartTime() == null) {
+            taskEntity.setStartTime(LocalDateTime.now());
+        }
 
         TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
 
@@ -377,7 +383,7 @@ public class TaskServiceImpl implements TaskService {
         List<TaskEntity> taskEntities = taskRepository.findAll();
         for (TaskEntity taskEntity : taskEntities) {
             boolean changed = false;
-            if (taskEntity.getStatus().equals("Created")
+            if (taskEntity.getStatus().equals("Waiting")
                     && now.isAfter(taskEntity.getStartTime())) {
                 taskEntity.setStatus("Working");
                 changed = true;

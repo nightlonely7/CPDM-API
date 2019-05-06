@@ -25,7 +25,8 @@ public interface DocumentService {
     DocumentSummary create(DocumentCreateForm documentCreateForm, boolean selectAll, List<Integer> departmentList
             , boolean selectAllManager);
 
-    DocumentSummary update(Integer id, DocumentUpdateForm documentUpdateForm);
+    DocumentSummary update(Integer id, DocumentUpdateForm documentUpdateForm, boolean selectAll,
+                           List<Integer> departmentList, boolean selectAllManager);
 
     Document deleteById(Integer id);
 
