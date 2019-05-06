@@ -94,4 +94,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
     Page<TaskSummary> findAllByExecutorAndStatusAndAvailableTrue(UserEntity userEntity, String status, Pageable pageable);
 
     List<TaskSummary> findAllByExecutorAndStatusAndAvailableTrue(UserEntity userEntity, String status);
+
+    boolean existsByExecutorAndStatus(UserEntity userEntity, String status);
 }

@@ -357,6 +357,19 @@ public class LeaveRequestController {
         //Limit task in 365 days
         LocalDateTime limitDay = LocalDate.now().plusDays(366).atStartOfDay();
 
+        //Return from today to 365 after if exist task outdated
+        if(taskService.existsByExecutorAndStatus("Outdated")){
+            LocalDate startDate = LocalDate.now();
+            LocalDate endDate = LocalDate.now().plusDays(365);
+            List<LocalDate> result = new ArrayList<>();
+            int count = -1;
+            while (startDate.plusDays(count).isBefore(endDate)) {
+                count++;
+                result.add(startDate.plusDays(count));
+            }
+            return ResponseEntity.ok(result);
+        }
+
         //Get all working task by executor
         List<TaskSummary> taskSummaries = taskService.findAllSummaryByExecutorAndDateRangeAndNotComplete(today, limitDay);
         //Sort by start time
