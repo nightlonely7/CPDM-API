@@ -109,46 +109,52 @@ INSERT INTO document (title, summary, description, created_time, start_time, end
 -- INSERT TASK
 INSERT INTO task (title, summary, description, created_time,
 start_time, end_time, priority, status, creator_id, executor_id, project_id, parent_task_id, available) VALUES
-('Tác vụ số 1', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+('Đấu thầu dự án Hải Phòng',
+ 'Đấu thầu dự án Hải Phòng',
+ 'Đấu thầu dự án Hải Phòng',
+  '2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Báo cáo tiến độ dự án Hải Phòng',
+ 'Báo cáo tiến độ dự án Hải Phòng',
+  'Báo cáo tiến độ dự án Hải Phòng',
+  '2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Báo cáo giá cả dự án TPHCM',
+'Báo cáo giá cả dự án TPHCM',
+'Báo cáo giá cả dự án TPHCM',
+'2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Báo cáo giá cả dự án Đà Nẵng',
+'Báo cáo giá cả dự án Đà Nẵng',
+'Báo cáo giá cả dự án Đà Nẵng',
+'2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+('Báo cáo giá cả vật liệu xây dựng dự án TPHCM',
+ 'Báo cáo giá cả vật liệu xây dựng dự án TPHCM',
+  'Báo cáo giá cả vật liệu xây dựng dự án TPHCM',
+  '2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('Tác vụ số 2', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+('Báo cáo tiền lương nhân viên tháng 10',
+'Báo cáo tiền lương nhân viên tháng 10',
+'Báo cáo tiền lương nhân viên tháng 10',
+'2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('Tác vụ số 3', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+('Báo cáo giá cả bảo trì máy móc tháng 7',
+'Báo cáo giá cả bảo trì máy móc tháng 7',
+'Báo cáo giá cả bảo trì máy móc tháng 7',
+'2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('Tác vụ số 4', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+('Báo cáo tiến độ bảo trì hệ thống',
+'Báo cáo tiến độ bảo trì hệ thống',
+'Báo cáo tiến độ bảo trì hệ thống',
+'2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('Tác vụ số 5', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
+('Đấu thầu dự án Bình Dương',
+'Đấu thầu dự án Bình Dương',
+'Đấu thầu dự án Bình Dương',
+'2019-01-28 16:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('Tác vụ số 6', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('Tác vụ số 7', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('Tác vụ số 8', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('Tác vụ số 9', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('Tác vụ số 10', 'summary task 01', 'description task 01', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
-('title task 02', 'summary task 02', 'description task 02', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-03-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
-('title task 03', 'summary task 03', 'description task 03', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-04-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
-('title task 04', 'summary task 04', 'description task 04', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-04-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
-('title task 05', 'summary task 05', 'description task 05', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-03-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
-('title task 06', 'summary task 06', 'description task 06', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-04-08 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
-('title task 07', 'summary task 07', 'description task 07', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
-('title task 08', 'summary task 08', 'description task 08', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
-('title task 09', 'summary task 09', 'description task 09', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
-('title task 10', 'summary task 10', 'description task 10', '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
-('title task 11', 'summary task 11', 'description task 11', '2019-03-28 16:30:00'
-, '2019-05-27 16:30:00', '2019-05-29 23:59:59', 1, 'Waiting', 1, 2, 1, 1, true);
+('Báo cáo số lượng vật liệu cho dự án Bình Dương',
+'Báo cáo số lượng vật liệu cho dự án Bình Dương',
+'Báo cáo số lượng vật liệu cho dự án Bình Dương',
+'2019-01-28 16:30:00'
+, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true);
 -- ('title task 11b', 'summary task 11b', 'description task 11b', '2019-03-28 16:30:00'
 -- , '2019-03-29 16:30:00', '2019-03-30 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
 -- ('title task 11c', 'summary task 11c', 'description task 11c', '2019-03-28 16:30:00'
@@ -209,9 +215,6 @@ INSERT INTO stored_comment (content, created_date, comment_id) VALUES
 -- INSERT LEAVE REQUEST
 
 INSERT INTO leave_request (content, day_off, from_date, to_date, created_date, status, user_id, approver_id) VALUES
-('Đơn xin nghỉ phép 2 ngày', 2,'2019-03-17', '2019-04-18', '2019-04-16', 0, 2, 1),
 ('Đơn xin nghỉ phép 1 ngày', 1,'2019-03-15', '2019-04-15', '2019-04-14', 1, 2, 1),
-('Đơn xin nghỉ phép 3 ngày', 3,'2019-03-11', '2019-04-13', '2019-04-10', 0, 2, 1),
 ('Đơn xin nghỉ phép 1 ngày', 1,'2019-03-08', '2019-04-08', '2019-04-07', 1, 2, 1),
-('Đơn xin nghỉ phép 2 ngày', 2,'2019-03-06', '2019-04-07', '2019-04-05', 0, 2, 1),
 ('Đơn xin nghỉ phép 1 ngày', 1,'2019-03-01', '2019-04-01', '2019-03-28', 1, 2, 1);
