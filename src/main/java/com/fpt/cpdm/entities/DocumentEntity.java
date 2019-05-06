@@ -22,7 +22,7 @@ public class DocumentEntity extends BaseEntity {
     private String title;
 
     @Basic
-    @Column(name = "summary", length = 100)
+    @Column(name = "summary")
     private String summary;
 
     @Lob
