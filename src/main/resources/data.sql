@@ -13,10 +13,10 @@ INSERT INTO department (name, alias, description, available, created_time, last_
 
 --INSERT PROJECT
 INSERT INTO project(name, alias, description, available, created_time, last_modified_time) values
-('Dự án thầu Hải Phòng 2019', 'DAT 2019', 'Dự án thầu Hải Phòng 2019', true, '2017-09-20 07:22:11', '2019-07-23 07:22:11'),
-('Dự án nhà nước Bình Dương 2018', 'DANN 2018', 'Dự án nhà nước Bình Dương 2018', true, '2017-09-30 07:22:11', '2018-08-24 07:22:11'),
-('Dự án thầu TPHCM 2017', 'DAT 2017', 'Dự án thầu TPHCM 2017', true, '2016-04-20 07:22:11', '2017-09-10 07:22:11'),
-('Dự án tư nhân TPHCM 2019', 'DATU 2018', 'Dự án tư nhân TPHCM 2019', true, '2015-02-27 07:22:11', '2019-06-15 07:22:11');
+('Dự án thầu Hải Phòng 2019', 'DAT HP 2019', 'Dự án thầu Hải Phòng 2019', true, '2017-09-20 07:22:11', '2019-07-23 07:22:11'),
+('Dự án nhà nước Bình Dương 2018', 'DANN BD 2018', 'Dự án nhà nước Bình Dương 2018', true, '2017-09-30 07:22:11', '2018-08-24 07:22:11'),
+('Dự án thầu TPHCM 2017', 'DAT 2017', 'DAT TPHCM 2017', true, '2016-04-20 07:22:11', '2017-09-10 07:22:11'),
+('Dự án tư nhân TPHCM 2019', 'DATU TPHCM 2018', 'Dự án tư nhân TPHCM 2019', true, '2015-02-27 07:22:11', '2019-06-15 07:22:11');
 
 -- INSERT USER
 INSERT INTO user (display_name, full_name, gender, password, email, phone, address, birthday, department_id, role_id, is_enabled, created_time) VALUES
@@ -113,55 +113,54 @@ start_time, end_time, priority, status, creator_id, executor_id, project_id, par
  'Đấu thầu dự án Hải Phòng và báo cáo tiến độ dự án.',
  'Đấu thầu dự án Hải Phòng vào và báo cáo tiến độ dự án sau khi đấu thầu kết thúc. ' ||
   'Lấy đơn báo giá về tiền vật liệu và xây dựng.',
-  '2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+  '2015-08-20 18:35:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('Báo cáo tiến độ dự án Đà Lạt',
  'Báo cáo tiến độ dự án Đà Lạt và tính toán giá cả dự án',
   'Báo cáo tiến độ dự án Đà Lạt và tính toán giá cả dự án. Lấy đơn báo giá về tiền vật liệu và xây dựng.',
-  '2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+  '2016-02-25 16:40:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('Báo cáo giá cả dự án TPHCM',
 'Báo cáo giá cả dự án TPHCM và tính toán tiền bảo trì máy móc',
 'Báo cáo giá cả dự án TPHCM và tính toán tiền bảo trì máy móc. ' ||
  'Lấy đơn báo giá về tiền bảo trì và chi phí phát sinh.',
-'2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+'2019-01-30 14:20:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('Báo cáo giá cả dự án Đà Nẵng',
 'Báo cáo giá cả dự án Đà Nẵng và lấy đơn báo giá từng phần của dự án',
 'Báo cáo giá cả dự án Đà Nẵng và lấy đơn báo giá từng phần của dự án. ' ||
  'Thông báo cho văn phòng kế toán về đơn báo giá.',
-'2019-01-28 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+'2017-01-20 16:30:00', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('Báo cáo giá cả vật liệu xây dựng dự án TPHCM',
  'Báo cáo giá cả vật liệu xây dựng dự án TPHCM và tính toán chi phí phát sinh.',
   'Báo cáo giá cả vật liệu xây dựng dự án TPHCM và tính toán chi phí phát sinh. ' ||
    'Thông báo cho văn phòng kế toán về giá cả phát sinh.',
-  '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+  '2011-02-28 06:30:05', '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('Báo cáo tiền lương nhân viên tháng 10',
 'Báo cáo tiền lương nhân viên tháng 10. Báo cáo tống chi phí tiền lương toàn bộ tháng 10.',
 'Báo cáo tiền lương nhân viên tháng 10. Báo cáo tống chi phí tiền lương toàn bộ tháng 10. ' ||
  'Thông báo sai sót trong chi phí.',
 '2019-01-28 16:30:00'
-, '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
+, '2014-07-20 08:28:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('Báo cáo giá cả bảo trì máy móc tháng 7',
 'Báo cáo giá cả bảo trì máy móc tháng 7 và chi phí phát sinh.',
 'Báo cáo giá cả bảo trì máy móc tháng 7 và chi phí phát sinh. Thông báo tống giá lên văn phòng kế toán.',
-'2019-01-28 16:30:00'
+'2013-04-19 17:38:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('Báo cáo tiến độ bảo trì hệ thống tháng 12',
 'Báo cáo tiến độ bảo trì hệ thống tháng 12 và chi phí bảo trì cộng với trang thái hệ thống.',
 'Báo cáo tiến độ bảo trì hệ thống tháng 12 và chi phí bảo trì cộng với trang thái hệ thống. ' ||
  'Báo cáo tộng tiền lên quản lí của văn phòng kế toán.',
-'2019-01-28 16:30:00'
+'2000-05-27 09:30:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('Đấu thầu dự án Bình Dương',
 'Đấu thầu dự án Bình Dương và chi phí dự án.',
 'Đấu thầu dự án Bình Dương và chi phí dự án. Thông báo chi phí phát sinh và tông chi phí của cả dự án ' ||
  'đi kèm với chi phí từng phần của dự án.',
-'2019-01-28 16:30:00'
+'2018-01-22 18:35:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true),
 ('Báo cáo số lượng vật liệu cho dự án Bình Dương',
 'Báo cáo số lượng vật liệu cho dự án Bình Dương và chi phí toàn bộ vật liệu.',
 'Báo cáo số lượng vật liệu cho dự án Bình Dương và chi phí toàn bộ vật liệu. ' ||
  'Tính toán các chi phí phát sinh và thông báo toàn bộ giá lên văn phòng kế toán.',
-'2019-01-28 16:30:00'
+'2019-07-03 16:20:00'
 , '2019-01-28 16:30:00', '2019-02-28 23:59:59', 1, 'Working', 9, 1, 1, null, true);
 -- ('title task 11b', 'summary task 11b', 'description task 11b', '2019-03-28 16:30:00'
 -- , '2019-03-29 16:30:00', '2019-03-30 23:59:59', 1, 'Working', 1, 2, 1, 1, true),
