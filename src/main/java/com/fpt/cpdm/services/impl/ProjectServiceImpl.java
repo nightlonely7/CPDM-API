@@ -62,7 +62,7 @@ public class ProjectServiceImpl implements ProjectService {
         name = name.toLowerCase();
         alias = alias.toLowerCase();
         Page<ProjectDTO> projectDTOS = projectRepository
-                .findAllDTOByNameContainingIgnoreCaseAndAliasContainingIgnoreCase(name, alias, pageable);
+                .findAllDTOByNameContainingIgnoreCaseAndAliasContainingIgnoreCaseAndAvailableTrue(name, alias, pageable);
         return projectDTOS;
     }
 
