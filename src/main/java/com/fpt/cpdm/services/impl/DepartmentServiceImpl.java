@@ -33,17 +33,19 @@ public class DepartmentServiceImpl implements DepartmentService {
             throw new DepartmentNotFoundException(department.getId());
         }
 
-        if(departmentRepository.existsByNameAndAvailableTrue(department.getName())){
-            System.out.println("Department name already existed!");
-            return null;
-        } else if (departmentRepository.existsByAliasAndAvailableTrue(department.getName())){
-            System.out.println("Department alias already existed!");
-            return null;
+        if(department.getId() == 0){
+            if(departmentRepository.existsByNameAndAvailableTrue(department.getName())){
+                System.out.println("Department name already existed!");
+                return null;
+            } else if (departmentRepository.existsByAliasAndAvailableTrue(department.getName())){
+                System.out.println("Department alias already existed!");
+                return null;
+            }
         }
 
         DepartmentEntity departmentEntity = ModelConverter.departmentModelToEntity(department);
         departmentEntity.setAvailable(true);
-        System.out.println(departmentEntity);
+        System.out.println("Department Entity: " + departmentEntity.toString());
         DepartmentEntity savedDepartmentEntity = departmentRepository.save(departmentEntity);
         Department savedDepartment = ModelConverter.departmentEntityToModel(savedDepartmentEntity);
 
